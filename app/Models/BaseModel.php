@@ -25,6 +25,7 @@ class BaseModel extends \CodeIgniter\Model
 		$this->request = \Config\Services::request();
 		$this->session = \Config\Services::session();
 		$user = $this->session->get('user');
+		$this->user = $user; // Assign user ke property
 		
 		// DECLARE SPECIAL ACCESS BY USER LOGIN START
 		$this->special_akses = false;
