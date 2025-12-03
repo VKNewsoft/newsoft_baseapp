@@ -1,0 +1,250 @@
+/**
+* @author Rangga Afriansyah
+* @url https://newsoftdev.com
+* @copyright Rangga Afriansyah
+* @notice You can use this code for personal use only, you are not allowed to republish or to sell !!!.
+*/
+.gallery-container {
+	margin-top: 25px;
+}
+.gallery-container ul {
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: left;
+	padding: 0;
+	
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.kategori-container {
+	position: relative;
+}
+
+.kategori-container .header {
+	padding: 20px 20px;
+	border-bottom: 1px solid #dfe2e9;
+	position: relative;
+}
+
+.kategori-container .body {
+	padding: 15px 20px 15px 20px;
+}
+
+.kategori-container .toolbox {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    z-index: 999999;
+	width: auto;
+}
+.kategori-container .img-empty {
+	max-height: 100px;
+    max-width: 100px;
+}
+
+.kategori-container .toolbox li {
+    float: left;
+}
+
+.kategori-container .toolbox li a
+, .kategori-container .toolbox li button
+, .kategori-container .toolbox li .grip-handler {
+	width: 25px;
+    height: 25px;
+    display: inline-block;
+    text-align: center;
+    line-height: 25px;
+	border: 0;
+	touch-action: none;
+}
+
+.grip-handler {
+	top: 10px;
+}
+.item-container {
+
+}
+
+.card-img-top {
+	margin: 0;
+    padding: 0;
+    border: 0;
+    max-height: 120px;
+	width: auto;
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%) translateX(-50%);
+}
+
+.thumbnail-item .toolbox {
+	/* display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: row; */
+	
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    opacity: 0.75;
+	z-index: 1;
+	
+}
+.thumbnail-item {
+	list-style: none;
+}
+.thumbnail-item .toolbox .right-menu {
+	float: right;
+}
+
+.thumbnail-item .toolbox .right-menu li {
+	float: left;
+}
+.thumbnail-item .grip {
+	cursor: move;
+	color: #CCCCCC;
+	margin-left: 10px;
+	float: left;
+	touch-action: none;
+}
+
+.thumbnail-item .toolbox a {
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	text-align: center;
+	display: inline-block;
+	/* padding: 5px;
+	background: #FFFFFF;
+	color: #CCCCCC; */
+}
+
+.thumbnail-item .toolbox .edit-image {
+	font-size: 14px;
+}
+
+.thumbnail-item {
+	float: left;
+    border: 1px solid #dbe1ef;
+    width: 125px;
+    height: 125px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    background: #f6f6f6;
+    border-radius: 5px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    box-sizing: border-box;
+    overflow: hidden;
+	position: relative;
+	transition: all .2s;
+}
+
+.thumbnail-item:hover {
+	background: #3b94e1;
+}
+
+.thumbnail-item .nsd-img-thumbnail {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	max-height: 120px;
+	margin:auto;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translateY(-50%) translateX(-50%);
+	cursor: pointer;
+}
+
+.kategori-container .img-cover {
+	width:100%;
+	height: 100%;
+	position: relative;
+	overflow:hidden;
+}
+
+.kategori-container .row {
+	margin-bottom: 0;
+}
+
+.kategori-container .img-container {
+	border: 1px solid #dbe1ef;
+    width: 125px;
+    height: 125px;
+    padding: 5px;
+    background: #f6f6f6;
+    border-radius: 5px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    transition: all .2s;
+}
+
+.kategori-container .grip-handler {
+	position: relative;
+    color: #c6c0c0;
+    background: #e9e9e9;
+    cursor: move;
+	top: 0;
+	left: 0;
+}
+
+.img-container {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.jms-img {
+	position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #e7eaef;
+    background: #38424b;
+    padding: 5px 10px;
+    font-size: 10px;
+}
+
+/* Panel */
+.active-panel {
+    padding: 10px 20px;
+    background: #f7f9fc;
+    border: 2px dashed #c4d2e1;
+    border-radius: 5px;
+	margin-bottom: 15px;
+}
+
+.inactive-panel {
+	padding: 10px 20px;
+	background: #d7d7d7;
+	border: 2px dashed #bebebe;
+	border-radius: 5px;
+}
+
+.active-panel .accordion,
+.inactive-panel .accordion {
+	min-height: 47px;
+}
+
+.panel-title {
+	text-align:center;
+}
+
+#active-panel, #inactive-panel {
+	min-height: 50px;
+}
+
+/* -- Panel */

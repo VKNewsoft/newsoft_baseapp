@@ -1,0 +1,5 @@
+# Disable directory browsing
+Options All -Indexes
+
+php_flag engine off
+ServerSignature Off

@@ -1,0 +1,18 @@
+.theme-btn-login {
+	position: relative;
+    width: 35px;
+    height: 35px;
+    padding: 0 !important;
+    margin: 0;
+}
+.theme-btn-login .check{
+	position: absolute;
+    color: #FFFFFF;
+    left: 10px;
+    top: 10px;
+    font-size: 15px;
+}
+img {
+    max-width: 500px;
+}
+/* <!--test--> */

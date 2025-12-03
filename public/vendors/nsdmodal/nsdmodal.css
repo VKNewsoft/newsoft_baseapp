@@ -1,0 +1,106 @@
+/**
+* Modal CSS
+* @author Rangga Afriansyah
+* @url https://webdev.id
+* @copyright Rangga Afriansyah. 
+* @notice You can use this code for personal use only, you are not allowed to republish or sell.
+*/
+
+.nsd-modal input:focus{
+	outline:0;
+}
+.nsd-modal input:active{
+	outline:0;
+}
+.nsd-modal {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: center; 
+	position: fixed;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	Left: 0;
+	z-index: 9999;
+}
+
+.nsd-modal .close {
+	position: absolute;
+	width: 23px;
+	height: 23px;
+	border: 0;
+	background-color: #ff0909;
+	outline: none;
+	right: 0;
+	top: 0;
+}
+.nsd-modal input, select, textarea {
+	/* font-family: "Segoe UI", "Open Sans", "Helvetica Neue"; */
+	/* font-size: 1rem; */
+}
+.nsd-modal-header {
+	display:flex;
+	position: relative;
+	justify-content: flex-start;
+	flex-shrink: 0;
+	padding: 1rem;
+	border-bottom: 1px solid #d6d6d6;
+}
+.nsd-modal-overlay {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	Left: 0;
+	background: rgba(0, 0, 0, 0.68);
+}
+.nsd-modal-content {
+	display: flex;
+	flex-direction: column;
+	width: 720px;
+	z-index: 100;
+	background: #FFFFFF;
+	max-height: calc(100% - 2em);
+	align-items: stretch;
+    justify-content: flex-start;
+}
+.nsd-modal input.disabled {
+	background: #f1f1f1;
+    cursor: not-allowed;
+}
+.nsd-modal-body {
+	overflow: auto;
+	margin: 20px 15px;
+	padding: 0 14px;
+}
+
+.nsd-modal-body .dataTables_processing > div {
+	display: none;
+}
+
+.nsd-modal-body .dataTables_processing {
+     width: 60px !important;
+    height: 60px;
+    border-radius: 15px;
+    background: #fffcb6 !important;
+    margin: auto;
+    border: 0;
+    top: calc(50% - 30px);
+    left: calc(50% - 30px);
+}
+.nsd-modal-body .dataTables_processing>span {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center !important;
+    height: 100%;
+}
+
+@media screen and (max-width: 720px) {
+	.nsd-modal-content {
+		width: 95% !important;
+	}
+}

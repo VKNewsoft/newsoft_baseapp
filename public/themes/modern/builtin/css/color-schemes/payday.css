@@ -1,0 +1,66 @@
+header {
+	background: #013062;
+}
+.site-content {
+	background-color: #f6f3ff;
+}
+header, header>ul>li>a {
+	color: #c5deea;
+}
+.sidebar nav>ul>li.highlight>a {
+    background: linear-gradient(90deg,#6a11cb 0%,#2575fc 100%) !important;
+    color: #ffffff !important;
+    box-shadow: inset 5px 0 rgba(255,255,255,0.08);
+}
+.sidebar nav li>a:hover {
+    background: rgba(37,117,252,0.12);
+    color: #ffffff;
+}
+.nav-header-logo{
+	background: #184474;
+    color: #FFFFFF;
+}
+.nav-header-logo p {
+	color: rgba(255, 255, 255, 0.95);
+}
+.account-img-profile {
+    background: #d7cdf6;
+}
+.account-menu-container {
+    background: #f4f0ff;
+}
+.account-menu li a:hover {
+    background: #c7bce9;
+}
+.btn-primary {
+	background: #013062;
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #013062;
+    --bs-btn-border-color: #013062;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #034c9b;
+    --bs-btn-hover-border-color: #034c9b;
+    --bs-btn-focus-shadow-rgb: 49,132,253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #034c9b;
+    --bs-btn-active-border-color: #207fe4;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #013062;
+    --bs-btn-disabled-border-color: #013062;
+}
+.btn-success {
+    background: #0769d1 !important;
+}
+.btn-secondary {
+    background: #969091 !important;
+}
+.card-container .copyright {
+    background: none;
+    color: #013062;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+

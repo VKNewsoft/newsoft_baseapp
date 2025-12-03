@@ -1,0 +1,352 @@
+/**
+* @author Rangga Afriansyah
+* @url https://newsoftdev.com
+* @copyright Rangga Afriansyah
+* @notice You can use this code for personal use only, you are not allowed to republish or to sell !!!.
+*/
+.gallery-container {
+	margin-top: 25px;
+}
+.gallery-container ul {
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+	padding: 0;
+	
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.spinner {
+	vertical-align: middle;
+}
+
+.thumbnail-item .toolbox {
+	/* display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: row; */
+	
+	position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    width: 22px;
+    height: 22px;
+	
+}
+.thumbnail-item {
+	list-style: none;
+}
+
+.thumbnail-item .file-thumbnail {
+	max-height: 100px !important;
+}
+.thumbnail-item .toolbox .right-menu {
+	float: right;
+}
+
+.thumbnail-item .toolbox .right-menu li {
+	float: left;
+}
+.thumbnail-item .grip {
+	cursor: move;
+	color: #CCCCCC;
+	margin-left: 10px;
+	float: left;
+}
+
+.thumbnail-item .toolbox a.btn-delete-file {
+	width: 20px;
+    height: 20px;
+    padding: 0;
+    text-align: center;
+    display: inline-block;
+	border-radius: 3px;
+	/* padding: 5px;
+	background: #FFFFFF;
+	color: #CCCCCC; */
+}
+.thumbnail-item .toolbox a i {
+	height:20px;
+}
+
+.thumbnail-item .toolbox .edit-image {
+	font-size: 14px;
+}
+
+.thumbnail-item {
+	float: left;
+    border: 1px solid #dbe1ef;
+    width: 125px;
+    height: 125px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    background: #f6f6f6;
+    border-radius: 5px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    box-sizing: border-box;
+    overflow: hidden;
+	position: relative;
+	transition: all .2s;
+}
+
+.thumbnail-item:hover, .item-hover {
+	background: #3b94e1;
+}
+
+.thumbnail-item .nsd-img-thumbnail {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	max-height: 120px;
+	margin:auto;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translateY(-50%) translateX(-50%);
+	cursor: pointer;
+}
+.thumbnail-item .img-container {
+	cursor: pointer;
+}
+
+.thumbnail-item .filename-container {
+	position: absolute;
+    bottom: 0;
+    left: 0;
+	right: 0;
+  
+    color: #000000;
+    padding: 2px;
+	word-break: break-word;
+	padding: 5px;
+	font-size: 90%;
+	
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+	cursor: pointer;
+}
+
+.img-file-extension {
+	max-height: 100px !important;
+}
+
+.thumbnail-item .filename {
+	z-index: 2;
+}
+
+.thumbnail-item .filename-container .filename-backdrop {
+	display: block;
+	background: #FFFFFF;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0.7;
+	position: absolute;
+	z-index: 1;
+}
+
+.gallery-container .img-container {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.img-blur .img-container {
+	opacity : 0.4;
+}
+
+.thumbnail-item input[type=checkbox] {
+    min-height: 15px !important;
+    height: 15px;
+    width: 15px;
+    min-width: 15px;
+	margin-top: 4px;
+}
+.file-checked{
+	position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #FFFFFF;
+    background: #3386dd;
+	z-index: 1;
+    width: 30px;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+    border-top-left-radius: 5px;
+}
+.nav-util * {
+	white-space: nowrap;
+}
+
+.toolbox-bar {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: spece-between;
+}
+
+.toolbox-right {
+	margin-left: auto;
+}
+
+.toolbox-left {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.nav-util .toolbox-left > * {
+	float: left;
+	margin-right: 7px;
+}
+.nav-util {
+	
+}
+
+.loading-status {
+	padding: 10px 25px;
+    text-align: center;
+    position: fixed;
+    margin: auto;
+    right: 0;
+	bottom: 0;
+    z-index: 3;
+}
+
+/* Dropzone */
+#file-previews > div {
+    display: flex;
+    flex-direction: column;
+	text-align: left;
+}
+
+#file-previews .dropzone-info 
+{
+	display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+    width: 100%;
+}
+#file-previews .dz-processing:last-child
+{
+	/* padding-bottom: 40px; */
+}
+
+#file-previews .uploaded-thumb {
+    flex: 0 0 40px;
+    max-width: 50px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 12px;
+}
+.uploaded-thumb {
+    position: relative;
+}
+.uploaded-thumb img{
+	max-height: 40px;
+}
+
+#file-previews .dropzone-info > .details {
+    position: relative;
+    flex: 0 0 calc(100% - 50px);
+    max-width: calc(100% - 50px);
+    padding-right: 30px;
+}
+
+#file-previews .dz-progress {
+    opacity: 1;
+    z-index: 1000;
+    pointer-events: none;
+    position: relative;
+    height: 15px;
+    margin-top: 4px;
+	top: 0;
+	left: 0;
+    width: 100%;
+    margin-left: 0;
+    -webkit-transform: scale(1);
+    border-radius: 0;
+    overflow: hidden;
+    background: none;
+}
+
+#file-previews .dz-progress {
+    -webkit-animation: none;
+    -moz-animation: none;
+    -ms-animation: none;
+    -o-animation: none;
+    animation: none;
+}
+
+#file-previews .dropzone-info .btn-close {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    line-height: 1;
+    transform: translateY(-50%);
+}
+#file-previews .progress-bar-success {
+	background: #2cd12c !important;
+}
+
+.dropzone-area {
+	border: 2px dashed #CCCCCC;
+    background: #f3f3f3;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+	justify-content: flex-start;
+    flex-direction: column;
+    overflow: auto;
+    text-align: center;
+	padding: 30px;
+}
+.dropzone-area .dz-message {
+	font-size: inherit;
+	margin: 2em 0;
+}
+
+.dropzone-area .dz-message i {
+    font-size: 27px;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 992px) {
+	
+	.nav-util .toolbox-bar {
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-content: center;
+		justify-content: center;
+	}
+	
+	.gallery-container ul {
+		justify-content: center;
+	}
+	
+	.toolbox-left > * {
+		margin-bottom: 10px;
+	}
+	hr {
+		margin-top: 10px;
+	}
+	
+	.toolbox-right {
+		margin-left: unset;
+		/* margin-bottom: 15px; */
+	}
+	
+}

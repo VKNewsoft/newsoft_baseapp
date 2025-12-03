@@ -1,0 +1,84 @@
+#-------------------------
+# Operating Specific Junk Files
+#-------------------------
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+#-------------------------
+# Specific Files Must Be Ignore
+#-------------------------
+# Sensitive Configuration Files
+app/Config/Database.php
+app/config/Database.php
+app/Config/EmailConfig.php
+app/Config/Encryption.php
+.env
+.env.*
+!.env.example
+
+#-------------------------
+# Temporary Files
+#-------------------------
+writable/session/*
+Writable/session/*
+Writable/Session/*
+!writable/session/index.html
+writable/session/ci_session*
+Writable/session/ci_session*
+Writable/Session/ci_session*
+
+writable/logs/*
+!writable/logs/index.html
+
+writable/cache/*
+!writable/cache/index.html
+writable/debugbar/*
+!writable/debugbar/index.html
+writable/logs/*
+!writable/logs/index.html
+writable/uploads/*
+!writable/uploads/index.html
+
+public/tmp/*
+public/slip/*
+public/absensi/*
+public/leavepicture/*
+public/mobile_absensi/*
+public/images/*
+!public/tmp/index.html
+
+php_errors.log
+
+#-------------------------
+# User Guide Temp Files
+#-------------------------
+user_guide_src/build/*
+user_guide_src/cilexer/build/*
+user_guide_src/cilexer/dist/*
+user_guide_src/cilexer/pycilexer.egg-info/*
+
+# Don't save phpunit under version control.
+phpunit
+
+#-------------------------
+# Composer
+#-------------------------
+# vendor/

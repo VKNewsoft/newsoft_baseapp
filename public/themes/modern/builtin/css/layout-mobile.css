@@ -1,0 +1,159 @@
+body {
+	font-family: "Poppins", "open sans", "segoe ui", "arial";
+    font-weight: 400;
+	font-size: 15px !important;
+	margin: 0;
+	color: #616161;
+	display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+	/* background: #f1f3f8; */
+	background: #f1f4f6;
+}
+
+#tabel-data_processing > div{
+	display:none;
+}
+
+tr.row-number td {
+	vertical-align: middle;
+}
+
+#tabel-data_processing {
+	width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: #eef1f8;
+    margin: auto;
+    top: calc(50% - 75px);
+    left: calc(50% - 30px);   
+}
+
+#tabel-data_processing > span {
+	display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center !important;
+	height: 100%;
+}
+.toast-container {
+	z-index: 3;
+}
+.navbar-footer {
+	z-index: 2;
+}
+.show-mobile-d-flex {
+	display: none !important;
+}
+
+.navbar-footer {
+	padding: 0;
+}
+.navbar-footer .nav-link {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+.navbar-footer .active {
+    background: #2076d6;
+    color: #dfe7f5;
+}
+.bg-lightgrey {
+    background-color: #eef0f3;
+}
+
+.form-inline input, .form-inline select {
+    float: left;
+    width: auto;
+}
+
+.nsd-file-picker-modal .wdi-modal-body {
+	margin-bottom: 110px !important;
+}
+
+.nsd-file-picker-modal .wdi-modal-footer {
+	bottom: 45px !important;
+}
+
+#page-content>.card {
+	min-height: 100vh;
+}
+.sidebar-mobile .sidebar-body{
+	display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
+.img-profile {
+	text-align:center;
+}
+
+.sidebar-mobile nav a:hover {
+	background: #eeeeee;
+}
+
+.sidebar-mobile .offcanvas-header img {
+	width: 100%;
+	max-width: 187px;
+}
+
+.page-wrapper {
+	padding: 20px 30px;
+    margin: 20px 20px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    margin-bottom: 75px;
+}
+
+.card-body {
+	padding: 25px 30px;
+	padding-bottom: 75px;
+}
+.card-header {
+	padding-left: 30px; 
+	padding-top:20px;
+}
+
+.btn-mobile {
+	display: none;
+	height: 100%;
+}
+
+.btn-square-md {
+    width: 100px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 100px !important;
+    text-align: center;
+    padding: 0px;
+    font-size: 12px;
+	margin-right: 25px !important;
+}
+
+.btn:focus {
+  outline: none !important;
+}
+
+
+@media screen and (min-width: 960px) {
+	.toast-container {
+		display: none;
+	}
+	
+	.left-panel {
+		background: none !important;
+	}
+}
+@media screen and (max-width: 960px) {
+	
+	.hide-mobile {
+		display: none;
+	}
+	
+	.show-mobile-d-flex {
+		display: flex !important;
+	}
+
+	.btn-mobile {
+		display: block;
+	}	
+}

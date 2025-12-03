@@ -1,0 +1,115 @@
+<html>
+
+<head runat="server">
+  <title></title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <select id="select2" data-placeholder="Select an option" tabindex="-1" aria-hidden="true">
+  <option></option>
+  <optgroup label="Base">
+    <option class="level_0" value="0">Base Parent</option>
+	<optgroup label="Base 2">
+		<option class="level_0" value="0">Base Parent 2</option>
+	  </optgroup>
+  </optgroup>
+  <option class="level_1" value="11">A</option>
+  <option class="level_2" value="12">Ant</option>
+  <option class="level_3" value="15">Fire Ant</option>
+  <option class="level_2" value="14">Apple</option>
+  <option class="level_1" value="13">B</option>
+</select>
+<select id="selectTes"></select>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <script>
+  $(document).on("ready", function() {
+  
+  var selectData = {
+  "results": [
+	{
+            "id": 2,
+            "text": "Option Top"
+	},
+    { 
+      "text": "Group 1", 
+      "children" : [
+        {
+            "id": 1,
+            "text": "Option 1.1"
+        },
+        {
+            "text": "Option 1.2",
+			"children" : [
+				{
+					"id": 5,
+					"text": "Option 1.2.1"
+				},
+				{
+					"id": 6,
+					"text": "Option 1.2.2"
+				}
+			]
+        }
+      ]
+    },
+    { 
+      "text": "Group 2", 
+      "children" : [
+        {
+            "id": 3,
+            "text": "Option 2.1"
+        },
+        {
+            "id": 4,
+            "text": "Option 2.2"
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "more": true
+  }
+}
+	
+  const options = $("#selectTes").select2({
+    placeholder: 'Select an option',
+    width: "300px",
+	data: selectData.results
+  });
+});
+
+
+
+let optgroupState = {};
+
+
+
+$('#selectTes').on('select2:open', function() {
+  $('.select2-dropdown').hide();
+  setTimeout(() => {
+	$('.select2-dropdown').show();
+	$option = $('.select2-results').children('ul.select2-results__options');
+	$firstGroup = $option.children('[role="group"]');
+	$firstGroup.each(function (i, elm) {
+		$(this).children('ul').hide();
+	})
+		
+		
+	$('.select2-results__group').click(function() {
+		$next = $(this).next();
+		if ($next.is(':hidden')) {
+			$(this).next().children('[role="group"]').children('ul.select2-results__options').hide();
+			$(this).next().fadeIn();
+		} else {
+			$(this).next().fadeOut();
+		}
+	})
+    
+  }, 0);
+})
+</script>
+</body>
+</html>

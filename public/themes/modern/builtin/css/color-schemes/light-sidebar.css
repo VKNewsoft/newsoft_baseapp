@@ -1,0 +1,51 @@
+/* SIDEBAR */
+.sidebar {
+	background: #FFFFFF;
+}
+.sidebar .menu li a i.list-icon {
+    color: #9da0ac;
+}
+.sidebar .menu li a {
+    color: #a0a4b3;
+}
+
+.sidebar .sidebar-topparent:hover >a,
+.sidebar .menu li a:hover {
+    background: #6b7186;
+    color: #FFFFFF;
+    box-shadow: inset 5px 0 #3a3e4e;
+}
+.sidebar .menu li a:hover i,
+.sidebar .menu li.hover>a i{
+    color: inherit;
+}
+.nav-title {
+	color: #9299a2;
+    border-bottom: 1px solid #64697b;
+}
+.sidebar .menu-kategori {
+	color: #393f58;
+}
+.sidebar nav li.highlight>a {
+    /* color: #1c82e1; */
+    background: #dcdee3;
+}
+.sidebar nav li>a {
+    color: #485371;
+}
+.sidebar nav li > a:hover {
+    /* color: #1c82e1; */
+    background: #dcdee3;
+}
+
+.sidebar nav>ul>li.tree-open>a {
+    background: #dcdee3;
+    /* color: #eceef1; */
+}
+.sidebar nav>ul>li.highlight>a {
+    /* background: #dcdee3; */
+    color: #eceef1;
+}
+.sidebar nav .submenu {
+	background: #f8f8f8;
+}

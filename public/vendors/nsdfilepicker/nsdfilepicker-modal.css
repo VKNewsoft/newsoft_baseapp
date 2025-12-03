@@ -1,0 +1,69 @@
+/**
+* Modal CSS
+* @author Rangga Afriansyah
+* @url https://webdev.id
+* @copyright Rangga Afriansyah. 
+* @notice You can use this code for personal use only, you are not allowed to republish or sell.
+*/
+
+.wdi-modal input:focus{
+	outline:0;
+}
+.wdi-modal input:active{
+	outline:0;
+}
+.wdi-modal {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: center; 
+	position: fixed;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	Left: 0;
+	z-index: 11;
+}
+.wdi-modal input, select, textarea {
+	/* font-family: "Segoe UI", "Open Sans", "Helvetica Neue"; */
+	/* font-size: inherit; */
+}
+.wdi-modal-header {
+	display:flex;
+	justify-content: flex-start;
+	flex-shrink: 0;
+	padding: 1rem;
+	border-bottom: 1px solid #d6d6d6;
+}
+.wdi-modal-overlay {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	Left: 0;
+	background: rgba(0, 0, 0, 0.68);
+}
+.wdi-modal-content {
+	display: flex;
+	flex-direction: column;
+	width: 640px;
+	z-index: 100;
+	background: #FFFFFF;
+	max-height: calc(100% - 2em);
+	align-items: stretch;
+    justify-content: flex-start;
+}
+.wdi-modal input.disabled {
+	background: #f1f1f1;
+    cursor: not-allowed;
+}
+.wdi-modal-body {
+	overflow: auto;
+}
+@media screen and (max-width: 720px) {
+	.wdi-modal-content {
+		width: 100%;
+	}
+}

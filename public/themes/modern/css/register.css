@@ -1,0 +1,199 @@
+html {
+	height: 100%;
+}
+body {
+	font-family: "open sans", "segoe ui", "arial";
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+	background: #ffffff;
+	color: #212529;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+}
+label {
+	font-weight: bold;
+}
+
+li {
+	margin-left: 20px;
+}
+.login-input, .login-input:focus {
+    border: 0;
+    border-bottom: 1px solid #CCCCCC;
+    outline: none;
+    box-shadow: none;
+}
+.input-group-text {
+    background: none;
+    border: 0;
+}
+.alert ul{
+	margin: 0;
+	padding: 0;
+}
+p.small{
+	margin-bottom: 0;
+}
+small.alert{
+    padding: 5px;
+	padding-left: 10px;
+    display: block;
+	margin: 0;
+	margin-top: 3px;
+}
+.card-header:first-child {
+	border-radius: 0;
+}
+
+.background, .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    pointer-events: none;
+}
+.background {
+	background: #ffffff;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-position: center;
+}
+.backdrop {
+    background: transparent;
+    backdrop-filter: none;
+    opacity: 1;
+}
+.card-container {
+	max-width: 450px;
+    width: 100%;
+    z-index: 1;
+}
+.card-body {
+	padding: 25px;
+	background: #FFFFFF;
+}
+.card-header img {
+    /* border: 1px solid #CCCCCC; */
+    padding: 10px;
+    /* border-radius: 50px; */
+	max-width: 100px;
+}
+.card-header.transparent-header {
+    padding: 0;
+    margin: 0;
+    padding: 25px;
+    padding-bottom: 20px;
+    background: transparent;
+}
+.card-header.transparent-header img {
+    width: 100%;
+    max-width: 100%;
+}
+.card-header {
+    text-align: center;
+	padding: 25px;
+	padding-bottom: 0;
+	background: #FFFFFF;
+	border: 0;
+}
+.card-header h3 {
+    font-weight: lighter;
+    font-size: 25px;
+    margin: 0;
+	margin-top: 10px;
+}
+.card-footer {
+	background: #f1f1f1;
+	text-align:center;
+	padding: 20px 25px;
+	font-size: 95%;
+}
+.card-footer p {
+	margin-bottom: 5px;
+}
+
+.form-control {
+	border-radius: 0;
+}
+.btn {
+	border-radius:0;
+}
+.card-container .btn {
+	height: calc(2.75rem + 2px);
+}
+.card-container .copyright {
+	background: none;
+	color: #6c757d;
+	text-align:center;
+	margin-top: 20px;
+	margin-bottom: 15px;
+	font-size: 13px;
+	text-shadow: none;
+}
+.form-register {
+	margin: 0;
+	margin-top: 20px;
+}
+
+.alert {
+	border-radius: 0;
+}
+
+.card-container .alert-last{
+	margin: 0;
+}
+
+.checkbox label {
+	cursor: pointer;
+}
+.progress {
+	border-radius:0;
+}
+
+.form-inline input:not(:last-child),
+.form-inline select:not(:last-child) {
+	margin-right:3px;
+}
+
+@media screen and (max-width: 600px) {
+	.card-container {
+		margin: auto;
+		left: 7px;
+		right: 7px;
+		width: auto;
+		top: 20px;
+	}
+	/* .backdrop {
+		background: none; 
+	} */
+	
+	.background {
+		background-image: url('../../../images/bg_login_mobile.jpg');
+	}
+	
+	.card-body {
+		padding: 20px;
+	}
+	
+	.card-header {
+		padding: 20px;
+		padding-bottom: 0;
+	}
+	.card-footer {
+		padding: 20px 20px;
+	}
+	input, select {
+		max-width: 100% !important;
+		float:none;
+		margin-top: 3px;
+	}
+	.form-inline input,
+	.form-inline select {
+		margin-right: 0 !important;
+	}
+}

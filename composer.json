@@ -1,0 +1,6 @@
+{
+    "require": {
+        "midtrans/midtrans-php": "^2.5",
+        "phpoffice/phpspreadsheet": "^1.29"
+    }
+}

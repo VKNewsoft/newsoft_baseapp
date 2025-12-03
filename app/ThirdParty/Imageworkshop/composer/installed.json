@@ -1,0 +1,76 @@
+{
+    "packages": [
+        {
+            "name": "sybio/image-workshop",
+            "version": "2.2.0",
+            "version_normalized": "2.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sybio/ImageWorkshop.git",
+                "reference": "355ed14fc52642065e58923bd0506bc0e60e3337"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sybio/ImageWorkshop/zipball/355ed14fc52642065e58923bd0506bc0e60e3337",
+                "reference": "355ed14fc52642065e58923bd0506bc0e60e3337",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "ext-gd": "*",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^v2.17.1",
+                "phpstan/phpstan": "^0.12.59",
+                "phpunit/phpunit": "^8.5.13"
+            },
+            "suggest": {
+                "ext-exif": "Allows to read and keep images EXIF data"
+            },
+            "time": "2021-01-11T19:29:04+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "PHPImageWorkshop\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clément Guillemain",
+                    "homepage": "http://clementguillemain.fr",
+                    "role": "Developer / Freelancer"
+                },
+                {
+                    "name": "ImageWorkshop Community",
+                    "homepage": "https://github.com/Sybio/ImageWorkshop/graphs/contributors"
+                }
+            ],
+            "description": "Powerful PHP class using GD library to work easily with images including layer notion (like Photoshop or GIMP)",
+            "homepage": "http://phpimageworkshop.com",
+            "keywords": [
+                "class",
+                "crop",
+                "gd",
+                "image",
+                "library",
+                "resize",
+                "rotate",
+                "thumbnail",
+                "watermark"
+            ],
+            "support": {
+                "issues": "https://github.com/Sybio/ImageWorkshop/issues",
+                "source": "https://github.com/Sybio/ImageWorkshop/tree/2.2.0"
+            },
+            "install-path": "../sybio/image-workshop"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

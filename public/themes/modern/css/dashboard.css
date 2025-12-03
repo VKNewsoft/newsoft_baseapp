@@ -1,0 +1,79 @@
+.card-stats {
+	display: flex;
+	justify-content: space-between;
+}
+.card-stats .icon {
+	border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	background: rgba(255,255,255, 0.28);
+}
+p {
+	margin: 0;
+}
+.dataTables_wrapper .pagination {
+	margin-top: 10px !important;
+}
+
+.description .growth {
+	display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.dashboard .card { 
+	/* box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); */
+	box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+	border: 0;
+}
+
+.dashboard table img { 
+	max-width: 42px;
+}
+
+.dashboard table.item img { 
+	max-width: 36px;
+}
+
+.dashboard .card-header {
+	display: flex;
+    justify-content: space-between;
+	align-items: center;
+    background: #FFFFFF;
+    border: 0;
+	padding: 15px 30px 5px;
+	font-weight: normal;
+}
+
+.dashboard .card-header .card-title {
+	font-weight: normal;
+	font-size: 100%;
+}
+
+.dashboard .card-body { 
+	padding: 20px;
+	color: #FFFFFF;
+}
+
+.dashboard .card-footer { 
+	padding: 10px 20px;
+	border-top: none;
+	display: flex;
+	justify-content: space-between;
+}
+.dashboard .card-footer-left {
+	display: flex;
+}
+
+.dashboard table td {
+	vertical-align: middle;
+}
+.card-footer .growth {
+	display: flex;
+}
+table th {
+	white-space: nowrap;
+}

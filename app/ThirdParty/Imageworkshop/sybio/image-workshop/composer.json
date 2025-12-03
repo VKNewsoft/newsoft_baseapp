@@ -1,0 +1,42 @@
+{
+    "name": "sybio/image-workshop",
+    "type": "library",
+    "description": "Powerful PHP class using GD library to work easily with images including layer notion (like Photoshop or GIMP)",
+    "keywords": ["image", "thumbnail", "watermark", "resize", "crop", "rotate", "library", "GD", "class"],
+    "homepage": "http://phpimageworkshop.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Clément Guillemain",
+            "homepage": "http://clementguillemain.fr",
+            "role": "Developer / Freelancer"
+        },
+        {
+            "name": "ImageWorkshop Community",
+            "homepage": "https://github.com/Sybio/ImageWorkshop/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "ext-fileinfo": "*",
+        "ext-gd": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^v2.17.1",
+        "phpunit/phpunit": "^8.5.13",
+        "phpstan/phpstan": "^0.12.59"
+    },
+    "suggest": {
+        "ext-exif": "Allows to read and keep images EXIF data"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPImageWorkshop\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPImageWorkshop\\Tests\\": "tests/"
+        }
+    }
+}

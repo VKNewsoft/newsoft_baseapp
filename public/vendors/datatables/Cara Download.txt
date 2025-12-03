@@ -1,0 +1,25 @@
+## Download
+
+Step 1. Choose a styling framework
+- Bootstrap 5
+Step 2. Select packages
+- DataTables
+Extensions
+- Buttons
+- HTML5 export
+- JSZip
+- pdfmake
+
+Bagian Download (Klik Tab Download)
+- Uncheck Minify
+- Uncheck Concantenate
+
+Klik Download Files
+
+## Penataan Files
+- Copy isi folder DataTables-xxx (css, images. js) ke folder dist.
+- Copy extension (Buttons, JSZip, pdfmake) ke folder extensions
+
+
+
+

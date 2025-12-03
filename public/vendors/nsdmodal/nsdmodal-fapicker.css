@@ -1,0 +1,33 @@
+/**
+* Font Awesome CSS
+* @author Rangga Afriansyah
+* @url https://webdev.id
+* @copyright Rangga Afriansyah
+* @notice You can use this code for personal use only, you are not allowed to republish or to sell !!!.
+*/
+
+a.fapicker-hidden {
+	display: none;
+}
+
+.fapicker-modal .close::before, 
+.fapicker-modal .close::after {
+	position: absolute;
+	top: 10px;
+	left: 5px;
+	width: 13px;
+	height: 3px;
+	content: "";
+	background-color: #FFFFFF;
+	}
+.fapicker-modal .close::before {
+	-ms-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	}
+.fapicker-modal .close::after {
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	}
+.fapicker-modal .close:hover { cursor: pointer; }

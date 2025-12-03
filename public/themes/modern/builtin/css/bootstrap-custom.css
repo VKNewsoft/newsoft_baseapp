@@ -1,0 +1,240 @@
+/**
+	Bootstrap Custom Style
+	Rangga Afriansyah
+	Tahun: 2020 - 2022
+	https://newsoftdev.com
+*/
+
+/* BUTTON */
+.btn-success {
+	/* background: #06bb0c;
+	color: #FFFFFF !important;
+	text-decoration: none !important; */
+}
+.btn-navy {
+	background: #94a3b3;
+    color: #ffffff;
+}
+
+.btn-primary {
+	/* background: #2873d0;
+    color: #FFFFFF; */
+}
+.btn-primary:hover {
+    /* background: #315b9a; */
+}
+.btn-danger {
+	/* background: #ec3f3f;
+    color: #FFFFFF !important;
+	text-decoration: none !important; */
+}
+.btn-xs {
+	font-size: 12px !important;
+    padding: 5px 10px !important;
+}
+.btn-danger:hover {
+	/* background: #c53636; */
+}
+.btn-success:hover {
+	/* background: #0b9810; */
+}
+.btn-dark {
+	/* color: #FFFFFF;
+	background: #3f4a58; */
+}
+.btn-dark:hover {
+    /* background: #2e353e; */
+}
+.btn-inline {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+/*-- BUTTON */
+.form-switch-lg .form-check-input {
+	width: 3em;
+	height: 1.5em;
+}
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+	margin-top: .2em;
+}
+/* Bootbox */
+.bootbox-close-button {
+	border: 0;
+    background: none;
+    font-size: 25px;
+    color: #8c8d91;
+}
+
+.alert-dismissible .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .75rem 1.25rem;
+    color: inherit;
+}
+button.close {
+	/* background-color: transparent; */
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+}
+/*-- Bootbox */
+
+.table>:not(:last-child)>:last-child>* {
+    /* border-bottom-color: #CCCCCC; */
+}
+
+/* ALERT */
+/* .alert {
+	border-radius: 0;
+	padding: 17px 20px;
+} */
+
+small.alert{
+	padding: 5px 15px;
+}
+/* .alert-danger, .bg-danger {
+	color: #ffdede;
+    background: #ff5847 !important;
+}
+.bg-warning {
+	color: #ffdede;
+    background: orange !important;
+}
+.alert-success, .bg-success {
+	background: #56cc66 !important;
+	color: #eaffed;
+}
+.alert-danger a
+,.bg-danger a 
+,.alert-success a
+,.bg-success a
+{
+	color: #1664a5;
+}
+
+.alert-danger a:hover
+,.bg-danger a:hover
+, .alert-success a:hover
+, .bg-success a:hover
+{
+	color: #094d86;
+} */
+
+/* END - ALERT */
+.table-striped tbody tr:nth-of-type(odd) {
+    /* background-color: rgba(144, 144, 144, 0.05); */
+}
+
+.table.table-bordered td, .table.table-bordered th {
+    /* border: 1px solid #e8e8e8; */
+}
+
+.bg-clear {
+	/* background: #FFFFFF; */
+}
+
+.progress-bar {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    /* background-color: #007bff; */
+    transition: width .6s ease;
+}
+
+.btn {
+	display: inline-block;
+	font-size: inherit;
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: middle;
+	transition: all .2s;
+	outline: 0;
+}
+
+.content-wrapper > .card {
+	border: 0;
+	border-radius: 5px;
+	/* background: #FFFFFF; */
+    margin-bottom: 5px; /*Default 30px*/
+    /* box-shadow: 1px 1px 5px rgba(126, 142, 159, 0.1); */
+	box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+.content-wrapper > .card .card-header {
+	background: #FFFFFF;
+	border-bottom: 1px solid #ececec;
+	border-radius: 0;
+	padding: 15px 30px 15px;
+}
+.content-wrapper > .card > .card-body {
+	/* padding: 25px 30px 20px; */
+	padding: 25px 30px 20px;
+}
+
+.content-wrapper > .card .card-title {
+	margin: 0;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.breadcrumb {
+	background: #ffffff;
+    padding: 18px 30px;
+    border-bottom: 1px solid #e9eef3;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+	content: "\f101";
+	font-family: 'Font Awesome 6 Free';
+	font-weight: 900;
+	font-size:10px;
+	margin-top: 5px;
+    color: #999fad;
+}
+
+.breadcrumb a{
+	text-decoration: none;
+}
+.col-form-label {
+	font-weight: 600;
+}
+
+.btn-label-icon {
+	position: relative;
+	display: inline-block;
+}
+
+.form-check-input-md .form-check-input {
+    height: 25px;
+    width: 50px;
+}
+
+.form-check-input-sm .form-check-input {
+    height: 20px;
+    width: 40px;
+}
+
+.form-check-input-xs .form-check-input {
+    height: 15px;
+    width: 27px;
+}
+
+.input-group-text {
+	border-radius: 0;
+}
