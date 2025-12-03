@@ -41,6 +41,16 @@ class Wilayah extends \App\Controllers\BaseController
 		helper(['cookie', 'form']);
 	}
 	
+	/**
+	 * Index - Default page, redirect ke provinsi
+	 * 
+	 * @return \CodeIgniter\HTTP\RedirectResponse
+	 */
+	public function index()
+	{
+		return redirect()->to(base_url('builtin/wilayah/provinsi'));
+	}
+	
 	// ========================================================================
 	// PROVINSI MANAGEMENT
 	// ========================================================================
@@ -93,11 +103,11 @@ class Wilayah extends \App\Controllers\BaseController
 		// Tambahkan action buttons untuk setiap row
 		foreach ($provinsi['data'] as $key => &$val) {
 			$actions = [
-				['type' => 'link', 'href' => $this->moduleURL . '/provinsi/edit?id=' . $val['id_wilayah_propinsi'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
+				['type' => 'link', 'href' => $this->moduleURL . '/editProvinsi?id=' . $val['id_wilayah_propinsi'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
 			];
 			
 			if ($this->hasPermission('delete_own') || $this->hasPermission('delete_all')) {
-				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/provinsi', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['data-action' => 'delete-data', 'id' => $val['id_wilayah_propinsi'], 'data-delete-title' => 'Hapus provinsi: <strong>' . $val['nama_propinsi'] . '</strong> ?']];
+				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/provinsi', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['class' => 'btn-delete-wilayah', 'data-id' => $val['id_wilayah_propinsi'], 'data-name' => $val['nama_propinsi']]];
 			}
 			
 			$val['ignore_btn_action'] = btn_dropdown_actions($actions);
@@ -258,11 +268,11 @@ class Wilayah extends \App\Controllers\BaseController
 		// Tambahkan action buttons untuk setiap row
 		foreach ($kabupaten['data'] as $key => &$val) {
 			$actions = [
-				['type' => 'link', 'href' => $this->moduleURL . '/kabupaten/edit?id=' . $val['id_wilayah_kabupaten'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
+				['type' => 'link', 'href' => $this->moduleURL . '/editKabupaten?id=' . $val['id_wilayah_kabupaten'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
 			];
 			
 			if ($this->hasPermission('delete_own') || $this->hasPermission('delete_all')) {
-				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kabupaten', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['data-action' => 'delete-data', 'id' => $val['id_wilayah_kabupaten'], 'data-delete-title' => 'Hapus kabupaten: <strong>' . $val['nama_kabupaten'] . '</strong> ?']];
+				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kabupaten', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['class' => 'btn-delete-wilayah', 'data-id' => $val['id_wilayah_kabupaten'], 'data-name' => $val['nama_kabupaten']]];
 			}
 			
 			$val['ignore_btn_action'] = btn_dropdown_actions($actions);
@@ -295,7 +305,7 @@ class Wilayah extends \App\Controllers\BaseController
 			
 			// Jika berhasil, redirect ke halaman edit
 			if ($data['message']['status'] == 'ok') {
-				return redirect()->to($this->moduleURL . '/kabupaten/edit?id=' . $data['message']['id']);
+				return redirect()->to($this->moduleURL . '/editKabupaten?id=' . $data['message']['id']);
 			}
 		}
 		
@@ -430,11 +440,11 @@ class Wilayah extends \App\Controllers\BaseController
 		// Tambahkan action buttons untuk setiap row
 		foreach ($kecamatan['data'] as $key => &$val) {
 			$actions = [
-				['type' => 'link', 'href' => $this->moduleURL . '/kecamatan/edit?id=' . $val['id_wilayah_kecamatan'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
+				['type' => 'link', 'href' => $this->moduleURL . '/editKecamatan?id=' . $val['id_wilayah_kecamatan'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
 			];
 			
 			if ($this->hasPermission('delete_own') || $this->hasPermission('delete_all')) {
-				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kecamatan', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['data-action' => 'delete-data', 'id' => $val['id_wilayah_kecamatan'], 'data-delete-title' => 'Hapus kecamatan: <strong>' . $val['nama_kecamatan'] . '</strong> ?']];
+				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kecamatan', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['class' => 'btn-delete-wilayah', 'data-id' => $val['id_wilayah_kecamatan'], 'data-name' => $val['nama_kecamatan']]];
 			}
 			
 			$val['ignore_btn_action'] = btn_dropdown_actions($actions);
@@ -468,7 +478,7 @@ class Wilayah extends \App\Controllers\BaseController
 			
 			// Jika berhasil, redirect ke halaman edit
 			if ($data['message']['status'] == 'ok') {
-				return redirect()->to($this->moduleURL . '/kecamatan/edit?id=' . $data['message']['id']);
+				return redirect()->to($this->moduleURL . '/editKecamatan?id=' . $data['message']['id']);
 			}
 		}
 		
@@ -606,11 +616,11 @@ class Wilayah extends \App\Controllers\BaseController
 		// Tambahkan action buttons untuk setiap row
 		foreach ($kelurahan['data'] as $key => &$val) {
 			$actions = [
-				['type' => 'link', 'href' => $this->moduleURL . '/kelurahan/edit?id=' . $val['id_wilayah_kelurahan'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
+				['type' => 'link', 'href' => $this->moduleURL . '/editKelurahan?id=' . $val['id_wilayah_kelurahan'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit']],
 			];
 			
 			if ($this->hasPermission('delete_own') || $this->hasPermission('delete_all')) {
-				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kelurahan', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['data-action' => 'delete-data', 'id' => $val['id_wilayah_kelurahan'], 'data-delete-title' => 'Hapus kelurahan: <strong>' . $val['nama_kelurahan'] . '</strong> ?']];
+				$actions[] = ['type' => 'form', 'action' => $this->moduleURL . '/kelurahan', 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['class' => 'btn-delete-wilayah', 'data-id' => $val['id_wilayah_kelurahan'], 'data-name' => $val['nama_kelurahan']]];
 			}
 			
 			$val['ignore_btn_action'] = btn_dropdown_actions($actions);
@@ -645,7 +655,7 @@ class Wilayah extends \App\Controllers\BaseController
 			
 			// Jika berhasil, redirect ke halaman edit
 			if ($data['message']['status'] == 'ok') {
-				return redirect()->to($this->moduleURL . '/kelurahan/edit?id=' . $data['message']['id']);
+				return redirect()->to($this->moduleURL . '/editKelurahan?id=' . $data['message']['id']);
 			}
 		}
 		

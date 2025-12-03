@@ -18,6 +18,7 @@ jQuery(document).ready(function () {
 		// Parse column configuration dari hidden span
 		var column = $.parseJSON($('#dataTables-column').html());
 		var $setting = $('#dataTables-setting');
+        var scrolls = $('#dataTables-scrolls').text();
 		var order = "";
 		
 		// Parse additional settings jika ada
@@ -37,6 +38,7 @@ jQuery(document).ready(function () {
 			"processing": true,
 			"serverSide": true,
 			"scrollX": true,
+            "scrollY": scrolls,
 			"order": order,
 			"ajax": {
 				"url": url,
@@ -70,7 +72,46 @@ jQuery(document).ready(function () {
 	// Delete Confirmation Handler
 	// ========================================================================
 	
-	// Handle delete action dengan SweetAlert confirmation
+	// Handle delete action untuk wilayah dengan SweetAlert confirmation
+	$(document).on('click', '.btn-delete-wilayah', function(e) {
+		e.preventDefault();
+		
+		var $form = $(this).closest('form');
+		var dataId = $(this).data('id');
+		var dataName = $(this).data('name');
+		
+		// Show confirmation dialog
+		Swal.fire({
+			title: 'Konfirmasi Hapus',
+			html: 'Apakah Anda yakin ingin menghapus data <strong>' + dataName + '</strong>?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#d33',
+			cancelButtonColor: '#3085d6',
+			confirmButtonText: 'Ya, Hapus!',
+			cancelButtonText: 'Batal'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// Tambahkan input hidden untuk delete
+				$('<input>').attr({
+					type: 'hidden',
+					name: 'delete',
+					value: '1'
+				}).appendTo($form);
+				
+				$('<input>').attr({
+					type: 'hidden',
+					name: 'id',
+					value: dataId
+				}).appendTo($form);
+				
+				// Submit form
+				$form.submit();
+			}
+		});
+	});
+	
+	// Handle delete action dengan SweetAlert confirmation (backward compatibility)
 	$(document).on('click', '[data-action="delete-data"]', function(e) {
 		e.preventDefault();
 		

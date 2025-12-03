@@ -13,7 +13,7 @@
 	// Tombol Tambah
 	echo btn_link([
 		'attr' => ['class' => 'btn btn-success btn-xs'],
-		'url' => current_url() . '/add',
+        'url' => base_url('builtin/wilayah/addProvinsi'),
 		'icon' => 'fa fa-plus',
 		'label' => 'Tambah Provinsi'
 	]);
@@ -67,7 +67,7 @@
 		?>
 		<span id="dataTables-column" style="display:none"><?=json_encode($column_dt)?></span>
 		<span id="dataTables-setting" style="display:none"><?=json_encode($settings)?></span>
-		<span id="dataTables-url" style="display:none"><?=current_url() . '/getDataDT'?></span>
+		<span id="dataTables-url" style="display:none"><?=base_url('builtin/wilayah/getDataProvinsiDT')?></span>
 		<span id="dataTables-scrolls" style="display:none">510</span>
 	</div>
 	</div>

@@ -15,12 +15,15 @@ namespace App\Models\Builtin;
 
 class WilayahModel extends \App\Models\BaseModel
 {
+	protected $request;
+	
 	/**
 	 * Constructor
 	 */
 	public function __construct() 
 	{
 		parent::__construct();
+		$this->request = \Config\Services::request();
 	}
 	
 	// ========================================================================
@@ -39,6 +42,11 @@ class WilayahModel extends \App\Models\BaseModel
 		
 		// Daftar kolom yang diizinkan untuk sorting/searching (whitelist)
 		$allowedColumns = ['id_wilayah_propinsi', 'nama_propinsi'];
+		
+		// Inisialisasi WHERE clause
+		if (empty($where)) {
+			$where = '';
+		}
 		
 		// Proses pencarian (Search)
 		$searchValue = $this->request->getPost('search')['value'] ?? '';
@@ -60,8 +68,20 @@ class WilayahModel extends \App\Models\BaseModel
 			}
 			
 			if (!empty($whereCols)) {
-				$where .= ' AND (' . implode(' OR ', $whereCols) . ')';
+				$searchCondition = '(' . implode(' OR ', $whereCols) . ')';
+				
+				// Jika sudah ada WHERE, tambahkan AND, jika belum tambahkan WHERE
+				if (!empty($where)) {
+					$where .= ' AND ' . $searchCondition;
+				} else {
+					$where = ' WHERE ' . $searchCondition;
+				}
 			}
+		}
+		
+		// Jika masih kosong, set default WHERE 1=1
+		if (empty($where)) {
+			$where = ' WHERE 1 = 1';
 		}
 		
 		// Proses ordering dan limit
@@ -86,15 +106,13 @@ class WilayahModel extends \App\Models\BaseModel
 			$order = " ORDER BY nama_propinsi ASC LIMIT {$start}, {$length}";
 		}
 		
-		$whereClause = $where ?: ' WHERE 1 = 1';
-		
 		// Query untuk menghitung total filtered
-		$sql = "SELECT COUNT(*) as jml FROM core_wilayah_propinsi {$whereClause}";
+		$sql = "SELECT COUNT(*) as jml FROM core_wilayah_propinsi {$where}";
 		$query = $this->db->query($sql)->getRowArray();
 		$totalFiltered = $query['jml'];
 		
 		// Query untuk mengambil data provinsi
-		$sql = "SELECT * FROM core_wilayah_propinsi {$whereClause} {$order}";
+		$sql = "SELECT * FROM core_wilayah_propinsi {$where} {$order}";
 		$data = $this->db->query($sql)->getResultArray();
 		
 		return [

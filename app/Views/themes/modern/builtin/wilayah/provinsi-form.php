@@ -9,7 +9,7 @@
 		// Tombol Kembali
 		echo btn_link([
 			'attr' => ['class' => 'btn btn-light btn-xs mb-3'],
-			'url' => str_replace('/add', '', current_url()),
+            'url' => base_url('builtin/wilayah'),
 			'icon' => 'fa fa-arrow-circle-left',
 			'label' => 'Kembali ke Daftar'
 		]);
@@ -54,9 +54,9 @@
 					<button type="submit" name="submit" value="1" class="btn btn-primary">
 						<i class="fas fa-save"></i> Simpan Data
 					</button>
-					<a href="<?= str_replace('/add', '', current_url()) ?>" class="btn btn-secondary">
-						<i class="fas fa-times"></i> Batal
-					</a>
+                    <a href="<?= base_url('builtin/wilayah') ?>" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
 				</div>
 			</div>
 		</form>
