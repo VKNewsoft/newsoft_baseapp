@@ -184,6 +184,14 @@ class PermissionModel extends \App\Models\BaseModel
 			];
 			
 			$this->db->table('core_module_permission')->insert($dataDb);
+			
+			// Cek jika insert gagal
+			if ($this->db->insertID() == 0) {
+				$error = $this->db->error();
+				if (!empty($error['message'])) {
+					throw new \RuntimeException('Gagal insert permission ' . $namaPermission . ': ' . $error['message']);
+				}
+			}
 		}
 	}
 	
@@ -214,6 +222,14 @@ class PermissionModel extends \App\Models\BaseModel
 			];
 			
 			$this->db->table('core_module_permission')->insert($dataDb);
+			
+			// Cek jika insert gagal
+			if ($this->db->insertID() == 0) {
+				$error = $this->db->error();
+				if (!empty($error['message'])) {
+					throw new \RuntimeException('Gagal insert permission ' . $namaPermission . ': ' . $error['message']);
+				}
+			}
 		}
 	}
 	
@@ -226,18 +242,48 @@ class PermissionModel extends \App\Models\BaseModel
 	{
 		$this->db->transStart();
 		
+		$result = $this->saveDataWithoutTransaction();
+		
+		// Cek dulu apakah saveDataWithoutTransaction() sudah return error
+		if (isset($result['status']) && $result['status'] === 'error') {
+			$this->db->transRollback();
+			return $result;
+		}
+		
+		$this->db->transComplete();
+		
+		if ($this->db->transStatus() == false) {
+			return [
+				'status' => 'error',
+				'message' => 'Data gagal disimpan',
+				'id' => $result['id'] ?? ''
+			];
+		}
+		
+		return $result;
+	}
+	
+	/**
+	 * Simpan data permission tanpa transaction wrapper
+	 * Digunakan ketika dipanggil dari dalam transaction lain (seperti dari ModuleModel)
+	 * 
+	 * @return array Status dan ID permission
+	 */
+	public function saveDataWithoutTransaction() 
+	{
 		$idNew = '';
 		$generatePermission = $this->request->getPost('generate_permission');
 		
 		if ($generatePermission) {
-			if ($generatePermission == 'crud_all') {
-				$this->saveCrud();
-			} elseif ($generatePermission == 'crud_own') {
-				$this->saveCrudOwn();
-			} elseif ($generatePermission == 'crud_all_crud_own') {
-				$this->saveCrud();
-				$this->saveCrudOwn();
-			} else {
+			try {
+				if ($generatePermission == 'crud_all') {
+					$this->saveCrud();
+				} elseif ($generatePermission == 'crud_own') {
+					$this->saveCrudOwn();
+				} elseif ($generatePermission == 'crud_all_crud_own') {
+					$this->saveCrud();
+					$this->saveCrudOwn();
+				} else {
 				// Manual permission
 				$dataDb = [
 					'id_module' => (int) $this->request->getPost('id_module'),
@@ -247,8 +293,18 @@ class PermissionModel extends \App\Models\BaseModel
 				];
 				
 				if (empty($this->request->getPost('id'))) {
+					// Insert new permission
 					$this->db->table('core_module_permission')->insert($dataDb);
 					$idNew = $this->db->insertID();
+					
+					// Cek apakah insert berhasil
+					if (!$idNew || $idNew == 0) {
+						$error = $this->db->error();
+						return [
+							'status' => 'error',
+							'message' => 'Gagal insert permission: ' . ($error['message'] ?? '')
+						];
+					}
 				} else {
 					$this->db->table('core_module_permission')
 						->update($dataDb, ['id_module_permission' => (int) $this->request->getPost('id')]);
@@ -273,19 +329,22 @@ class PermissionModel extends \App\Models\BaseModel
 				}
 				
 				if ($values) {
+					// insertBatch return value bisa berbeda tergantung driver
+					// Lebih aman cek affectedRows() setelah insert
 					$this->db->table('core_role_module_permission')->insertBatch($values);
+					
+					if ($this->db->affectedRows() === 0) {
+						// Tidak fatal, mungkin sudah ada atau batch kosong
+						// Tidak return error
+					}
 				}
 			}
-		}
-		
-		$this->db->transComplete();
-		
-		if ($this->db->transStatus() == false) {
-			return [
-				'status' => 'error',
-				'message' => 'Data gagal disimpan',
-				'id' => $idNew
-			];
+			} catch (\RuntimeException $e) {
+				return [
+					'status' => 'error',
+					'message' => $e->getMessage()
+				];
+			}
 		}
 		
 		return [

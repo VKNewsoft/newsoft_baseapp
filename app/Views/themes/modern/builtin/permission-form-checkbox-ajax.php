@@ -10,7 +10,8 @@ helper('html');
 	<div class="col-sm-12">
 		<label class="form-label">Pilih Permission</label>
 		<?php
-		foreach ($module_permission[$request->getGet('id')] as $val) 
+		$idModule = $_GET['id'] ?? 0;
+		foreach ($module_permission[$idModule] as $val) 
 		{
 			$checkbox['attr']['name'] = 'permission[]';
 			$checkbox['attr']['value'] = $val['id_module_permission'];

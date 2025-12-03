@@ -227,33 +227,70 @@ class ModuleModel extends \App\Models\BaseModel
 			$dataDb[$field] = $this->request->getPost($field);
 		}
 		
-		// Mulai transaction
+		// Mulai transaction untuk module saja
 		$this->db->transStart();
 		
 		// Insert atau Update
 		$idModule = $this->request->getPost('id');
 		
 		if ($idModule) {
-			$save = $this->db->table('core_module')->update($dataDb, ['id_module' => $idModule]);
+			// Update existing module
+			$this->db->table('core_module')->update($dataDb, ['id_module' => $idModule]);
+			
+			// Cek apakah update berhasil mengubah data
+			if ($this->db->affectedRows() === 0) {
+				// Bukan error, hanya tidak ada perubahan data
+				// Tetap lanjutkan untuk generate permission jika diminta
+			}
 		} else {
-			$save = $this->db->table('core_module')->insert($dataDb);
+			// Insert new module
+			$this->db->table('core_module')->insert($dataDb);
+			
+			// CodeIgniter 4 insert() tidak return true/false
+			// Cek langsung insertID() atau error()
 			$idModule = $this->db->insertID();
+			
+			if (!$idModule || $idModule == 0) {
+				$this->db->transRollback();
+				
+				// Ambil error detail jika ada
+				$error = $this->db->error();
+				$errorMsg = !empty($error['message']) ? $error['message'] : 'Gagal menyimpan data module';
+				
+				return [
+					'status' => 'error',
+					'message' => $errorMsg
+				];
+			}
 		}
 		
-		// Generate permission otomatis jika diminta
-		if (!empty($this->request->getPost('generate_permission'))) {
-			$_POST['id_module'] = $idModule;
-			$model = new \App\Models\Builtin\PermissionModel;
-			$model->saveData();
-		}
-		
+		// Commit module dulu sebelum generate permission
 		$this->db->transComplete();
 		
 		if ($this->db->transStatus() === false) {
 			return [
 				'status' => 'error',
-				'message' => 'Data gagal disimpan'
+				'message' => 'Data module gagal disimpan'
 			];
+		}
+		
+		// Generate permission otomatis jika diminta (SETELAH module ter-commit)
+		if (!empty($this->request->getPost('generate_permission'))) {
+			$_POST['id_module'] = $idModule;
+			$model = new \App\Models\Builtin\PermissionModel;
+			
+			// Sekarang gunakan saveData() yang punya transaction sendiri
+			$resultPermission = $model->saveData();
+			
+			// Cek apakah generate permission gagal
+			if (isset($resultPermission['status']) && $resultPermission['status'] === 'error') {
+				// Module sudah tersimpan, tapi permission gagal
+				// Bisa rollback module atau biarkan (tergantung kebutuhan)
+				return [
+					'status' => 'error',
+					'message' => 'Module tersimpan, namun gagal generate permission: ' . ($resultPermission['message'] ?? '')
+				];
+			}
 		}
 		
 		return [
