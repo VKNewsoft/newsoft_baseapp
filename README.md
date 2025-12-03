@@ -12,6 +12,23 @@ Aplikasi ini dikembangkan sebagai _starter kit_ yang dapat digunakan sebagai fon
 > - **CodeIgniter:** versi 4.x  
 > - **Database:** MySQL versi 8.x
 
+---
+
+## **Quick Start**
+
+1. **Clone/Download** project ini
+2. **Jalankan** XAMPP (Apache + MySQL)
+3. **Akses** aplikasi via browser: `http://localhost/newsoft/base_app`
+4. **Sistem otomatis mendeteksi** database belum ada → Redirect ke **Web Installer**
+5. **Isi form** konfigurasi database (default: localhost, root, no password)
+6. **Klik Install** → Tunggu import selesai (34 tabel + 82,000+ data)
+7. **Login** dengan kredensial default
+8. **Done!** 🎉
+
+> 💡 **Tidak perlu terminal/command line** - Semua bisa dilakukan via browser!
+
+---
+
 ## **Fitur Utama**
 
 ### **1. User Management**
@@ -44,62 +61,39 @@ Sistem hak akses dibuat sangat detail: mulai dari lihat, buat, edit, hapus, hing
 
 ## **Instalasi Database**
 
-Database sudah disediakan dalam file `newsoft_base.sql` yang berisi struktur tabel lengkap beserta data awal yang diperlukan untuk menjalankan sistem.
+Database sudah disediakan dalam file `app/Database/newsoft_base.sql` yang berisi:
+- **34 Tabel** struktur database lengkap
+- **82,503+ Data** wilayah Indonesia, bank, user admin, dan konfigurasi awal
 
-### **Cara Install Database**
+### **📖 Panduan Instalasi Lengkap**
 
-Jalankan perintah berikut di root folder project:
+Pilih metode instalasi sesuai kebutuhan Anda:
 
+- **[📘 Panduan Instalasi Database](INSTALLATION.md)** - Tutorial step-by-step lengkap
+- **[🔧 Database Installation Guide](DATABASE_INSTALLATION_GUIDE.md)** - Dokumentasi teknis, troubleshooting, dan FAQ
+
+### **Instalasi Cepat**
+
+**Metode 1: Web Installer (Recommended)** ⭐
+1. Akses aplikasi via browser: `http://localhost/newsoft/base_app`
+2. Sistem otomatis redirect ke installer
+3. Isi form konfigurasi database
+4. Klik "Install Database"
+5. Login dengan kredensial default
+
+**Metode 2: Command Line**
 ```bash
-php import_sql.php
+cd manual_installer
+install.bat    # Windows (interactive)
+# atau
+php import_sql.php    # Manual
 ```
 
-Script ini akan otomatis:
-- Drop database `newsoft_app` jika sudah ada
-- Create database baru
-- Import seluruh struktur tabel dan data dari file SQL
-- Menampilkan progress import secara realtime
+### **Kredensial Default**
 
-Proses import займе sekitar 1-2 menit tergantung spesifikasi server.
-
-### **Verifikasi Database**
-
-Setelah import selesai, jalankan script verifikasi untuk memastikan semua data berhasil diimport:
-
-```bash
-php verify_import.php
-```
-
-Script ini akan menampilkan:
-- Perbandingan jumlah tabel yang diharapkan (34 tabel) vs yang berhasil dibuat
-- Jumlah data pada tabel-tabel penting (users, menu, wilayah, dll)
-- Konfirmasi bahwa database siap digunakan
-
-### **Cek Detail Tabel**
-
-Untuk melihat daftar lengkap semua tabel dengan checklist, jalankan:
-
-```bash
-php check_tables.php
-```
-
-Script ini akan menampilkan:
-- Checklist 34 tabel yang harus ada dari file SQL
-- Status masing-masing tabel (✅ ada / ❌ hilang)
-- Peringatan jika ada tabel yang tidak terimport
-
-### **Data Default**
-
-Setelah instalasi, sistem sudah dilengkapi dengan:
-- **1 Company** data perusahaan default
-- **1 User Admin** dengan kredensial login awal:  
-    - **Username:** `admin`  
-    - **Password:** `123456`
-- **141 Bank** data bank seluruh Indonesia
-- **82,503 Kelurahan** data wilayah lengkap se-Indonesia (Provinsi, Kabupaten, Kecamatan, Kelurahan)
-- **Menu & Role** konfigurasi menu dan hak akses default
-
-Login menggunakan kredensial yang tersedia di database tabel `core_user`.
+Setelah instalasi selesai, login dengan:
+- **Username:** `admin`
+- **Password:** `123456`
 
 ---
 

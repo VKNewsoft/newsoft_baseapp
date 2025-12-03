@@ -12,6 +12,7 @@ class Filters extends BaseConfig
 		'honeypot' => \CodeIgniter\Filters\Honeypot::class,
 		'bootstrap' => \App\Filters\Bootstrap::class,
 		'security' => \App\Filters\SecurityFilter::class,
+		'installer' => \App\Filters\InstallerCheck::class,
 	];
 
 	// Always applied before every request
@@ -19,6 +20,7 @@ class Filters extends BaseConfig
 		'before' => [
 			//'honeypot'
 			// 'csrf',
+			'installer', // Check database first
 			'bootstrap',
 			'security'
 		],

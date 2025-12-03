@@ -16,6 +16,14 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
+
+// Installer routes (bypass filter)
+$routes->group('installer', ['filter' => null], function($routes) {
+    $routes->get('/', 'Installer::index');
+    $routes->post('install', 'Installer::install');
+    $routes->get('success', 'Installer::success');
+});
+
 $routes->get('/', 'Login::index');
 $routes->setDefaultController('Login');
 $routes->get('hrm/crontarik-absen/([0-9]{8})', 'Hrm\Crontarik_absen::index/$1');

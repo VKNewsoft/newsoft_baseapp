@@ -828,7 +828,7 @@ CREATE TABLE `core_user` (
 /*Data for the table `core_user` */
 
 insert  into `core_user`(`id_user`,`id_company`,`id_module`,`access_company`,`email`,`username`,`nama`,`password`,`verified`,`status`,`created`,`avatar`,`tgl_edit`,`id_user_edit`,`isDeleted`,`id_log`) values 
-(1,0,123,'1','admin@payday.indopasifik.co.id','admin','Administrator Payday','$2y$10$6lU9wKRG/4whDsSqk8RdBux1fxjrXz47EbE3A0aIlw5maVgEUp/dS',1,1,'2018-09-20 16:04:35','default_avatar.png',NULL,NULL,0,NULL);
+(1,0,123,'1','admin','admin','Administrator Payday','$2y$10$Dz0j1qgRL/WA7ZK71uf.gOLG8YLmI9DG3Cmtzz.LF2ALfoWodI6WK',1,1,'2025-12-03 15:29:35','default_avatar.png',NULL,NULL,0,NULL);
 
 /*Table structure for table `core_user_device` */
 

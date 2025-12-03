@@ -5,7 +5,7 @@
  * @author VKNewsoft - Newsoft Developer, 2025
  */
 
-$sqlFile = __DIR__ . '/newsoft_base.sql';
+$sqlFile = dirname(__DIR__) . '/app/Database/newsoft_base.sql';
 
 if (!file_exists($sqlFile)) {
     die("❌ File newsoft_base.sql tidak ditemukan!\n");
