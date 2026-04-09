@@ -60,7 +60,7 @@
 				<span id="dataTables-column" style="display:none"><?=json_encode($column_dt)?></span>
 				<span id="dataTables-setting" style="display:none"><?=json_encode($settings)?></span>
 				<span id="dataTables-url" style="display:none"><?=current_url() . '/getDataDT'?></span>
-				<span id="dataTables-scrolls" style="display:none">510</span>
+				<span id="dataTables-scrolls" style="display:none">400</span>
 				<span id="role-form-url" style="display:none"><?=current_url() . '/ajaxForm'?></span>
 				<span id="role-save-url" style="display:none"><?=current_url() . '/ajaxSave'?></span>
 			</div>

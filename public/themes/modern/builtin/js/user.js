@@ -9,7 +9,7 @@ jQuery(document).ready(function () {
 	if ($('#table-result').length) {
 		column = $.parseJSON($('#dataTables-column').html());
 		url = $('#dataTables-url').text();
-		scrolls = window.WDIResultTable ? WDIResultTable.getScrollY('#table-result') : $('#dataTables-scrolls').text();
+		scrolls = $('#dataTables-scrolls').text();
 		
 		 var settings = {
 			"processing": true,

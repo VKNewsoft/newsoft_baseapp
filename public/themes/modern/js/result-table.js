@@ -1,10 +1,12 @@
 window.WDIResultTable = {
 	getScrollY: function(tableSelector) {
 		var fallbackNode = document.getElementById('dataTables-scrolls');
-		var fallback = fallbackNode ? parseInt(fallbackNode.textContent, 10) : 510;
-		if (!fallback || fallback < 260) {
-			fallback = 510;
+		var explicitHeight = fallbackNode ? parseInt(fallbackNode.textContent, 10) : 0;
+		if (explicitHeight && explicitHeight > 0) {
+			return explicitHeight + 'px';
 		}
+
+		var fallback = 510;
 
 		var $table = $(tableSelector);
 		if (!$table.length) {
