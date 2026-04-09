@@ -1,0 +1,148 @@
+.role-page-shell {
+	padding: 0;
+}
+
+.role-page-hero {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 1.5rem;
+	margin-bottom: 1.5rem;
+	padding: 1.75rem 2rem;
+	border-radius: 1rem;
+	background: linear-gradient(135deg, #f5f1e8 0%, #ffffff 58%, #eef5f1 100%);
+	border: 1px solid #e6ded0;
+	box-shadow: 0 18px 40px rgba(112, 92, 61, 0.08);
+}
+
+.role-page-kicker {
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #8d6e3b;
+	margin-bottom: 0.5rem;
+}
+
+.role-page-heading {
+	margin-bottom: 0.5rem;
+	font-weight: 700;
+	color: #243128;
+}
+
+.role-page-copy {
+	max-width: 44rem;
+	color: #5f6b63;
+}
+
+.role-page-actions {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.role-list-card,
+.role-form-card {
+	border: 1px solid #e8ece8;
+	border-radius: 1rem;
+	box-shadow: 0 12px 32px rgba(39, 60, 48, 0.08);
+}
+
+.role-list-toolbar {
+	padding: 1.25rem 1.5rem 1rem;
+	border-bottom: 1px solid #eef1ef;
+	background: linear-gradient(180deg, rgba(245, 248, 246, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.role-table-wrap {
+	padding: 1rem 1.25rem 1.25rem;
+}
+
+.role-modal-form {
+	margin: 0;
+}
+
+.role-modal-intro {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
+	padding: 1rem 1.1rem;
+	margin-bottom: 1.25rem;
+	border-radius: 0.9rem;
+	background: #f7faf7;
+	border: 1px solid #e5ede7;
+}
+
+.role-modal-badge {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 0.9rem;
+	background: linear-gradient(135deg, #3f7a5f 0%, #8ca65b 100%);
+	color: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.1rem;
+	flex-shrink: 0;
+}
+
+.role-modal-title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: #1f2c25;
+}
+
+.role-modal-subtitle {
+	color: #647168;
+	line-height: 1.5;
+}
+
+.role-modal-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem 1.25rem;
+}
+
+.role-modal-field-full {
+	grid-column: 1 / -1;
+}
+
+.role-modal-field .form-label {
+	font-weight: 600;
+	color: #314137;
+	margin-bottom: 0.45rem;
+}
+
+.role-modal-field .form-control,
+.role-modal-field .select2-container .select2-selection--single {
+	border-radius: 0.85rem;
+}
+
+.role-page-form .role-page-submit {
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 1.5rem;
+}
+
+.role-list-card table.dataTable tbody td {
+	vertical-align: top;
+}
+
+.bootbox .role-modal-grid {
+	grid-template-columns: 1fr;
+}
+
+.bootbox .role-modal-intro {
+	margin-bottom: 1rem;
+}
+
+@media (max-width: 991px) {
+	.role-page-hero {
+		padding: 1.25rem;
+		flex-direction: column;
+	}
+
+	.role-modal-grid {
+		grid-template-columns: 1fr;
+	}
+}

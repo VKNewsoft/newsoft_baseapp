@@ -87,8 +87,19 @@ class RoleModel extends \App\Modules\Common\Models\BaseModel
 	{
 		$idRole = $this->request->getGet('id');
 		
+		return $this->getRoleById($idRole);
+	}
+
+	/**
+	 * Mendapatkan data role berdasarkan ID
+	 *
+	 * @param int|string|null $idRole
+	 * @return array
+	 */
+	public function getRoleById($idRole)
+	{
 		$result = $this->db->table('core_role')
-			->where('id_role', $idRole)
+			->where('id_role', (int) $idRole)
 			->get()
 			->getRowArray();
 		
