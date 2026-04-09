@@ -15,27 +15,68 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * Router Setup
  * --------------------------------------------------------------------
  */
-$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultNamespace('');
 
 // Installer routes (bypass filter)
 $routes->group('installer', ['filter' => null], function($routes) {
-    $routes->get('/', 'Installer::index');
-    $routes->post('install', 'Installer::install');
-    $routes->get('success', 'Installer::success');
+    $routes->get('/', '\App\Modules\Installer\Controllers\Installer::index');
+    $routes->post('install', '\App\Modules\Installer\Controllers\Installer::install');
+    $routes->get('success', '\App\Modules\Installer\Controllers\Installer::success');
 });
 
-$routes->get('/', 'Login::index');
-$routes->setDefaultController('Login');
-$routes->get('hrm/crontarik-absen/([0-9]{8})', 'Hrm\Crontarik_absen::index/$1');
-$routes->get('hrm/crontarik-absen', 'Hrm\Crontarik_absen::index'); // tanpa parameter
-$routes->get('hrm/crontarik-fid/([0-9]{8})/(:any)', 'Hrm\Crontarik_fid::index/$1/$2'); // dengan parameter tambahan
-$routes->get('hrm/crontarik-fid/([0-9]{8})', 'Hrm\Crontarik_fid::index/$1');
-$routes->get('hrm/crontarik-fid', 'Hrm\Crontarik_fid::index'); // tanpa parameter
-$routes->get('hrm/compress-images', 'Hrm\Compress_image::compressLeavePictures');
+$moduleControllers = [
+	'login' => '\App\Modules\Login\Controllers\Login',
+	'welcome' => '\App\Modules\Welcome\Controllers\Welcome',
+	'dashboard' => '\App\Modules\Dashboard\Controllers\Dashboard',
+	'company' => '\App\Modules\Company\Controllers\Company',
+	'filepicker' => '\App\Modules\Filepicker\Controllers\Filepicker',
+	'identitas' => '\App\Modules\Identitas\Controllers\Identitas',
+	'midtrans' => '\App\Modules\Midtrans\Controllers\Midtrans',
+	'recovery' => '\App\Modules\Recovery\Controllers\Recovery',
+	'register' => '\App\Modules\Register\Controllers\Register',
+	'securitymonitor' => '\App\Modules\SecurityMonitor\Controllers\SecurityMonitor',
+	'builtin/menu' => '\App\Modules\Builtin\Controllers\Menu',
+	'builtin/menu-role' => '\App\Modules\Builtin\Controllers\Menu_role',
+	'builtin/module' => '\App\Modules\Builtin\Controllers\Module',
+	'builtin/module-role' => '\App\Modules\Builtin\Controllers\Module_role',
+	'builtin/permission' => '\App\Modules\Builtin\Controllers\Permission',
+	'builtin/qrscan' => '\App\Modules\Builtin\Controllers\Qrscan',
+	'builtin/role' => '\App\Modules\Builtin\Controllers\Role',
+	'builtin/role-permission' => '\App\Modules\Builtin\Controllers\Role_permission',
+	'builtin/setting-app' => '\App\Modules\Builtin\Controllers\Setting_app',
+	'builtin/setting-layout' => '\App\Modules\Builtin\Controllers\Setting_layout',
+	'builtin/setting-registrasi' => '\App\Modules\Builtin\Controllers\Setting_registrasi',
+	'builtin/user' => '\App\Modules\Builtin\Controllers\User',
+	'builtin/user-role' => '\App\Modules\Builtin\Controllers\User_role',
+	'wilayah' => '\App\Modules\Builtin\Controllers\Wilayah',
+];
+
+$routes->get('/', '\App\Modules\Login\Controllers\Login::index');
+
+foreach ($moduleControllers as $uri => $controller) {
+	$routes->add($uri, $controller . '::index');
+	$routes->add($uri . '/(:segment)', $controller . '::$1');
+	$routes->add($uri . '/(:segment)/(:any)', $controller . '::$1/$2');
+	$routes->add($uri . '/(:segment)/(:any)/(:any)', $controller . '::$1/$2/$3');
+	$routes->add($uri . '/(:segment)/(:any)/(:any)/(:any)', $controller . '::$1/$2/$3/$4');
+	$routes->add($uri . '/(:segment)/(:any)/(:any)/(:any)/(:any)', $controller . '::$1/$2/$3/$4/$5');
+}
+
+$routes->add('security-monitor', '\App\Modules\SecurityMonitor\Controllers\SecurityMonitor::index');
+$routes->add('security-monitor/(:segment)', '\App\Modules\SecurityMonitor\Controllers\SecurityMonitor::$1');
+$routes->add('security-monitor/(:segment)/(:any)', '\App\Modules\SecurityMonitor\Controllers\SecurityMonitor::$1/$2');
+$routes->add('security-monitor/(:segment)/(:any)/(:any)', '\App\Modules\SecurityMonitor\Controllers\SecurityMonitor::$1/$2/$3');
+
+$routes->add('builtin/wilayah', '\App\Modules\Builtin\Controllers\Wilayah::index');
+$routes->add('builtin/wilayah/(:segment)', '\App\Modules\Builtin\Controllers\Wilayah::$1');
+$routes->add('builtin/wilayah/(:segment)/(:any)', '\App\Modules\Builtin\Controllers\Wilayah::$1/$2');
+$routes->add('builtin/wilayah/(:segment)/(:any)/(:any)', '\App\Modules\Builtin\Controllers\Wilayah::$1/$2/$3');
+
+$routes->setDefaultController('\App\Modules\Login\Controllers\Login');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(true);
 $routes->set404Override();
-$routes->setAutoRoute(true);
+$routes->setAutoRoute(false);
 
 /**
  * --------------------------------------------------------------------
@@ -62,6 +103,10 @@ $routes->setTranslateURIDashes(true);
  * You will have access to the $routes object within that file without
  * needing to reload it.
  */
+foreach (glob(APPPATH . 'Modules/*/Config/Routes.php') ?: [] as $moduleRoutes) {
+	require $moduleRoutes;
+}
+
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php'))
 {
 	require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
