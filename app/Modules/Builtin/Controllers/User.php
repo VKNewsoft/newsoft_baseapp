@@ -17,11 +17,14 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		
 		parent::__construct();
 		
+		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
+
 		$this->model = new UserModel;	
 		$this->formValidation =  \Config\Services::validation();
 		$this->data['site_title'] = 'Halaman Profil';
 		
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/result-table.js');
+		$this->addJs($this->config->baseURL . 'public/themes/modern/js/result-table.js' . $resultTableVersion);
 		$this->addJs($this->config->baseURL . 'public/themes/modern/builtin/js/user.js');
 		$this->addJs($this->config->baseURL . 'public/themes/modern/builtin/js/image-upload.js');
 		
@@ -30,7 +33,7 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
 		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/css/image-upload.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/css/result-page.css' );
+		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/css/result-page.css' . $resultPageVersion );
 		
 		if ($this->request->getGet('mobile') == 'true') {
 			$this->addJs($this->config->baseURL . 'public/themes/modern/builtin/js/user-mobile.js');

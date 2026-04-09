@@ -15,6 +15,8 @@ class Permission extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() {
 		
 		parent::__construct();
+		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
 		// $this->mustLoggedIn();
 		
 		$this->model = new PermissionModel;	
@@ -25,9 +27,9 @@ class Permission extends \App\Modules\Common\Controllers\BaseController
 		$this->addJs( base_url() . '/public/vendors/jquery.select2/js/select2.full.min.js' );
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
-		$this->addJs( base_url() . '/public/themes/modern/js/result-table.js' );
+		$this->addJs( base_url() . '/public/themes/modern/js/result-table.js' . $resultTableVersion );
 		$this->addJs( base_url() . '/public/themes/modern/builtin/js/permission.js' );
-		$this->addStyle( base_url() . '/public/themes/modern/css/result-page.css' );
+		$this->addStyle( base_url() . '/public/themes/modern/css/result-page.css' . $resultPageVersion );
 		
 		helper(['cookie', 'form']);
 	}
