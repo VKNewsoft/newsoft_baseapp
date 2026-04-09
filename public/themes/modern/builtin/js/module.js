@@ -26,7 +26,7 @@ $(document).ready(function() {
 	if ($('#table-result').length) {
 		column = $.parseJSON($('#dataTables-column').html());
 		url = $('#dataTables-url').text();
-		scrolls = $('#dataTables-scrolls').text();
+		scrolls = window.WDIResultTable ? WDIResultTable.getScrollY('#table-result') : $('#dataTables-scrolls').text();
 		
 		 var settings = {
 			"processing": true,
@@ -52,6 +52,10 @@ $(document).ready(function() {
 		}
 		
 		dataTables =  $('#table-result').DataTable( settings );
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+			WDIResultTable.bindResize(dataTables, '#table-result', 'module-table');
+		}
 	}
 	
 	$('#table-result').delegate('.btn-delete', 'click', function(e) {

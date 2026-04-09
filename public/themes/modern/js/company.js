@@ -16,6 +16,7 @@ jQuery(document).ready(function () {
 			"processing": true,
 			"serverSide": true,
 			"scrollX": true,
+			"scrollY": window.WDIResultTable ? WDIResultTable.getScrollY('#table-data') : ($('#dataTables-scrolls').text() || '510'),
 			"ajax": {
 				"url": url,
 				"type": "POST"
@@ -32,6 +33,10 @@ jQuery(document).ready(function () {
 		}
 		
 		dataTables =  $('#table-data').DataTable( settings );
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-data');
+			WDIResultTable.bindResize(dataTables, '#table-data', 'company-table');
+		}
 	}
 		
 	$('body').delegate('.btn-edit', 'click', function(e) {

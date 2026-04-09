@@ -25,7 +25,9 @@ class Permission extends \App\Modules\Common\Controllers\BaseController
 		$this->addJs( base_url() . '/public/vendors/jquery.select2/js/select2.full.min.js' );
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
+		$this->addJs( base_url() . '/public/themes/modern/js/result-table.js' );
 		$this->addJs( base_url() . '/public/themes/modern/builtin/js/permission.js' );
+		$this->addStyle( base_url() . '/public/themes/modern/css/result-page.css' );
 		
 		helper(['cookie', 'form']);
 	}

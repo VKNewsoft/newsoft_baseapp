@@ -19,7 +19,9 @@ class Role_permission extends \App\Modules\Common\Controllers\BaseController
 		$this->model = new RolePermissionModel;	
 		$this->data['site_title'] = 'Halaman Role';
 		
+		$this->addJs(base_url() . '/public/themes/modern/js/result-table.js');
 		$this->addJs(base_url() . '/public/themes/modern/builtin/js/role-permission.js');
+		$this->addStyle(base_url() . '/public/themes/modern/css/result-page.css');
 		
 		helper(['cookie', 'form']);
 	}

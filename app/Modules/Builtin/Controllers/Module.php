@@ -60,7 +60,9 @@ class Module extends \App\Modules\Common\Controllers\BaseController
 		parent::__construct();
 		$this->model = new ModuleModel;	
 		$this->data['site_title'] = 'Module';
+		$this->addJs ($this->config->baseURL . 'public/themes/modern/js/result-table.js');
 		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/module.js');
+		$this->addStyle ($this->config->baseURL . 'public/themes/modern/css/result-page.css');
 	}
 	
 	public function index()

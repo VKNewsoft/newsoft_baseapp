@@ -21,8 +21,10 @@ class Company extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
+		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/result-table.js');
 		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/wilayah.js');
 		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/company.js');
+		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/css/result-page.css');
 	}
 	
 	public function index()

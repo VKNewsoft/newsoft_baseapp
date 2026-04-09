@@ -55,7 +55,7 @@ jQuery(document).ready(function () {
 	if ($('#table-result').length) {
 		column = $.parseJSON($('#dataTables-column').html());
 		url = $('#dataTables-url').text();
-		scrolls = $('#dataTables-scrolls').text();
+		scrolls = window.WDIResultTable ? WDIResultTable.getScrollY('#table-result') : $('#dataTables-scrolls').text();
 		
 		 var settings = {
 			"processing": true,
@@ -81,6 +81,10 @@ jQuery(document).ready(function () {
 		}
 		
 		dataTables =  $('#table-result').DataTable( settings );
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+			WDIResultTable.bindResize(dataTables, '#table-result', 'menu-role-table');
+		}
 	}
 	
 	$('#table-result').delegate('.btn-edit', 'click', function(e) {

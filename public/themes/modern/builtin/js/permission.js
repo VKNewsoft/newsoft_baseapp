@@ -14,7 +14,7 @@ jQuery(document).ready(function () {
 	
 	const column = $.parseJSON($('#dataTables-column').html());
 	const url = $('#dataTables-url').text();
-	scrolls = $('#dataTables-scrolls').text();
+	scrolls = window.WDIResultTable ? WDIResultTable.getScrollY('#table-result') : $('#dataTables-scrolls').text();
 	
 	const settings = {
         "processing": true,
@@ -37,6 +37,10 @@ jQuery(document).ready(function () {
 	}
 	
 	const dataTables =  $('#table-result').DataTable( settings );
+	if (window.WDIResultTable) {
+		WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+		WDIResultTable.bindResize(dataTables, '#table-result', 'permission-table');
+	}
 	
 	$('body').delegate('.edit', 'click', function(e) {
 		e.preventDefault;

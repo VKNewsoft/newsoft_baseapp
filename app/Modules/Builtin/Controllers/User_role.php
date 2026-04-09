@@ -15,7 +15,9 @@ class User_role extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() {
 		
 		parent::__construct();
+		$this->addJs ($this->config->baseURL . 'public/themes/modern/js/result-table.js');
 		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/user-role.js');
+		$this->addStyle ($this->config->baseURL . 'public/themes/modern/css/result-page.css');
 		$this->addStyle ($this->config->baseURL . 'public/vendors/wdi/wdi-loader.css');
 		
 		$this->model = new UserRoleModel;	
