@@ -62,7 +62,6 @@ public/slip/*
 public/absensi/*
 public/leavepicture/*
 public/mobile_absensi/*
-public/images/*
 !public/tmp/index.html
 
 php_errors.log

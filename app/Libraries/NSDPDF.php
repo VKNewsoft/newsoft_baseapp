@@ -10,7 +10,7 @@ class NSDPDF extends \TCPDF {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->model = new \App\Models\BaseModel;
+		$this->model = new \App\Modules\Common\Models\BaseModel;
 	}
 	
 	//Page header
