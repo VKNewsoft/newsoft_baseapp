@@ -2,32 +2,206 @@
 <?php helper('html'); ?>
 
 <style>
+.blocked-shell {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+.blocked-overview {
+	background: linear-gradient(135deg, #f8fbff 0%, #ffffff 55%, #eef4ff 100%);
+	border: 1px solid var(--border);
+	border-radius: calc(var(--radius) + 4px);
+	padding: 1.5rem;
+	box-shadow: var(--shadow-sm);
+}
+.blocked-overview-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.95fr);
+	gap: 1rem;
+	align-items: stretch;
+}
+.blocked-title {
+	display: flex;
+	align-items: flex-start;
+	gap: 1rem;
+}
+.blocked-title-icon,
+.blocked-panel-icon,
+.stat-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 14px;
+}
+.blocked-title-icon {
+	width: 56px;
+	height: 56px;
+	font-size: 1.5rem;
+	background: rgba(220, 38, 38, 0.1);
+	color: #dc2626;
+	flex-shrink: 0;
+}
+.blocked-headline {
+	font-size: 1.7rem;
+	font-weight: 700;
+	line-height: 1.1;
+	margin-bottom: 0.35rem;
+}
+.blocked-points {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.75rem;
+	margin-top: 1.2rem;
+}
+.blocked-point {
+	padding: 0.9rem 1rem;
+	border-radius: 14px;
+	border: 1px solid rgba(148, 163, 184, 0.18);
+	background: rgba(255, 255, 255, 0.88);
+}
+.blocked-point-label {
+	display: block;
+	font-size: 0.78rem;
+	color: var(--bs-secondary-color, #6b7280);
+	margin-bottom: 0.35rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.blocked-point-value {
+	font-size: 1rem;
+	font-weight: 700;
+}
+.blocked-side-panel {
+	padding: 1.25rem;
+	background: #ffffff;
+	border: 1px solid rgba(37, 99, 235, 0.12);
+	border-radius: 18px;
+	box-shadow: var(--shadow-sm);
+	height: 100%;
+}
+.blocked-panel-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+.blocked-panel-icon {
+	width: 48px;
+	height: 48px;
+	font-size: 1.2rem;
+	background: rgba(37, 99, 235, 0.12);
+	color: var(--primary);
+}
+.blocked-status-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.45rem 0.8rem;
+	border-radius: 999px;
+	background: rgba(34, 197, 94, 0.12);
+	color: #15803d;
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+.blocked-status-chip::before {
+	content: "";
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+}
 .blocked-card {
-	border-radius: var(--radius);
+	border-radius: calc(var(--radius) + 2px);
 	border: 1px solid var(--border);
 	transition: var(--transition);
 	animation: fadeIn 0.4s ease;
+	box-shadow: var(--shadow-sm);
 }
 .blocked-card:hover {
 	box-shadow: var(--shadow-md);
 }
+.panel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+.filter-wrap {
+	padding: 1rem 1.1rem;
+	border-radius: 16px;
+	background: #f8fafc;
+	border: 1px solid rgba(148, 163, 184, 0.14);
+}
+.search-input-group {
+	position: relative;
+}
+.search-input-group .form-control {
+	padding-left: 2.8rem;
+	height: 48px;
+	border-radius: 12px;
+}
+.search-input-group .search-icon {
+	position: absolute;
+	left: 0.95rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--bs-secondary-color, #64748b);
+	z-index: 4;
+}
+.stat-icon {
+	width: 54px;
+	height: 54px;
+	border-radius: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.stat-card {
+	min-height: 156px;
+}
+.stat-note {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.3rem 0.6rem;
+	border-radius: 999px;
+	background: var(--bg-secondary);
+	color: var(--bs-secondary-color, #64748b);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
 .ip-badge {
-	padding: 0.5em 0.8em;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.45rem 0.75rem;
 	font-family: 'Courier New', monospace;
 	font-weight: 600;
-	background: #fee2e2;
+	background: #fff1f2;
 	color: #991b1b;
-	border-radius: 6px;
+	border-radius: 10px;
 }
 .action-btn {
 	transition: all 0.2s ease;
+	border-radius: 10px;
 }
 .action-btn:hover {
-	transform: scale(1.05);
+	transform: translateY(-1px);
 }
-.search-card {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
+.blocked-table thead th {
+	font-size: 0.76rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--bs-secondary-color, #64748b);
+	background: #f8fafc;
+	border-bottom-width: 1px;
+}
+.blocked-table tbody td {
+	padding-top: 0.95rem;
+	padding-bottom: 0.95rem;
+	vertical-align: middle;
 }
 .pagination {
 	margin-bottom: 0;
@@ -70,105 +244,194 @@
 .pagination .page-link i {
 	font-size: 0.85rem;
 }
+@media (max-width: 991.98px) {
+	.blocked-overview-grid,
+	.blocked-points {
+		grid-template-columns: 1fr;
+	}
+}
+@media (max-width: 767.98px) {
+	.blocked-overview {
+		padding: 1.15rem;
+	}
+	.blocked-headline {
+		font-size: 1.4rem;
+	}
+	.blocked-table {
+		min-width: 760px;
+	}
+}
 </style>
 
 <div class="container-fluid">
-	<!-- Header with Back Button -->
-	<div class="d-flex justify-content-between align-items-center mb-4">
-		<div>
-			<h4 class="mb-1">
-				<i class="bi bi-shield-slash text-danger me-2"></i>Blocked IP Addresses
-			</h4>
-			<p class="text-muted mb-0">Manage and monitor blocked IP addresses</p>
+	<div class="blocked-shell">
+		<div class="blocked-overview">
+			<div class="blocked-overview-grid">
+				<div>
+					<div class="blocked-title">
+						<div class="blocked-title-icon">
+							<i class="bi bi-shield-slash"></i>
+						</div>
+						<div>
+							<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+								<span class="badge text-bg-light border text-primary">Access Control</span>
+								<span class="blocked-status-chip">Protection Active</span>
+							</div>
+							<h1 class="blocked-headline">Blocked IP Addresses</h1>
+							<p class="text-muted mb-0">Kelola IP yang sedang diblok dengan tampilan tabel yang lebih bersih, cepat dipindai, dan tetap nyaman dipakai di layar kecil.</p>
+						</div>
+					</div>
+					<div class="blocked-points">
+						<div class="blocked-point">
+							<span class="blocked-point-label">Review</span>
+							<div class="blocked-point-value">Blocked list overview</div>
+						</div>
+						<div class="blocked-point">
+							<span class="blocked-point-label">Filter</span>
+							<div class="blocked-point-value">Search by IP address</div>
+						</div>
+						<div class="blocked-point">
+							<span class="blocked-point-label">Action</span>
+							<div class="blocked-point-value">Manual unblock control</div>
+						</div>
+					</div>
+				</div>
+				<div class="blocked-side-panel">
+					<div class="blocked-panel-top">
+						<div>
+							<small class="text-muted d-block mb-1">Navigation</small>
+							<h5 class="mb-1">Back to Dashboard</h5>
+							<p class="text-muted mb-0 small">Kembali ke ringkasan monitor untuk melihat timeline serangan dan statistik utama.</p>
+						</div>
+						<div class="blocked-panel-icon">
+							<i class="bi bi-arrow-left-right"></i>
+						</div>
+					</div>
+					<a href="<?= base_url('securitymonitor') ?>" class="btn btn-outline-secondary w-100">
+						<i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+					</a>
+				</div>
+			</div>
 		</div>
-		<a href="<?= base_url('securitymonitor') ?>" class="btn btn-outline-secondary">
-			<i class="bi bi-arrow-left me-2"></i>Back to Dashboard
-		</a>
-	</div>
 
-	<!-- Search Card -->
-	<div class="row g-3 mb-3">
+		<div class="row g-3">
 		<div class="col-12">
-			<div class="card blocked-card border-0 shadow-sm">
+			<div class="card blocked-card border-0">
 				<div class="card-body">
-					<form method="GET" action="<?= base_url('securitymonitor/blocked') ?>" class="row g-3 align-items-end">
+					<form method="GET" action="<?= base_url('securitymonitor/blocked') ?>" class="filter-wrap">
+						<div class="panel-header mb-3">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-search text-primary me-2"></i>Search Blocked IP</h5>
+								<small class="text-muted">Filter daftar berdasarkan alamat IP tanpa mengubah flow pencarian yang ada.</small>
+							</div>
+							<?php if ($search): ?>
+							<span class="badge bg-info">Keyword: "<?= esc($search) ?>"</span>
+							<?php endif; ?>
+						</div>
+						<div class="row g-3 align-items-end">
 						<div class="col-md-8">
 							<label class="form-label small text-muted mb-1">
 								<i class="bi bi-search me-1"></i>Search IP Address
 							</label>
-							<input 
-								type="text" 
-								name="search" 
-								class="form-control form-control-lg" 
-								placeholder="Enter IP address (e.g., 192.168.1.1)" 
-								value="<?= esc($search) ?>"
-								pattern="^(?:[0-9]{1,3}\.){0,3}[0-9]{0,3}$"
-							>
+							<div class="search-input-group">
+								<i class="bi bi-search search-icon"></i>
+								<input 
+									type="text" 
+									name="search" 
+									class="form-control" 
+									placeholder="Enter IP address (e.g., 192.168.1.1)" 
+									value="<?= esc($search) ?>"
+									pattern="^(?:[0-9]{1,3}\.){0,3}[0-9]{0,3}$"
+								>
+							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="d-flex gap-2">
-								<button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+								<button type="submit" class="btn btn-primary flex-grow-1" style="height:48px;">
 									<i class="bi bi-search me-2"></i>Search
 								</button>
 								<?php if ($search): ?>
-								<a href="<?= base_url('securitymonitor/blocked') ?>" class="btn btn-outline-secondary btn-lg">
+								<a href="<?= base_url('securitymonitor/blocked') ?>" class="btn btn-outline-secondary" style="height:48px; width:48px; display:inline-flex; align-items:center; justify-content:center;">
 									<i class="bi bi-x-circle"></i>
 								</a>
 								<?php endif; ?>
 							</div>
 						</div>
+						</div>
 					</form>
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
 
-	<!-- Stats -->
-	<div class="row g-3 mb-3">
+		<div class="row g-3">
 		<div class="col-md-4">
-			<div class="card blocked-card border-0 shadow-sm">
-				<div class="card-body text-center py-4">
-					<div class="stat-icon bg-danger bg-opacity-10 text-danger mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+			<div class="card blocked-card stat-card border-0">
+				<div class="card-body d-flex flex-column">
+					<div class="d-flex justify-content-between align-items-start mb-3">
+						<div>
+							<p class="text-muted mb-1 small">Total Blocked IPs</p>
+							<h3 class="fw-bold mb-1"><?= $pager->getTotal() ?></h3>
+						</div>
+						<div class="stat-icon bg-danger bg-opacity-10 text-danger">
 						<i class="bi bi-ban fs-3"></i>
 					</div>
-					<h3 class="fw-bold mb-1"><?= $pager->getTotal() ?></h3>
-					<p class="text-muted mb-0 small">Total Blocked IPs</p>
+					</div>
+					<div class="mt-auto">
+						<span class="stat-note"><i class="bi bi-database"></i>Stored entries</span>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
-			<div class="card blocked-card border-0 shadow-sm">
-				<div class="card-body text-center py-4">
-					<div class="stat-icon bg-warning bg-opacity-10 text-warning mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+			<div class="card blocked-card stat-card border-0">
+				<div class="card-body d-flex flex-column">
+					<div class="d-flex justify-content-between align-items-start mb-3">
+						<div>
+							<p class="text-muted mb-1 small">Showing on This Page</p>
+							<h3 class="fw-bold mb-1"><?= count($blocked_ips) ?></h3>
+						</div>
+						<div class="stat-icon bg-warning bg-opacity-10 text-warning">
 						<i class="bi bi-clock-history fs-3"></i>
 					</div>
-					<h3 class="fw-bold mb-1"><?= count($blocked_ips) ?></h3>
-					<p class="text-muted mb-0 small">Showing on This Page</p>
+					</div>
+					<div class="mt-auto">
+						<span class="stat-note"><i class="bi bi-layout-text-window"></i>Current pagination</span>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
-			<div class="card blocked-card border-0 shadow-sm">
-				<div class="card-body text-center py-4">
-					<div class="stat-icon bg-success bg-opacity-10 text-success mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+			<div class="card blocked-card stat-card border-0">
+				<div class="card-body d-flex flex-column">
+					<div class="d-flex justify-content-between align-items-start mb-3">
+						<div>
+							<p class="text-muted mb-1 small">Protection Status</p>
+							<h3 class="fw-bold mb-1">Active</h3>
+						</div>
+						<div class="stat-icon bg-success bg-opacity-10 text-success">
 						<i class="bi bi-shield-check fs-3"></i>
 					</div>
-					<h3 class="fw-bold mb-1">Active</h3>
-					<p class="text-muted mb-0 small">Protection Status</p>
+					</div>
+					<div class="mt-auto">
+						<span class="stat-note"><i class="bi bi-check2-circle"></i>Blocking enabled</span>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
 
-	<!-- Blocked IPs Table -->
-	<div class="row g-3">
+		<div class="row g-3">
 		<div class="col-12">
-			<div class="card blocked-card border-0 shadow-sm">
+			<div class="card blocked-card border-0">
 				<div class="card-header bg-white border-bottom">
-					<div class="d-flex justify-content-between align-items-center">
-						<h5 class="mb-0">
-							<i class="bi bi-list-ul text-primary me-2"></i>Blocked IP List
-						</h5>
+					<div class="panel-header">
+						<div>
+							<h5 class="mb-1">
+								<i class="bi bi-list-ul text-primary me-2"></i>Blocked IP List
+							</h5>
+							<small class="text-muted">Tabel daftar blokir dengan fokus ke keterbacaan dan aksi unblock yang cepat.</small>
+						</div>
 						<?php if ($search): ?>
 						<span class="badge bg-info">Search results for: "<?= esc($search) ?>"</span>
 						<?php endif; ?>
@@ -176,7 +439,7 @@
 				</div>
 				<div class="card-body p-0">
 					<div class="table-responsive">
-						<table class="table table-hover mb-0 align-middle">
+						<table class="table table-hover mb-0 align-middle blocked-table">
 							<thead class="table-light">
 								<tr>
 									<th style="width: 60px;">#</th>
@@ -256,6 +519,7 @@
 				</div>
 				<?php endif; ?>
 			</div>
+		</div>
 		</div>
 	</div>
 </div>
