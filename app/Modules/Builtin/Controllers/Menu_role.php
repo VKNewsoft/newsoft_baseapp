@@ -18,11 +18,12 @@ class Menu_role extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() 
 	{
 		parent::__construct();
-		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
-		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/result-table.js' . $resultTableVersion);
-		$this->addJs($this->config->baseURL . 'public/themes/modern/builtin/js/menu-role.js');
-		$this->addStyle($this->config->baseURL . 'public/themes/modern/css/result-page.css' . $resultPageVersion);
+		$resultPageVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/result-table.js');
+		// HMVC asset load: DataTable shared dari Common, interaksi menu-role tetap pakai script builtin shared.
+		$this->addJs($this->commonAsset('js/result-table.js') . $resultTableVersion);
+		$this->addJs($this->commonAsset('builtin/js/menu-role.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/menu-role.js'));
+		$this->addStyle($this->commonAsset('css/result-page.css') . $resultPageVersion);
 		$this->addStyle($this->config->baseURL . 'public/vendors/wdi/wdi-loader.css');
 
 		$this->model = new MenuRoleModel;	

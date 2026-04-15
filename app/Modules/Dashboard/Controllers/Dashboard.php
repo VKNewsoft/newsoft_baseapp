@@ -14,8 +14,8 @@ class Dashboard extends \App\Modules\Common\Controllers\BaseController
 	public function __construct()
 	{
 		parent::__construct();
-		// Minimal assets for simple static dashboard (optional)
-		$this->addStyle($this->config->baseURL . 'public/themes/modern/css/dashboard.css');
+		// HMVC asset load: dashboard stylesheet tetap lokal module agar tidak bergantung ke path legacy.
+		$this->addStyle($this->moduleAsset('css/dashboard.css') . '?v=' . @filemtime(APPPATH . 'Modules/Dashboard/Assets/css/dashboard.css'));
 	}
 
 	public function index()

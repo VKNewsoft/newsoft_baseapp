@@ -38,7 +38,7 @@
 							}
 							?>	
 									</ul>
-									<input type="hidden" name="color_scheme" id="input-color-scheme" value="<?=@set_value('logo_background_color', $color_scheme)?>">
+									<input type="hidden" name="color_scheme" id="input-color-scheme" value="<?=@set_value('color_scheme', $color_scheme)?>">
 									<div class="form-text">Pilih warna utama tampilan admin agar header, panel, dan aksen UI tetap konsisten.</div>
 								</div>
 								<div class="col-md-6">

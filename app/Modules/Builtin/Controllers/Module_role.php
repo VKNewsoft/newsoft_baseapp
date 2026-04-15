@@ -15,7 +15,8 @@ class Module_role extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() {
 		
 		parent::__construct();
-		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/module-role.js');
+		// HMVC asset load: popup assignment module-role pakai script shared builtin tanpa path legacy.
+		$this->addJs($this->commonAsset('builtin/js/module-role.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/module-role.js'));
 		$this->addStyle($this->config->baseURL . 'public/vendors/wdi/wdi-loader.css');
 		
 		$this->model = new ModuleRoleModel;	

@@ -36,8 +36,8 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 		// Set page title
 		$this->data['site_title'] = 'Login ke akun Anda';
 		
-		// Load JavaScript untuk login
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/login.js');
+		// HMVC asset load: script login tetap lokal module agar init form auth tidak tergantung path global lama.
+		$this->addJs($this->moduleAsset('js/login.js') . '?v=' . @filemtime(APPPATH . 'Modules/Login/Assets/js/login.js'));
 		
 		// Load helper
 		helper(['cookie', 'form']);

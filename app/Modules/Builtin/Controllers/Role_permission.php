@@ -15,15 +15,16 @@ class Role_permission extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() {
 		
 		parent::__construct();
-		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
-		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
+		$resultPageVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/result-table.js');
 		
 		$this->model = new RolePermissionModel;	
 		$this->data['site_title'] = 'Halaman Role';
 		
-		$this->addJs(base_url() . '/public/themes/modern/js/result-table.js' . $resultTableVersion);
-		$this->addJs(base_url() . '/public/themes/modern/builtin/js/role-permission.js');
-		$this->addStyle(base_url() . '/public/themes/modern/css/result-page.css' . $resultPageVersion);
+		// HMVC asset load: result table shared dari Common, aksi role-permission pakai script builtin shared.
+		$this->addJs($this->commonAsset('js/result-table.js') . $resultTableVersion);
+		$this->addJs($this->commonAsset('builtin/js/role-permission.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/role-permission.js'));
+		$this->addStyle($this->commonAsset('css/result-page.css') . $resultPageVersion);
 		
 		helper(['cookie', 'form']);
 	}

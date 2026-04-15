@@ -25,7 +25,8 @@ class Menu extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/wdi/wdi-loader.css?r=' . time());
 		
 		$this->addJs ( $this->config->baseURL . 'public/vendors/wdi/wdi-fapicker.js?r=' . time());
-		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/admin-menu.js');
+		// HMVC asset load: logic menu tetap lokal Builtin, vendor dependency tetap dari public/vendors.
+		$this->addJs($this->commonAsset('builtin/js/admin-menu.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/admin-menu.js'));
 		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery-nestable/jquery.nestable.js?r=' . time());
 		$this->addJs ( $this->config->baseURL . 'public/vendors/js-yaml/js-yaml.min.js?r=' . time());
 		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery-nestable/jquery.wdi-menueditor.js?r=' . time());

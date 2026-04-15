@@ -16,12 +16,13 @@ class Setting_app extends \App\Modules\Common\Controllers\BaseController
 		
 		$this->model = new SettingAppModel;	
 		$this->data['site_title'] = 'Halaman Setting Web';
-		
+
+		// HMVC asset load: module/local untuk setting logo, shared Common untuk upload helper dan styling panel.
 		$this->addJs ( $this->config->baseURL . 'public/vendors/spectrum/spectrum.min.js?r=' . time());
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/setting-logo.js?r=' . time());
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/image-upload.js?r=' . time());
+		$this->addJs($this->moduleAsset('js/setting-logo.js') . '?v=' . @filemtime(APPPATH . 'Modules/Builtin/Assets/js/setting-logo.js'));
+		$this->addJs($this->commonAsset('js/image-upload.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/image-upload.js'));
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/spectrum/spectrum.css');
-		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/builtin/css/setting-app.css');
+		$this->addStyle($this->commonAsset('builtin/css/setting-app.css') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/setting-app.css'));
 		// $this->addStyle ( $this->config->baseURL . 'public/themes/modern/builtin/css/login-header.css');
 		
 		helper(['cookie', 'form']);

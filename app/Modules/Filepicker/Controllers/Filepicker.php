@@ -30,14 +30,15 @@ class Filepicker extends BaseController
 		}
 	
 		$this->addJs($this->config->baseURL . 'public/vendors/nsdfilepicker/nsdfilepicker.js');
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/nsdfilepicker-defaults.js');
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/filepicker.js');
+		// HMVC asset load: default config dan interaction filepicker dijaga di asset module ini sendiri.
+		$this->addJs($this->moduleAsset('js/nsdfilepicker-defaults.js') . '?v=' . @filemtime(APPPATH . 'Modules/Filepicker/Assets/js/nsdfilepicker-defaults.js'));
+		$this->addJs($this->moduleAsset('js/filepicker.js') . '?v=' . @filemtime(APPPATH . 'Modules/Filepicker/Assets/js/filepicker.js'));
 		$this->addJs($this->config->baseURL . 'public/vendors/dropzone/dropzone.min.js');
 
 		$this->addStyle($this->config->baseURL . 'public/vendors/nsdfilepicker/nsdfilepicker.css');
 		$this->addStyle($this->config->baseURL . 'public/vendors/nsdfilepicker/nsdfilepicker-loader.css');
 		$this->addStyle($this->config->baseURL . 'public/vendors/nsdfilepicker/nsdfilepicker-modal.css');
-		$this->addStyle($this->config->baseURL . 'public/themes/modern/css/filepicker.css');
+		$this->addStyle($this->moduleAsset('css/filepicker.css') . '?v=' . @filemtime(APPPATH . 'Modules/Filepicker/Assets/css/filepicker.css'));
 
 	}
 

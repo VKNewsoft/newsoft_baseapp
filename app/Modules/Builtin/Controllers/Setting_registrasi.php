@@ -15,8 +15,9 @@ class Setting_registrasi extends \App\Modules\Common\Controllers\BaseController
 
 		$this->model = new SettingRegistrasiModel;	
 		$this->data['site_title'] = 'Halaman Setting Registrasi';
-		
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/setting-registrasi.js');
+
+		// HMVC asset load: script modul registrasi tetap lokal agar init form mengikuti module ini saja.
+		$this->addJs($this->moduleAsset('js/setting-registrasi.js') . '?v=' . @filemtime(APPPATH . 'Modules/Builtin/Assets/js/setting-registrasi.js'));
 	}
 	
 	public function index() 

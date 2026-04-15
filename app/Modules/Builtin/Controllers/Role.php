@@ -24,8 +24,9 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
-		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/role.js');
-		$this->addStyle($this->config->baseURL . 'public/themes/modern/builtin/css/role.css');
+		// HMVC asset load: form/list role pakai asset shared builtin agar class UI tetap sinkron.
+		$this->addJs($this->commonAsset('builtin/js/role.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/role.js'));
+		$this->addStyle($this->commonAsset('builtin/css/role.css') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/role.css'));
 		
 		helper(['cookie', 'form']);
 	}

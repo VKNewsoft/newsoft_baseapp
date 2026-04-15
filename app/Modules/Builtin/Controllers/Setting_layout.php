@@ -17,9 +17,10 @@ class Setting_layout extends \App\Modules\Common\Controllers\BaseController
 		
 		$this->model = new SettingLayoutModel;	
 		$this->data['site_title'] = 'Halaman Setting';
-		
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/builtin/js/setting-layout.js?r=' . time());
-		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/builtin/css/setting-layout.css');
+
+		// HMVC asset load: gunakan shared Common agar preview/theme switch konsisten lintas module.
+		$this->addJs($this->commonAsset('builtin/js/setting-layout.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/setting-layout.js'));
+		$this->addStyle($this->commonAsset('builtin/css/setting-layout.css') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/setting-layout.css'));
 		
 		
 		helper(['cookie', 'form']);

@@ -1,10 +1,34 @@
 jQuery(document).ready(function () {
-	const $body = $('body');
 	const $form = $('#form-setting');
+	if (!$form.length) {
+		return;
+	}
+
+	const $body = $('body');
 	const $fontSize = $('#font-size');
+	const $font = $('#font');
+	const $bootswatchTheme = $('#bootswatch-theme');
+	const $sidebarColor = $('#sidebar-color');
+	const $logoBackgroundColor = $('#logo-background-color');
+	const $colorSchemeInput = $('#input-color-scheme');
+	const $previewRoot = $('.setting-layout-preview');
 	const $previewThemeName = $('#preview-theme-name');
 	const $previewSidebar = $('#preview-sidebar');
 	const $previewTopbar = $('#preview-topbar');
+	const $previewMain = $('.preview-main');
+	const $previewCard = $('.preview-card');
+	const $previewButton = $('.preview-button');
+	const $previewChip = $('.preview-chip');
+	const $previewLogo = $previewSidebar.find('.preview-sidebar-logo');
+	const $previewSidebarItems = $previewSidebar.find('.preview-sidebar-item');
+	const fontFamilyMap = {
+		'open-sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
+		'roboto': '"Roboto", "Segoe UI", Arial, sans-serif',
+		'montserrat': '"Montserrat", "Segoe UI", Arial, sans-serif',
+		'poppins': '"Poppins", "Segoe UI", Arial, sans-serif',
+		'arial': 'Arial, "Helvetica Neue", sans-serif',
+		'verdana': 'Verdana, Geneva, sans-serif'
+	};
 	const previewColorMap = {
 		'blue-dark': '#183b77',
 		'blue': '#1976d2',
@@ -16,6 +40,62 @@ jQuery(document).ready(function () {
 		'jnn': '#8b3035',
 		'payday': '#013062'
 	};
+	const bootswatchPreviewMap = {
+		'default': { surface: '#f8fafc', card: '#ffffff', button: '#2563eb', chip: 'rgba(37, 99, 235, 0.12)' },
+		'cerulean': { surface: '#eef6fb', card: '#ffffff', button: '#2fa4e7', chip: 'rgba(47, 164, 231, 0.14)' },
+		'cosmo': { surface: '#eef4f8', card: '#ffffff', button: '#2780e3', chip: 'rgba(39, 128, 227, 0.14)' },
+		'flatty': { surface: '#ecf7f0', card: '#ffffff', button: '#18bc9c', chip: 'rgba(24, 188, 156, 0.16)' },
+		'journal': { surface: '#faf6f2', card: '#ffffff', button: '#eb6864', chip: 'rgba(235, 104, 100, 0.15)' },
+		'litera': { surface: '#f7f9fc', card: '#ffffff', button: '#4582ec', chip: 'rgba(69, 130, 236, 0.14)' },
+		'lumen': { surface: '#f8faf8', card: '#ffffff', button: '#158cba', chip: 'rgba(21, 140, 186, 0.14)' },
+		'minty': { surface: '#edf8f4', card: '#ffffff', button: '#78c2ad', chip: 'rgba(120, 194, 173, 0.18)' },
+		'pulse': { surface: '#f7f1fb', card: '#ffffff', button: '#593196', chip: 'rgba(89, 49, 150, 0.16)' },
+		'sandstone': { surface: '#f9f6f2', card: '#ffffff', button: '#325d88', chip: 'rgba(50, 93, 136, 0.14)' },
+		'simplex': { surface: '#faf7f3', card: '#ffffff', button: '#d9230f', chip: 'rgba(217, 35, 15, 0.12)' },
+		'spacelab': { surface: '#edf3fa', card: '#ffffff', button: '#446e9b', chip: 'rgba(68, 110, 155, 0.14)' },
+		'united': { surface: '#fbf5ef', card: '#ffffff', button: '#e95420', chip: 'rgba(233, 84, 32, 0.14)' },
+		'yeti': { surface: '#f2f6f8', card: '#ffffff', button: '#008cba', chip: 'rgba(0, 140, 186, 0.14)' },
+		'zephyr': { surface: '#f4fbfa', card: '#ffffff', button: '#3459e6', chip: 'rgba(52, 89, 230, 0.14)' }
+	};
+
+	function getCacheVersion() {
+		return Math.floor(Date.now() / 10000);
+	}
+
+	function buildAssetUrl(basePath, relativePath, withCache) {
+		if (!basePath) {
+			return '';
+		}
+
+		let url = String(basePath).replace(/\/+$/, '') + '/' + String(relativePath).replace(/^\/+/, '');
+		if (withCache) {
+			url += '?r=' + getCacheVersion();
+		}
+		return url;
+	}
+
+	function setStylesheetHref(selector, href) {
+		if (href && $(selector).length) {
+			$(selector).attr('href', href);
+		}
+	}
+
+	function getSelectedFontFamily() {
+		return fontFamilyMap[$font.val()] || fontFamilyMap['open-sans'];
+	}
+
+	function getSelectedThemeLabel(colorScheme) {
+		const $selectedColor = $('#color-scheme').find('[data-color-scheme="' + colorScheme + '"] .theme-option-label');
+		return $.trim($selectedColor.text()) || 'Default';
+	}
+
+	function updateSelectedColorScheme(colorScheme) {
+		$('#color-scheme').find('i.theme-check').remove();
+		const $selectedItem = $('#color-scheme').find('[data-color-scheme="' + colorScheme + '"]');
+		if ($selectedItem.length && !$selectedItem.find('i.theme-check').length) {
+			$selectedItem.append('<i class="fa fa-check theme-check"></i>');
+		}
+	}
 
 	if ($('html').attr('data-bs-theme') == 'dark') {
 		bootbox.confirm({
@@ -37,26 +117,46 @@ jQuery(document).ready(function () {
 	}
 
 	function updateFontPreview() {
+		if (!$fontSize.length) {
+			return;
+		}
+
 		const $output = $fontSize.next('output');
-		const box = $output.width() / 2;
-		const current = (($fontSize.val() - 10) * 33) - box;
+		const fontSize = parseFloat($fontSize.val()) || 14;
+		const box = $output.outerWidth() / 2;
+		const current = ((fontSize - 10) * 33) - box;
 		const topPos = 22 + $fontSize.position().top;
 
-		$body.css('font-size', $fontSize.val() + 'px');
-		$output.css({
-			left: current + 25,
-			top: topPos
-		}).text($fontSize.val());
+		$body.css('font-size', fontSize + 'px');
+		$previewRoot.css('font-size', fontSize + 'px');
+
+		if ($output.length) {
+			$output.css({
+				left: current + 25,
+				top: topPos
+			}).text(fontSize);
+		}
 	}
 
-	function updateThemePreview(colorScheme) {
+	function updateThemePreview() {
+		const colorScheme = $colorSchemeInput.val() || 'blue';
+		const bootswatchTheme = $bootswatchTheme.val() || 'default';
 		const previewColor = previewColorMap[colorScheme] || previewColorMap.blue;
-		const sidebarMode = $('#sidebar-color').val();
-		const logoBackground = $('#logo-background-color').val();
+		const sidebarMode = $sidebarColor.val();
+		const logoBackground = $logoBackgroundColor.val();
+		const themePreview = bootswatchPreviewMap[bootswatchTheme] || bootswatchPreviewMap['default'];
+		const themeLabel = $bootswatchTheme.find('option:selected').text();
+		const colorLabel = getSelectedThemeLabel(colorScheme);
 
-		$previewThemeName.text((colorScheme || '').replace(/-/g, ' ').replace(/\b\w/g, function(match) {
-			return match.toUpperCase();
-		}));
+		$previewThemeName.text(colorLabel + ' / ' + themeLabel);
+		$previewRoot.css('font-family', getSelectedFontFamily());
+		$previewMain.css('background', themePreview.surface);
+		$previewCard.css('background', themePreview.card);
+		$previewButton.css('background', 'linear-gradient(135deg, ' + themePreview.button + ', ' + previewColor + ')');
+		$previewChip.css({
+			background: themePreview.chip,
+			color: previewColor
+		});
 
 		$previewTopbar.css('background', 'linear-gradient(135deg, ' + previewColor + ', ' + previewColor + 'dd)');
 
@@ -65,7 +165,7 @@ jQuery(document).ready(function () {
 				background: '#f8fafc',
 				color: '#0f172a'
 			});
-			$previewSidebar.find('.preview-sidebar-item').css('color', '#475569');
+			$previewSidebarItems.css('color', '#475569');
 			$previewSidebar.find('.preview-sidebar-item.active').css({
 				background: 'rgba(37, 99, 235, 0.12)',
 				color: previewColor
@@ -75,7 +175,7 @@ jQuery(document).ready(function () {
 				background: '#0f172a',
 				color: '#ffffff'
 			});
-			$previewSidebar.find('.preview-sidebar-item').css('color', 'rgba(255,255,255,.72)');
+			$previewSidebarItems.css('color', 'rgba(255,255,255,.72)');
 			$previewSidebar.find('.preview-sidebar-item.active').css({
 				background: 'rgba(255,255,255,.14)',
 				color: '#ffffff'
@@ -83,74 +183,61 @@ jQuery(document).ready(function () {
 		}
 
 		if (logoBackground === 'light') {
-			$previewSidebar.find('.preview-sidebar-logo').css({
+			$previewLogo.css({
 				background: 'rgba(255,255,255,.88)',
 				color: previewColor
 			});
 		} else if (logoBackground === 'dark') {
-			$previewSidebar.find('.preview-sidebar-logo').css({
+			$previewLogo.css({
 				background: 'rgba(15,23,42,.88)',
 				color: '#ffffff'
 			});
 		} else {
-			$previewSidebar.find('.preview-sidebar-logo').css({
+			$previewLogo.css({
 				background: 'rgba(255,255,255,.15)',
 				color: '#ffffff'
 			});
 		}
 	}
 
-	$fontSize.on('input', updateFontPreview);
+	$fontSize.on('input change', updateFontPreview);
 	updateFontPreview();
-	updateThemePreview($('#input-color-scheme').val());
+	updateSelectedColorScheme($colorSchemeInput.val());
+	updateThemePreview();
 
-	$('#color-scheme').on('click', 'a', function() {
+	$('#color-scheme').on('click', '[data-color-scheme]', function(e) {
+		e.preventDefault();
 		const $this = $(this);
-		if ($this.children('i').length > 0) {
+		const colorScheme = $this.data('color-scheme');
+		if (!colorScheme) {
 			return false;
 		}
 
-		const classes = $this.attr('class');
-		const split = classes.replace('-theme', '');
-		const url = theme_url + '/css/color-schemes/' + split + '.css?r=' + Math.floor(Date.now() / 10000);
-		const $elements = $('#color-scheme, #color-scheme-side');
-
-		$('#style-switch').attr('href', url);
-		$elements.each(function() {
-			$elements.find('i').remove();
-			$elements.find('a.' + classes).append('<i class="fa fa-check theme-check"></i>');
-		});
-
-		$('#input-color-scheme').val(split);
-		updateThemePreview(split);
+		setStylesheetHref('#style-switch', buildAssetUrl(theme_url, 'css/color-schemes/' + colorScheme + '.css', true));
+		$colorSchemeInput.val(colorScheme);
+		updateSelectedColorScheme(colorScheme);
+		updateThemePreview();
 		return false;
 	});
 
-	$('#sidebar-color').change(function() {
-		const url = theme_url + '/css/color-schemes/' + this.value + '-sidebar.css?r=' + Math.floor(Date.now() / 10000);
-		$('#style-switch-sidebar').attr('href', url);
-		updateThemePreview($('#input-color-scheme').val());
+	$sidebarColor.on('change', function() {
+		setStylesheetHref('#style-switch-sidebar', buildAssetUrl(theme_url, 'css/color-schemes/' + this.value + '-sidebar.css', true));
+		updateThemePreview();
 	});
 
-	$('#logo-background-color').change(function() {
-		const url = theme_url + '/css/color-schemes/' + this.value + '-logo-background.css?r=' + Math.floor(Date.now() / 10000);
-		$('#logo-background-color-switch').attr('href', url);
-		updateThemePreview($('#input-color-scheme').val());
+	$logoBackgroundColor.on('change', function() {
+		setStylesheetHref('#logo-background-color-switch', buildAssetUrl(theme_url, 'css/color-schemes/' + this.value + '-logo-background.css', true));
+		updateThemePreview();
 	});
 
-	$('#bootswatch-theme').change(function() {
-		const url = base_url + '/public/vendors/bootswatch/' + this.value + '/bootstrap.min.css?r=' + Math.floor(Date.now() / 10000);
-		$('#style-switch-bootswatch').attr('href', url);
+	$bootswatchTheme.on('change', function() {
+		setStylesheetHref('#style-switch-bootswatch', buildAssetUrl(base_url, 'public/vendors/bootswatch/' + this.value + '/bootstrap.min.css', true));
+		updateThemePreview();
 	});
 
-	$('#font').change(function() {
-		const url = theme_url + '/css/fonts/' + $(this).val() + '.css';
-		$('#font-switch').attr('href', url);
-		$('.setting-layout-preview').css('font-family', $(this).find('option:selected').text().split(' ')[0]);
-	});
-
-	$('#font-size').on('change', function() {
-		$('body').css('font-size', this.value + 'px');
+	$font.on('change', function() {
+		setStylesheetHref('#font-switch', buildAssetUrl(theme_url, 'css/fonts/' + $(this).val() + '.css', false));
+		updateThemePreview();
 	});
 
 	$form.submit(function(e) {
