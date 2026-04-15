@@ -87,7 +87,7 @@ if ($request->getGet('mobile') == 'true') {
 							}
 							?>
 							<input <?=$readonly?> type="text" name="username" id="username" value="<?=set_value('username', @$user_edit['username'])?>" placeholder="" required="required"/>
-							<div id="username-validation" class="mt-1"></div>
+							<div id="username-validation" class="validation-feedback mt-1"></div>
 						</div>
 						
 						<div class="col-md-6">
@@ -99,7 +99,7 @@ if ($request->getGet('mobile') == 'true') {
 							<label class="form-label">Email</label>
 							<input class="form-control" type="email" id="email" name="email" value="<?=set_value('email', @$user_edit['email'])?>" placeholder="" required="required"/>
 							<input type="hidden" name="email_lama" value="<?=set_value('email', @$user_edit['email'])?>" />
-							<div id="email-validation" class="mt-1"></div>
+							<div id="email-validation" class="validation-feedback mt-1"></div>
 						</div>
 						<?php
 						if (@$user_permission['update_all']) {
@@ -200,14 +200,14 @@ if ($request->getGet('mobile') == 'true') {
 							$required = empty($user_edit['id_user']) ? 'required="required"' : '';
 							?>
 							<input class="form-control" type="password" id="password" name="password" <?=$required?>/>
-							<div id="password-strength" class="mt-1"></div>
+							<div id="password-strength" class="validation-feedback mt-1"></div>
 							<small class="text-muted">Minimal 6 karakter untuk kemudahan penggunaan</small>
 						</div>
 
 						<div class="col-md-6">
 							<label class="form-label">Ulangi Password Baru</label>
 							<input class="form-control" type="password" id="ulangi_password" name="ulangi_password" <?=$required?>/>
-							<div id="password-match" class="mt-1"></div>
+							<div id="password-match" class="validation-feedback mt-1"></div>
 						</div>
 				
 						<!-- Submit Button -->
@@ -276,266 +276,6 @@ if ($request->getGet('mobile') == 'true') {
 </form>
 	</div>
 </div>
-
-<script>
-function removeImage() {
-	if (confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
-		$('.avatar-delete-img').val(1);
-		$('input[name="avatar"]').val('');
-		location.reload();
-	}
-}
-
-// Password strength checker - Simplified for initial user creation
-function checkPasswordStrength(password) {
-	let strength = 0;
-	let feedback = [];
-
-	// Very basic validation - just minimum length
-	if (password.length >= 6) {
-		strength = 5; // Always show as strong for initial users
-	} else if (password.length >= 4) {
-		strength = 3; // Medium for 4-5 characters
-	} else if (password.length > 0) {
-		strength = 1; // Weak for 1-3 characters
-		feedback.push('Minimal 6 karakter');
-	}
-
-	return { strength, feedback };
-}
-
-// Real-time validation for username and email
-$(document).ready(function() {
-	// Username validation
-	$('#username').on('input', function() {
-		validateUsername();
-	});
-
-	$('#username').on('blur', function() {
-		checkUsernameUniqueness();
-	});
-
-	// Email validation
-	$('#email').on('input', function() {
-		validateEmail();
-	});
-
-	$('#email').on('blur', function() {
-		checkEmailUniqueness();
-	});
-
-	$('#password').on('input', function() {
-		const password = $(this).val();
-		const result = checkPasswordStrength(password);
-		let strengthText = '';
-		let strengthClass = '';
-		let progressWidth = '0%';
-		let progressClass = 'bg-secondary';
-
-		if (password.length === 0) {
-			strengthText = '';
-			strengthClass = '';
-		} else {
-			progressWidth = (result.strength / 5 * 100) + '%';
-
-			if (result.strength < 2) {
-				strengthText = 'Sangat Lemah';
-				strengthClass = 'text-danger';
-				progressClass = 'bg-danger';
-			} else if (result.strength < 4) {
-				strengthText = 'Cukup';
-				strengthClass = 'text-warning';
-				progressClass = 'bg-warning';
-			} else {
-				strengthText = 'Baik';
-				strengthClass = 'text-success';
-				progressClass = 'bg-success';
-			}
-
-			// Show progress bar
-			strengthText += `<div class="progress mt-1" style="height: 4px;">
-				<div class="progress-bar ${progressClass}" style="width: ${progressWidth}"></div>
-			</div>`;
-		}
-
-		$('#password-strength').html(strengthText).attr('class', 'mt-1 ' + strengthClass);
-		checkPasswordMatch();
-	});
-
-	$('#ulangi_password').on('input', function() {
-		checkPasswordMatch();
-	});
-
-	function checkPasswordMatch() {
-		const password = $('#password').val();
-		const confirmPassword = $('#ulangi_password').val();
-		const matchDiv = $('#password-match');
-		$('button[name="submit"]').addClass('d-none');
-
-		if (confirmPassword.length === 0) {
-			matchDiv.html('').attr('class', 'mt-1');
-			return;
-		}
-
-		if (password === confirmPassword) {
-			matchDiv.html('<i class="fas fa-check-circle me-1"></i>Password cocok').attr('class', 'mt-1 text-success small');
-			$('button[name="submit"]').removeClass('d-none');
-		} else {
-			matchDiv.html('<i class="fas fa-times-circle me-1"></i>Password tidak cocok').attr('class', 'mt-1 text-danger small');
-		}
-	}
-
-	function validateUsername() {
-		const username = $('#username').val();
-		const usernameDiv = $('#username-validation');
-		$('button[name="submit"]').addClass('d-none');
-
-		// Clear previous validation
-		usernameDiv.html('').attr('class', 'mt-1');
-
-		if (username.length === 0) return;
-
-		// Check format (alphanumeric, underscore, dash, min 3 chars)
-		const usernameRegex = /^[a-zA-Z0-9_-]{3,}$/;
-		
-		if (!usernameRegex.test(username)) {
-			if (username.length < 3) {
-				usernameDiv.html('<i class="fas fa-times-circle me-1"></i>Minimal 3 karakter').attr('class', 'mt-1 text-danger small');
-				$('button[name="submit"]').addClass('d-none');
-			} else {
-				usernameDiv.html('<i class="fas fa-times-circle me-1"></i>Hanya huruf, angka, underscore (_), dan dash (-)').attr('class', 'mt-1 text-danger small');
-				$('button[name="submit"]').addClass('d-none');
-			}
-			return false;
-		} else {
-			usernameDiv.html('<i class="fas fa-check-circle me-1"></i>Format username valid').attr('class', 'mt-1 text-success small');
-			$('button[name="submit"]').removeClass('d-none');
-			return true;
-		}
-	}
-
-	function checkUsernameUniqueness() {
-		const username = $('#username').val();
-		const usernameDiv = $('#username-validation');
-		const currentUsername = '<?=@$user_edit['username']?>'; // Username saat ini
-		const isEdit = $('input[name="id"]').val() > 0;
-		$('button[name="submit"]').addClass('d-none');
-
-		if (!validateUsername() || username.length === 0) return;
-
-		// Jika sedang edit dan username sama dengan yang lama, tidak perlu check
-		if (isEdit && username === currentUsername) {
-			usernameDiv.html('<i class="fas fa-check-circle me-1"></i>Username valid').attr('class', 'mt-1 text-success small');
-			$('button[name="submit"]').removeClass('d-none');
-			return;
-		}
-
-		// Show loading
-		usernameDiv.html('<i class="fas fa-spinner fa-spin me-1"></i>Mengecek ketersediaan...').attr('class', 'mt-1 text-info small');
-
-		// AJAX call to check uniqueness
-		$.ajax({
-			url: '<?=$config->baseURL?>builtin/user/ajaxCheckUsername',
-			type: 'POST',
-			data: {
-				username: username,
-				id_user: $('input[name="id"]').val() || 0
-			},
-			success: function(response) {
-				try {
-					const result = JSON.parse(response);
-					if (result.available) {
-						usernameDiv.html('<i class="fas fa-check-circle me-1"></i>Username tersedia').attr('class', 'mt-1 text-success small');
-						$('button[name="submit"]').removeClass('d-none');
-					} else {
-						usernameDiv.html('<i class="fas fa-times-circle me-1"></i>Username sudah digunakan').attr('class', 'mt-1 text-danger small');
-						$('button[name="submit"]').addClass('d-none');
-					}
-				} catch (e) {
-					usernameDiv.html('<i class="fas fa-exclamation-triangle me-1"></i>Gagal memeriksa username').attr('class', 'mt-1 text-warning small');
-					$('button[name="submit"]').addClass('d-none');
-				}
-			},
-			error: function() {
-				usernameDiv.html('<i class="fas fa-exclamation-triangle me-1"></i>Gagal memeriksa username').attr('class', 'mt-1 text-warning small');
-				$('button[name="submit"]').addClass('d-none');
-			}
-		});
-	}
-
-	function validateEmail() {
-		const email = $('#email').val();
-		const emailDiv = $('#email-validation');
-
-		// Clear previous validation
-		emailDiv.html('').attr('class', 'mt-1');
-
-		if (email.length === 0) return;
-
-		// Check email format
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-		if (!emailRegex.test(email)) {
-			emailDiv.html('<i class="fas fa-times-circle me-1"></i>Format email tidak valid').attr('class', 'mt-1 text-danger small');
-			$('button[name="submit"]').addClass('d-none');
-			return false;
-		} else {
-			emailDiv.html('<i class="fas fa-check-circle me-1"></i>Format email valid').attr('class', 'mt-1 text-success small');
-			$('button[name="submit"]').removeClass('d-none');
-			return true;
-		}
-	}
-
-	function checkEmailUniqueness() {
-		const email = $('#email').val();
-		const emailDiv = $('#email-validation');
-		const currentEmail = '<?=@$user_edit['email']?>'; // Email saat ini
-		const isEdit = $('input[name="id"]').val() > 0;
-		$('button[name="submit"]').addClass('d-none');
-
-		if (!validateEmail() || email.length === 0) return;
-
-		// Jika sedang edit dan email sama dengan yang lama, tidak perlu check
-		if (isEdit && email === currentEmail) {
-			emailDiv.html('<i class="fas fa-check-circle me-1"></i>Email valid').attr('class', 'mt-1 text-success small');
-			$('button[name="submit"]').removeClass('d-none');
-			return;
-		}
-
-		// Show loading
-		emailDiv.html('<i class="fas fa-spinner fa-spin me-1"></i>Mengecek ketersediaan...').attr('class', 'mt-1 text-info small');
-
-		// AJAX call to check uniqueness
-		$.ajax({
-			url: '<?=$config->baseURL?>builtin/user/ajaxCheckEmail',
-			type: 'POST',
-			data: {
-				email: email,
-				email_lama: $('input[name="email_lama"]').val() || ''
-			},
-			success: function(response) {
-				try {
-					const result = JSON.parse(response);
-					if (result.available) {
-						emailDiv.html('<i class="fas fa-check-circle me-1"></i>Email tersedia').attr('class', 'mt-1 text-success small');
-						$('button[name="submit"]').removeClass('d-none');
-					} else {
-						emailDiv.html('<i class="fas fa-times-circle me-1"></i>Email sudah digunakan').attr('class', 'mt-1 text-danger small');
-						$('button[name="submit"]').addClass('d-none');
-					}
-				} catch (e) {
-					emailDiv.html('<i class="fas fa-exclamation-triangle me-1"></i>Gagal memeriksa email').attr('class', 'mt-1 text-warning small');
-					$('button[name="submit"]').addClass('d-none');
-				}
-			},
-			error: function() {
-				emailDiv.html('<i class="fas fa-exclamation-triangle me-1"></i>Gagal memeriksa email').attr('class', 'mt-1 text-warning small');
-				$('button[name="submit"]').addClass('d-none');
-			}
-		});
-	}
-});
-</script>
 
 <?php
 if ($request->getGet('mobile') == 'true') {

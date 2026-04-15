@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card setting-layout-card">
 	<div class="card-header">
 		<h5 class="card-title"><?=$title?></h5>
 	</div>
@@ -17,27 +17,32 @@
 			}
 		}
 		?>
-		<form method="post" action="" id="form-setting">
-			<div class="tab-content" id="myTabContent">
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Color Scheme</label>
-					<div class="col-sm-5 form-inline">
-						<ul id="color-scheme" class="color-scheme-options">
+		<form method="post" action="" id="form-setting" class="form-shell">
+			<div class="tab-content setting-layout-shell" id="myTabContent">
+				<div class="form-shell-section">
+					<div class="form-shell-section-title">
+						<h5>Theme & Branding</h5>
+					</div>
+					<div class="row g-4 align-items-start">
+						<div class="col-xl-8">
+							<div class="row g-4">
+								<div class="col-12">
+									<label class="form-label">Color Scheme</label>
+									<ul id="color-scheme" class="color-scheme-options">
 							<?php
 							$list = ['blue-dark', 'blue', 'green', 'grey', 'purple', 'red', 'yellow', 'jnn', 'payday'];
 							
 							foreach ($list as $val) {
 								$check = $color_scheme ==  $val ? '<i class="fa fa-check theme-check"></i>' : '';
-								echo '<li><a href="javascript:void(0)" class="'.$val.'-theme">' . $check . '</a></li>';
+								echo '<li><a href="javascript:void(0)" class="'.$val.'-theme" data-color-scheme="'.$val.'"><span class="theme-option-label">'.ucwords(str_replace('-', ' ', $val)).'</span>' . $check . '</a></li>';
 							}
 							?>	
-						</ul>
-						<input type="hidden" name="color_scheme" id="input-color-scheme" value="<?=@set_value('logo_background_color', $color_scheme)?>">
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Theme</label>
-					<div class="col-sm-5 form-inline">
+									</ul>
+									<input type="hidden" name="color_scheme" id="input-color-scheme" value="<?=@set_value('logo_background_color', $color_scheme)?>">
+									<div class="form-text">Pilih warna utama tampilan admin agar header, panel, dan aksen UI tetap konsisten.</div>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Theme</label>
 						<?php
 						$options = ['default' => 'Default'];
 						$choosen = ['cosmo', 'flatty', 'journal', 'litera', 'lumen', 'minty', 'pulse', 'sandstone', 'simplex', 'spacelab', 'united', 'yeti', 'zephyr', 'cerulean'];
@@ -53,45 +58,73 @@
 						}
 						
 						?>
-						<?=options(['name' => 'bootswatch_theme', 'id' => 'bootswatch-theme'], $options, set_value('bootswatch_theme', @$bootswatch_theme))?>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Background Logo</label>
-					<div class="col-sm-5 form-inline">
-						<?=options(['name' => 'logo_background_color', 'id' => 'logo-background-color'], ['default' => 'Sesuai Color Scheme', 'dark' => 'Dark', 'light' => 'Light'], set_value('logo_background_color', @$logo_background_color))?>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Sidebar Color</label>
-					<div class="col-sm-5 form-inline">
-						<?=options(['name' => 'sidebar_color', 'id' => 'sidebar-color'], ['light' => 'Light', 'dark' => 'Dark'],  set_value('sidebar_color', @$sidebar_color))?>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Font Family</label>
-					<div class="col-sm-5 form-inline">
-						<?=options(['name' => 'font_family', 'id' => 'font'], ['open-sans' => 'Open Sans (Default)', 'roboto' => 'Roboto', 'montserrat' => 'Montserrat', 'poppins' => 'Poppins', 'arial' => 'Arial', 'verdana' => 'Verdana'], set_value('font_family', @$font_family))?>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Font Size</label>
-					<div class="col-sm-3">
-						<div class="range-slider-test">
-							<?php
-							$value = @$font_size ? $font_size : $request->getPost('font_size');
-							?>
-						  <input class="range-slider" id="font-size" type="range" step="0.5" name="font_size" id="font-size" value="<?=$value?>" min="10" max="18">
-						  <?php
-						  $pos_left = (($value - 10 ) * 33);
-						  ?>
-						  <output for="font-size" style="left:<?=$pos_left?>px"><?=$value?></output>px
+									<?=options(['name' => 'bootswatch_theme', 'id' => 'bootswatch-theme', 'class' => 'form-select'], $options, set_value('bootswatch_theme', @$bootswatch_theme))?>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Background Logo</label>
+									<?=options(['name' => 'logo_background_color', 'id' => 'logo-background-color', 'class' => 'form-select'], ['default' => 'Sesuai Color Scheme', 'dark' => 'Dark', 'light' => 'Light'], set_value('logo_background_color', @$logo_background_color))?>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Sidebar Color</label>
+									<?=options(['name' => 'sidebar_color', 'id' => 'sidebar-color', 'class' => 'form-select'], ['light' => 'Light', 'dark' => 'Dark'],  set_value('sidebar_color', @$sidebar_color))?>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Font Family</label>
+									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], ['open-sans' => 'Open Sans (Default)', 'roboto' => 'Roboto', 'montserrat' => 'Montserrat', 'poppins' => 'Poppins', 'arial' => 'Arial', 'verdana' => 'Verdana'], set_value('font_family', @$font_family))?>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Font Size</label>
+									<div class="range-slider-test">
+										<?php
+										$value = @$font_size ? $font_size : $request->getPost('font_size');
+										?>
+									  <input class="range-slider" id="font-size" type="range" step="0.5" name="font_size" value="<?=$value?>" min="10" max="18">
+									  <?php
+									  $pos_left = (($value - 10 ) * 33);
+									  ?>
+									  <output for="font-size" style="left:<?=$pos_left?>px"><?=$value?></output><span class="range-value-suffix">px</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-4">
+							<div class="theme-preview-surface setting-layout-preview">
+								<div class="setting-layout-preview-header">
+									<span class="setting-layout-preview-badge">Preview</span>
+									<h6 id="preview-theme-name"><?=ucwords(str_replace('-', ' ', @$color_scheme))?></h6>
+									<p>Pratinjau cepat warna, sidebar, dan tipografi.</p>
+								</div>
+								<div class="setting-layout-preview-body">
+									<div class="preview-browser-bar">
+										<span></span><span></span><span></span>
+									</div>
+									<div class="preview-frame">
+										<div class="preview-sidebar" id="preview-sidebar">
+											<div class="preview-sidebar-logo">NSD</div>
+											<div class="preview-sidebar-item active">Dashboard</div>
+											<div class="preview-sidebar-item">Master Data</div>
+											<div class="preview-sidebar-item">Pengaturan</div>
+										</div>
+										<div class="preview-main">
+											<div class="preview-topbar" id="preview-topbar"></div>
+											<div class="preview-card">
+												<div class="preview-chip">Form UX</div>
+												<div class="preview-line preview-line-lg"></div>
+												<div class="preview-line"></div>
+												<div class="preview-input"></div>
+												<div class="preview-input preview-input-sm"></div>
+												<div class="preview-button">Simpan Perubahan</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-5">
-						<button type="submit" name="submit" id="btn-submit" value="submit" class="btn btn-primary">Submit</button>
+				<div class="sticky-form-actions">
+					<div class="d-flex justify-content-end">
+						<button type="submit" name="submit" id="btn-submit" value="submit" class="btn btn-primary px-4">Submit</button>
 					</div>
 				</div>
 			</div>

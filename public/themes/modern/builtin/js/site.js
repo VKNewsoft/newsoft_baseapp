@@ -5,6 +5,8 @@
 */
 
 jQuery(document).ready(function () {
+	$('body').addClass('theme-ready');
+
 	$('.has-children').mouseenter(function(){
 		$(this).children('ul').stop(true, true).fadeIn('fast');
 	}).mouseleave(function(){
@@ -76,6 +78,13 @@ jQuery(document).ready(function () {
 	$.extend( $.fn.dataTable.defaults, {
 		"language": {
 			"processing": '<span><span class="spinner-border text-secondary" role="status"></span></span>',
+		}
+	});
+
+	$('form').each(function() {
+		var $form = $(this);
+		if (!$form.hasClass('form-shell')) {
+			$form.addClass('form-shell');
 		}
 	});
 });

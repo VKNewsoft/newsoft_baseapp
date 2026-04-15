@@ -82,6 +82,7 @@ $user = $session->get('user');
 
 	<script src="<?= $config->baseURL . 'public/themes/modern/builtin/js/functions.js?r='.time() ?>"></script>
 	<script src="<?= $config->baseURL . 'public/themes/modern/builtin/js/site.js?r='.time() ?>"></script>
+	<script src="<?= $config->baseURL . 'public/themes/modern/builtin/js/sidebar.js?r='.time() ?>"></script>
 	<script src="<?= $config->baseURL . 'public/themes/modern/builtin/js/popper.min.js' ?>"></script>
 
 	<!-- DataTables -->
@@ -240,102 +241,3 @@ $user = $session->get('user');
 			<!-- <?= !empty($breadcrumb) ? breadcrumb($breadcrumb) : '' ?> -->
 			<div class="content-wrapper">
 
-<!-- Sidebar JS separated for clarity -->
-<script>
-(function(){
-	const search = document.getElementById('sidebarSearch');
-	const clear = document.getElementById('sidebarSearchClear');
-	const groups = Array.from(document.querySelectorAll('.sidebar-group'));
-	if (!search || !groups.length) return;
-
-	const openedAccordions = new Set();
-
-	function resetSearchStates(){
-		groups.forEach(function(group){
-			group.style.display = '';
-			group.querySelectorAll('a, li').forEach(function(it){ it.style.display = ''; });
-			group.querySelectorAll('.search-open').forEach(function(el){
-				if (!el.querySelector('.active, [aria-current]')) {
-					el.classList.remove('search-open','tree-open');
-				} else {
-					el.classList.remove('search-open');
-				}
-			});
-			group.querySelectorAll('.submenu').forEach(function(s){
-				if (s.querySelector('.active, [aria-current]')) s.style.display = 'block'; else s.style.display = '';
-			});
-		});
-		openedAccordions.forEach(function(id){
-			const collapseEl = document.getElementById(id);
-			if (!collapseEl) return;
-			if (!collapseEl.querySelector('.active, [aria-current]')){
-				collapseEl.classList.remove('show');
-				const btn = document.querySelector('[data-bs-target="#' + id + '"]');
-				if (btn) { btn.classList.add('collapsed'); btn.setAttribute('aria-expanded','false'); }
-			} else {
-				const btn = document.querySelector('[data-bs-target="#' + id + '"]');
-				if (btn) { btn.classList.remove('collapsed'); btn.setAttribute('aria-expanded','true'); }
-			}
-		});
-		openedAccordions.clear();
-	}
-
-	search.addEventListener('input', function(){
-		const q = this.value.trim().toLowerCase();
-		if (q === ''){ resetSearchStates(); return; }
-
-		groups.forEach(function(group){
-			const menu = group.querySelector('.sidebar-menu');
-			if (!menu) { group.style.display = 'none'; return; }
-			let anyVisible = false;
-			const items = Array.from(menu.querySelectorAll('a, li'));
-			items.forEach(function(item){
-				const text = (item.textContent || item.innerText || '').toLowerCase();
-				if (text.indexOf(q) !== -1) {
-					item.style.display = '';
-					anyVisible = true;
-					const collapseAncestor = item.closest('.accordion-collapse');
-					if (collapseAncestor && !collapseAncestor.classList.contains('show')){
-						collapseAncestor.classList.add('show');
-						openedAccordions.add(collapseAncestor.id);
-						const btn = document.querySelector('[data-bs-target="#' + collapseAncestor.id + '"]');
-						if (btn) { btn.classList.remove('collapsed'); btn.setAttribute('aria-expanded','true'); }
-					}
-					let parentSub = item.closest('.submenu');
-					while(parentSub){ parentSub.style.display = 'block'; const parentLi = parentSub.closest('li'); if (parentLi) parentLi.classList.add('tree-open','search-open'); parentSub = parentLi ? parentLi.closest('.submenu') : null; }
-				} else {
-					item.style.display = 'none';
-				}
-			});
-			group.style.display = anyVisible ? '' : 'none';
-		});
-	});
-	clear.addEventListener('click', function(){ search.value=''; search.dispatchEvent(new Event('input')); });
-})();
-
-// Highlight active link and parent group
-document.addEventListener('DOMContentLoaded', function(){
-	const links = document.querySelectorAll('.sidebar-menu a[href]');
-	if (!links.length) return;
-
-	function normalize(u){
-		try { return u.replace(/\/+$/,''); } catch(e){ return u; }
-	}
-	const cur = normalize(window.location.href);
-	const mod = typeof module_url !== 'undefined' ? normalize(module_url) : null;
-
-	links.forEach(function(a){
-		const href = normalize(a.href || '');
-		if (!href) return;
-		if (href === cur || (mod && href === mod) || (cur.indexOf(href) === 0 && href.length > 0)) {
-			a.classList.add('active');
-			const group = a.closest('.sidebar-group');
-			if (group) {
-				const header = group.querySelector('.sidebar-group-header');
-				if (header) header.classList.add('active-group');
-				group.style.display = '';
-			}
-		}
-	});
-});
-</script>
