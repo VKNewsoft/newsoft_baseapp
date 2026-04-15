@@ -1,0 +1,28 @@
+header {
+	background: #1976d2;
+}
+.site-content {
+	background-color: #ecf3f7;
+}
+header, header>ul>li>a {
+	color: #c5deea;
+}
+.sidebar nav>ul>li.highlight>a {
+    background: #2999ed !important;
+}
+.nav-header-logo{
+	background: #1164ac;
+    color: #FFFFFF;
+}
+.nav-header-logo p {
+	color: rgba(255, 255, 255, 0.95);
+}
+.account-img-profile {
+    background: #acd6ff;
+}
+.account-menu-container {
+    background: #f0f8ff;
+}
+.account-menu li a:hover {
+    background: #89c5f1;
+}

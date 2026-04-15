@@ -72,7 +72,7 @@ class Permission extends \App\Modules\Common\Controllers\BaseController
 			$data['modules'] = $this->model->getAllMOdules();
 		}
 		
-		echo view('themes/modern/builtin/permission-form-edit-ajax.php', $data);
+		echo $this->fetchView('builtin/permission-form-edit-ajax.php', $data);
 		exit;
 	}
 	
@@ -116,7 +116,7 @@ class Permission extends \App\Modules\Common\Controllers\BaseController
 				$result['message'] = ['status' => 'error', 'message' => 'Module ' . $module['nama_module'] . ' belum memiliki permission'];
 			}
 		}
-		echo view('themes/modern/builtin/permission-form-checkbox-ajax.php', $result);
+		echo $this->fetchView('builtin/permission-form-checkbox-ajax.php', $result);
 	}
 	
 	public function ajaxDeletePermissionByModule() 

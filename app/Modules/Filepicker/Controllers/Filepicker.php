@@ -135,7 +135,7 @@ class Filepicker extends BaseController
 	 */
 	public function tinymce() 
 	{
-		echo view('themes/modern/filepicker-tinymce.php', $this->data);
+		echo $this->fetchView('filepicker-tinymce.php', $this->data);
 		exit;
 	}
 	

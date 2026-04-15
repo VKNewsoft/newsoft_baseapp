@@ -234,7 +234,7 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		$data['tenant_access'] = $this->model->getTenantRaw();
 
 		if ($this->request->getGet('mobile') == 'true') {
-			echo view('themes/modern/builtin/user/form.php', $data);
+			echo $this->fetchView('builtin/user/form.php', $data);
 		} else {
 			$this->view('builtin/user/form.php', $data);
 		}
@@ -410,7 +410,7 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		$this->data['user'] = $this->model->getUserById($this->user['id_user']);
 		
 		if ($this->request->getGet('mobile') == 'true') {
-			echo view('themes/modern/builtin/user/form-edit-password.php', $this->data);
+			echo $this->fetchView('builtin/user/form-edit-password.php', $this->data);
 		} else {
 			$this->view('builtin/user/form-edit-password.php', $this->data);
 		}

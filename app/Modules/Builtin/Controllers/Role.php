@@ -132,7 +132,7 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 			$data['title'] = 'Edit Role';
 		}
 
-		return $this->response->setBody(view('themes/modern/builtin/role-form-ajax.php', $data));
+		return $this->response->setBody($this->fetchView('builtin/role-form-ajax.php', $data));
 	}
 
 	public function ajaxSave()

@@ -73,7 +73,7 @@ class Menu_role extends \App\Modules\Common\Controllers\BaseController
 		}
 	
 		$this->data['checked'] = $checked;
-		echo view('themes/modern/builtin/menu-role-form.php', $this->data);
+		echo $this->fetchView('builtin/menu-role-form.php', $this->data);
 	}
 	
 	/**

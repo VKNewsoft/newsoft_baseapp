@@ -24,6 +24,11 @@ $routes->group('installer', ['filter' => null], function($routes) {
     $routes->get('success', '\App\Modules\Installer\Controllers\Installer::success');
 });
 
+$routes->get('module-assets/(:segment)/(:segment)', '\App\Modules\Common\Controllers\Asset::index/$1/$2');
+$routes->get('module-assets/(:segment)/(:segment)/(:segment)', '\App\Modules\Common\Controllers\Asset::index/$1/$2/$3');
+$routes->get('module-assets/(:segment)/(:segment)/(:segment)/(:segment)', '\App\Modules\Common\Controllers\Asset::index/$1/$2/$3/$4');
+$routes->get('module-assets/(:segment)/(:segment)/(:segment)/(:segment)/(:segment)', '\App\Modules\Common\Controllers\Asset::index/$1/$2/$3/$4/$5');
+
 $moduleControllers = [
 	'login' => '\App\Modules\Login\Controllers\Login',
 	'welcome' => '\App\Modules\Welcome\Controllers\Welcome',

@@ -23,10 +23,10 @@ class Company extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/result-table.js' . $resultTableVersion);
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/wilayah.js');
-		$this->addJs ( $this->config->baseURL . 'public/themes/modern/js/company.js');
-		$this->addStyle ( $this->config->baseURL . 'public/themes/modern/css/result-page.css' . $resultPageVersion);
+		$this->addJs($this->commonAsset('js/result-table.js') . $resultTableVersion);
+		$this->addJs($this->commonAsset('js/wilayah.js'));
+		$this->addJs($this->moduleAsset('js/company.js'));
+		$this->addStyle($this->commonAsset('css/result-page.css') . $resultPageVersion);
 	}
 	
 	public function index()
@@ -84,7 +84,7 @@ class Company extends \App\Modules\Common\Controllers\BaseController
 		$dataBank = $this->getDataBank(@$this->data['tenant']['id_bank']);
 		// $dataSkema = $this->getDataSkema(@$this->data['tenant']['id_skema']);
 		$this->data = array_merge($this->data, $dataBank);
-		echo view('themes/modern/company-form.php', $this->data);
+		echo $this->fetchView('company-form.php', $this->data);
 	}
 	
 	public function ajaxUpdateData() {

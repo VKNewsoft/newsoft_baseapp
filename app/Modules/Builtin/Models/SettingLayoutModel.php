@@ -82,7 +82,7 @@ class SettingLayoutModel extends \App\Modules\Common\Models\BaseModel
 			if ($result) {
 				// Generate CSS file untuk font size
 				$fontSize = $this->request->getPost('font_size');
-				$fileName = ROOTPATH . 'public/themes/modern/builtin/css/fonts/font-size-' . $fontSize . '.css';
+				$fileName = APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . $fontSize . '.css';
 				
 				if (!file_exists($fileName)) {
 					file_put_contents($fileName, 'html, body { font-size: ' . $fontSize . 'px }');

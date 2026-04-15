@@ -139,7 +139,7 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 			
 			if ($queryResult) {
 				// Generate CSS file untuk background login
-				$fileName = ROOTPATH . 'public/themes/modern/builtin/css/login-header.css';
+				$fileName = APPPATH . 'Modules/Common/Assets/builtin/css/login-header.css';
 				$backgroundLogo = $this->request->getPost('background_logo');
 				$css = '.login-header {background-color: ' . $backgroundLogo . ';}.edit-logo-login-container {background: ' . $backgroundLogo . ';}';
 				

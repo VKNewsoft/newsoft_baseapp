@@ -56,7 +56,7 @@ class User_role extends \App\Modules\Common\Controllers\BaseController
 		$userRole = $this->model->getUserRoleByID($this->request->getGet('id'));
 		$this->data['user_role'] = $userRole;
 		
-		echo view('themes/modern/builtin/user-role-form.php', $this->data);
+		echo $this->fetchView('builtin/user-role-form.php', $this->data);
 	}
 	
 	public function delete() {

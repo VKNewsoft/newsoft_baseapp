@@ -23,15 +23,8 @@ class Register extends \App\Modules\Common\Controllers\BaseController
 		
 		helper(['cookie', 'form']);
 		
-		$this->addJs($this->config->baseURL . 'public/vendors/jquery/jquery.min.js');
-		$this->addJs($this->config->baseURL . 'public/vendors/bootstrap/js/bootstrap.min.js');
-										
-		$this->addStyle($this->config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css');
-		$this->addStyle($this->config->baseURL . 'public/vendors/fontawesome/css/fontawesome.min.css');
-		$this->addStyle($this->config->baseURL . 'public/themes/modern/css/register.css');
-
 		$this->addJs($this->config->baseURL . 'public/vendors/jquery.pwstrength.bootstrap/pwstrength-bootstrap.min.js');
-		$this->addJs($this->config->baseURL . 'public/themes/modern/js/password-meter.js');
+		$this->addJs($this->commonAsset('js/password-meter.js'));
 		
 	}
 	
@@ -75,7 +68,7 @@ class Register extends \App\Modules\Common\Controllers\BaseController
 		
 		$this->data['message'] = $message;
 		$this->data['style'] = ' style="max-width:500px; margin-top:50px"';
-		return view('themes/modern/register/' . $file, $this->data);
+		return $this->fetchView('register/' . $file, $this->data);
 	}
 	
 	/**
@@ -145,7 +138,7 @@ class Register extends \App\Modules\Common\Controllers\BaseController
 		}
 		
 		$this->data['message'] = $message;
-		return view('themes/modern/register/show_message.php', $this->data);
+		return $this->fetchView('register/show_message.php', $this->data);
 	}
 	
 	/**
@@ -196,7 +189,7 @@ class Register extends \App\Modules\Common\Controllers\BaseController
 		}
 		
 		$this->data['message'] = $message;
-		return view('themes/modern/register/' . $file, $this->data);
+		return $this->fetchView('register/' . $file, $this->data);
 	}
 	
 	/**

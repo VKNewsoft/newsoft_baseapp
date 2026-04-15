@@ -1,0 +1,253 @@
+/**
+* Written by: IT-IPI
+* Year		: Last Oktober 2023
+* Company : Indopasifik Indahtama
+*/
+
+
+body {
+	font-family: "open sans", "segoe ui";
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+label {
+	font-weight: bold;
+}
+
+li {
+	margin-left: 20px;
+}
+p.small{
+	margin-bottom: 0;
+}
+small.alert{
+    padding: 5px;
+	padding-left: 10px;
+    display: block;
+	margin: 0;
+	margin-top: 3px;
+}
+input[type=radio], input[type=checkbox] {
+    border: 1px solid #b4b9be;
+    background: #fff;
+    color: #555;
+    clear: none;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 0;
+    min-height: 18px !important;
+    height: 20px;
+    margin: 1px;
+    outline: 0;
+    padding: 0!important;
+    text-align: center;
+    vertical-align: middle;
+    width: 20px;
+    min-width: 20px;
+    -webkit-appearance: none;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    -webkit-transition: .05s border-color ease-in-out;
+    transition: .05s border-color ease-in-out;
+}
+
+input[type=radio] {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    margin-right: 4px;
+    line-height: 10px;
+}
+
+input[type=radio]::focus {
+	border-color: #5b9dd9;
+    -webkit-box-shadow: 0 0 2px rgba(30,140,190,.8);
+    box-shadow: 0 0 2px rgba(30,140,190,.8);
+}
+
+input[type=radio]:checked:before {
+     content: "\f111";
+    -webkit-border-radius: 50%;
+    font-size: 11px !important;
+    color: #1e8cbe;
+    vertical-align: middle !important;
+    margin-top: 3px;
+}
+
+input[type=checkbox]:checked {
+    vertical-align: middle;
+    font: normal normal normal 14px/1 'Font Awesome 5 Free';
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+input[type=radio]:checked:before
+, input[type=checkbox]:checked:before {
+    content: "\f00c";
+    margin: 0;
+    padding: 0;
+    color: #1e8cbe;
+    font-size: 14px !important;
+    font-weight: 600;
+    float: left;
+    display: inline-block;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.background, .backdrop {
+    background-color: #3f689c;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+}
+.background {
+	background: url('../images/bg.jpg');
+	background-repeat: no-repeat;
+	background-size: 100% auto;
+}
+.backdrop {
+	background: #b4b4b4;
+    filter: alpha(opacity=90);
+    opacity: .9;
+}
+
+.login-container {
+	max-width: 370px;
+    width: 100%;
+    z-index: 1;
+    position: absolute;
+    left: 50%;
+	top: 50px;
+	bottom: 50px;
+    margin-left: -175px;
+}
+.login-body {
+	padding: 25px 25px 25px 25px;
+    background: #FFFFFF;
+}
+.login-header img {
+    /* border: 1px solid #CCCCCC;
+    padding: 10px;
+    border-radius: 50px; */
+	max-width: 100%;
+}
+.login-header {
+  text-align: center;
+    padding: 25px;
+    padding-bottom: 20px;
+    background: #4a6da1;
+    border-bottom: rgba(89, 89, 89, 0.19);
+}
+.login-header h3 {
+    font-weight: lighter;
+    font-size: 25px;
+    margin: 0;
+	margin-top: 10px;
+}
+.login-footer {
+	background: #f1f1f1;
+	text-align:center;
+	padding: 20px 25px;
+}
+.login-footer p {
+	margin-bottom: 5px;
+}
+
+.form-control {
+	border-radius: 0;
+}
+.btn {
+	border-radius:0;
+}
+.login-input, .login-input:focus  {
+	border: 0;
+	border-bottom: 1px solid #CCCCCC;
+	outline: none;
+	box-shadow: none;
+}
+.input-group-text {
+	border-radius: 0;
+}
+.login-container .input-group-text {
+	background: none;
+    border: 0;
+}
+
+.form-login {
+	margin: 0;
+}
+
+.login-container .btn {
+	height: calc(2.75rem + 2px);
+}
+.login-container .copyright {
+	background: none;
+	color: #DCDCDC;
+	text-align:center;
+	margin-top: 10px;
+	margin-bottom: 15px;
+}
+
+.login-container .copyright a {
+	color: #DCDCDC;
+}
+
+.form-register {
+	margin: 0;
+	margin-top: 20px;
+}
+
+.alert {
+	border-radius: 0;
+}
+
+.login-container .alert-last{
+	margin: 0;
+}
+
+
+.checkbox label {
+	cursor: pointer;
+}
+.progress {
+	border-radius:0;
+}
+
+.form-inline input:not(:last-child),
+.form-inline select:not(:last-child) {
+	margin-right:3px;
+}
+
+@media screen and (max-width: 500px) {
+	.login-container {
+		margin: auto;
+		left: 7px;
+		right: 7px;
+		width: auto;
+		top: 20px;
+	}
+	
+	.login-body {
+		padding: 20px;
+	}
+	
+	.login-header {
+		padding: 20px;
+	}
+	.login-footer {
+		padding: 20px 20px;
+	}
+	input, select {
+		max-width: 100% !important;
+		float:none;
+		margin-top: 3px;
+	}
+	.form-inline input,
+	.form-inline select {
+		margin-right: 0 !important;
+	}
+}

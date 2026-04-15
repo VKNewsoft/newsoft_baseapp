@@ -1,0 +1,6 @@
+Jika ingin mnembaahkan scheme, tambahkan css pad index.css untuk menambahkan warna menu user_setting
+
+misal: file blue.css, maka di index.css ditambahkan:
+.blue-theme {
+  background: #1976d2;
+}

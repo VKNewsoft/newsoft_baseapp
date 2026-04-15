@@ -112,7 +112,7 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 		$this->data['style'] = ' style="max-width:375px"';
 		
 		// Tampilkan form login
-		return view('themes/modern/builtin/login', $this->data);
+		return $this->fetchView('themes/modern/builtin/login.php', $this->data);
 	}
 	
 	/**

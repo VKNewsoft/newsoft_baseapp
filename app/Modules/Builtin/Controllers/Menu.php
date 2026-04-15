@@ -91,7 +91,7 @@ class Menu extends \App\Modules\Common\Controllers\BaseController
 		if ($this->request->getGet('id')) {
 			$this->data['menu'] = $this->model->getMenuById($this->request->getGet('id'));
 		}
-		echo view('themes/modern/builtin/menu-form.php', $this->data);
+		echo $this->fetchView('builtin/menu-form.php', $this->data);
 	}
 
 	public function ajaxGetKategoriForm() 
@@ -106,7 +106,7 @@ class Menu extends \App\Modules\Common\Controllers\BaseController
 			}
 		}
 			
-		echo view('themes/modern/builtin/menu-kategori-form.php', $this->data);
+		echo $this->fetchView('builtin/menu-kategori-form.php', $this->data);
 	}
 	
 	public function ajaxSaveKategori() {

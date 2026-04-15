@@ -284,14 +284,14 @@ class BaseController extends Controller
 	}
 	
 	protected function addStyle($file) {
-		$this->data['styles'][] = $file;
+		$this->data['styles'][] = $this->resolveModuleAssetUrl($file);
 	}
 	
 	protected function addJs($file, $print = false) {
 		if ($print) {
 			$this->data['scripts'][] = ['print' => true, 'script' => $file];
 		} else {
-			$this->data['scripts'][] = $file;
+			$this->data['scripts'][] = $this->resolveModuleAssetUrl($file);
 		}
 	}
 	
@@ -318,21 +318,128 @@ class BaseController extends Controller
 		return null;
 	}
 
+	protected function getCurrentModuleName()
+	{
+		$classes = array_merge([get_class($this)], array_values(class_parents($this)));
+
+		foreach ($classes as $class) {
+			if (strpos($class, 'App\\Modules\\') !== 0 || strpos($class, 'App\\Modules\\Common\\') === 0) {
+				continue;
+			}
+
+			$parts = explode('\\', $class);
+			return $parts[2] ?? 'Common';
+		}
+
+		return 'Common';
+	}
+
+	protected function getCommonViewBasePath()
+	{
+		return APPPATH . 'Modules/Common/Views/';
+	}
+
+	protected function normalizeViewPath($path)
+	{
+		return str_replace('\\', '/', (string) $path);
+	}
+
+	protected function buildNamespacedView($viewPath)
+	{
+		$relativePath = str_replace($this->normalizeViewPath(APPPATH), '', $this->normalizeViewPath($viewPath));
+		$relativePath = preg_replace('/\.php$/', '', $relativePath);
+		return 'App\\' . str_replace('/', '\\', $relativePath);
+	}
+
+	protected function moduleAsset($relativePath, $moduleName = null)
+	{
+		$moduleName = $moduleName ?: $this->getCurrentModuleName();
+		$relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+		return $this->config->baseURL . 'module-assets/' . $moduleName . '/' . $relativePath;
+	}
+
+	protected function commonAsset($relativePath)
+	{
+		return $this->moduleAsset($relativePath, 'Common');
+	}
+
+	protected function resolveModuleAssetUrl($file)
+	{
+		if (!is_string($file) || strpos($file, 'public/themes/modern/') === false) {
+			return $file;
+		}
+
+		$relative = explode('public/themes/modern/', $file, 2)[1] ?? '';
+		$relative = ltrim(str_replace('\\', '/', $relative), '/');
+		if ($relative === '') {
+			return $file;
+		}
+
+		$currentModule = $this->getCurrentModuleName();
+		$candidates = [];
+
+		if (strpos($relative, 'builtin/js/') === 0) {
+			$filename = substr($relative, strlen('builtin/js/'));
+			$candidates[] = [$currentModule, 'js/' . $filename];
+			$candidates[] = ['Builtin', 'js/' . $filename];
+			$candidates[] = ['Common', 'builtin/js/' . $filename];
+		} elseif (strpos($relative, 'builtin/css/') === 0) {
+			$filename = substr($relative, strlen('builtin/css/'));
+			$candidates[] = [$currentModule, 'css/' . $filename];
+			$candidates[] = ['Builtin', 'css/' . $filename];
+			$candidates[] = ['Common', 'builtin/css/' . $filename];
+		} elseif (strpos($relative, 'builtin/fonts/') === 0 || strpos($relative, 'builtin/images/') === 0) {
+			$candidates[] = ['Common', $relative];
+		} elseif (strpos($relative, 'js/') === 0) {
+			$filename = substr($relative, strlen('js/'));
+			$candidates[] = [$currentModule, 'js/' . $filename];
+			$candidates[] = ['Common', 'js/' . $filename];
+		} elseif (strpos($relative, 'css/') === 0) {
+			$filename = substr($relative, strlen('css/'));
+			$candidates[] = [$currentModule, 'css/' . $filename];
+			$candidates[] = ['Common', 'css/' . $filename];
+		}
+
+		foreach ($candidates as $candidate) {
+			[$moduleName, $assetPath] = $candidate;
+			$fullPath = APPPATH . 'Modules/' . $moduleName . '/Assets/' . str_replace('/', DIRECTORY_SEPARATOR, $assetPath);
+			if (is_file($fullPath)) {
+				return $this->moduleAsset($assetPath, $moduleName);
+			}
+		}
+
+		return $file;
+	}
+
 	protected function renderViewFile($viewFile, $data = false)
 	{
 		$moduleBasePath = $this->getModuleBasePath();
-		$normalizedView = str_replace('\\', '/', ltrim($viewFile, '/'));
+		$commonViewBasePath = $this->getCommonViewBasePath();
+		$normalizedView = $this->normalizeViewPath(ltrim($viewFile, '/\\'));
 		$viewData = is_array($data) ? $data : [];
 
 		if ($moduleBasePath) {
 			$moduleViewPath = $moduleBasePath . str_replace('/', DIRECTORY_SEPARATOR, $normalizedView);
 			if (is_file($moduleViewPath)) {
-				echo view($moduleViewPath, $viewData);
+				echo view($this->buildNamespacedView($moduleViewPath), $viewData);
 				return;
 			}
 		}
 
+		$commonViewPath = $commonViewBasePath . str_replace('/', DIRECTORY_SEPARATOR, $normalizedView);
+		if (is_file($commonViewPath)) {
+			echo view($this->buildNamespacedView($commonViewPath), $viewData);
+			return;
+		}
+
 		echo view($normalizedView, $viewData);
+	}
+
+	protected function fetchView($viewFile, $data = false)
+	{
+		ob_start();
+		$this->renderViewFile($viewFile, $data);
+		return ob_get_clean();
 	}
 	
 	protected function view($file, $data = false, $file_only = false) 
@@ -342,8 +449,13 @@ class BaseController extends Controller
 				$this->renderViewFile($file_item, $data);
 			}
 		} else {
+			if ($file_only) {
+				$this->renderViewFile($file, $data);
+				return;
+			}
+
 			$this->renderViewFile('themes/modern/header.php', $data);
-			$this->renderViewFile('themes/modern/' . $file, $data);
+			$this->renderViewFile($file, $data);
 			$this->renderViewFile('themes/modern/footer.php');
 		}
 	}
