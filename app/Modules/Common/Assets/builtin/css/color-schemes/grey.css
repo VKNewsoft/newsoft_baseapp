@@ -12,6 +12,22 @@
 	--sidebar-item-active-hover-color: #ffffff;
 	--sidebar-tree-open-bg: #eef2f7;
 	--sidebar-tree-open-color: #475569;
+	--btn-primary-bg: #64748b;
+	--btn-primary-border: #64748b;
+	--btn-primary-hover-bg: #475569;
+	--btn-primary-hover-border: #475569;
+	--btn-primary-active-bg: #334155;
+	--btn-primary-active-border: #334155;
+	--btn-primary-disabled-bg: #b3bcc8;
+	--btn-primary-disabled-border: #b3bcc8;
+	--btn-success-bg: #475569;
+	--btn-success-border: #475569;
+	--btn-success-hover-bg: #334155;
+	--btn-success-hover-border: #334155;
+	--btn-success-active-bg: #1f2937;
+	--btn-success-active-border: #1f2937;
+	--btn-success-disabled-bg: #98a5b5;
+	--btn-success-disabled-border: #98a5b5;
 }
 
 header {

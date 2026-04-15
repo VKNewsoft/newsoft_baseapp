@@ -5,7 +5,7 @@
 */
 
 body {
-	font-family: "open sans", "segoe ui", arial;
+	font-family: var(--app-font-family, "Open Sans", "Segoe UI", Arial, sans-serif);
     font-weight: 400;
 	font-size: 14px;
 	background: #eef3f8;
@@ -29,6 +29,33 @@ body {
 	--success: #16a34a;
 	--danger: #dc2626;
 	--warning: #d97706;
+	--btn-primary-bg: #2563eb;
+	--btn-primary-border: #2563eb;
+	--btn-primary-hover-bg: #1d4ed8;
+	--btn-primary-hover-border: #1d4ed8;
+	--btn-primary-active-bg: #1e40af;
+	--btn-primary-active-border: #1e40af;
+	--btn-primary-disabled-bg: #93c5fd;
+	--btn-primary-disabled-border: #93c5fd;
+	--btn-primary-color: #ffffff;
+	--btn-success-bg: #1d4ed8;
+	--btn-success-border: #1d4ed8;
+	--btn-success-hover-bg: #1e40af;
+	--btn-success-hover-border: #1e40af;
+	--btn-success-active-bg: #1e3a8a;
+	--btn-success-active-border: #1e3a8a;
+	--btn-success-disabled-bg: #93c5fd;
+	--btn-success-disabled-border: #93c5fd;
+	--btn-success-color: #ffffff;
+	--btn-secondary-bg: #94a3b8;
+	--btn-secondary-border: #94a3b8;
+	--btn-secondary-hover-bg: #64748b;
+	--btn-secondary-hover-border: #64748b;
+	--btn-secondary-active-bg: #475569;
+	--btn-secondary-active-border: #475569;
+	--btn-secondary-disabled-bg: #cbd5e1;
+	--btn-secondary-disabled-border: #cbd5e1;
+	--btn-secondary-color: #ffffff;
 	--radius-sm: 10px;
 	--radius-md: 18px;
 	--radius-lg: 24px;

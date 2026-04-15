@@ -14,6 +14,21 @@ if (empty($session->get('user'))) {
 }
 
 $user = $session->get('user');
+$fontFamilyMap = [
+	'open-sans' => '"Open Sans", "Segoe UI", Arial, sans-serif',
+	'roboto' => '"Roboto", "Segoe UI", Arial, sans-serif',
+	'montserrat' => '"Montserrat", "Segoe UI", Arial, sans-serif',
+	'poppins' => '"Poppins", "Segoe UI", Arial, sans-serif',
+	'arial' => 'Arial, "Helvetica Neue", sans-serif',
+	'verdana' => 'Verdana, Geneva, sans-serif',
+	'tahoma' => 'Tahoma, "Segoe UI", sans-serif',
+	'trebuchet-ms' => '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
+	'georgia' => 'Georgia, "Times New Roman", serif'
+];
+$currentFontKey = $app_layout['font_family'] ?? 'open-sans';
+$currentFontFamily = $fontFamilyMap[$currentFontKey] ?? $fontFamilyMap['open-sans'];
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
+$fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +38,7 @@ $user = $session->get('user');
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="robots" content="noindex, nofollow" />
 	<meta name="googlebot" content="noindex, nofollow" />
+	<style>:root{--app-font-family: <?= $currentFontFamily ?>;}</style>
 	<link rel="shortcut icon" href="<?= $config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time() ?>" />
 
 	<!-- Styles: vendors / theme / dynamic -->
@@ -37,8 +53,9 @@ $user = $session->get('user');
 	<link id="style-switch-bootswatch" rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootswatch/'. ( empty($_COOKIE['nsd_adm_theme']) || @$_COOKIE['nsd_adm_theme'] == 'light' ? esc($app_layout['bootswatch_theme']) : 'default' ) .'/bootstrap.min.css?r='.time() ?>" />
 	<link id="style-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time() ?>" />
 	<link id="style-switch-sidebar" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?r='.time() ?>" />
-	<link id="font-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$app_layout['font_family'].'.css?r='.time() ?>" />
-	<link id="font-size-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?r='.time() ?>" />
+	<link rel="preload" as="style" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion ?>" />
+	<link id="font-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion ?>" />
+	<link id="font-size-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion ?>" />
 	<link id="logo-background-color-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?r='.time() ?>" />
 	<link rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?r=' . time() ?>" />
 

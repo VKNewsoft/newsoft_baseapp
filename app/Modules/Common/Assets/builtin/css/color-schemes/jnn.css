@@ -12,6 +12,22 @@
 	--sidebar-item-active-hover-color: #ffffff;
 	--sidebar-tree-open-bg: #f7ebec;
 	--sidebar-tree-open-color: #8b3035;
+	--btn-primary-bg: #8b3035;
+	--btn-primary-border: #8b3035;
+	--btn-primary-hover-bg: #913e42;
+	--btn-primary-hover-border: #913e42;
+	--btn-primary-active-bg: #692629;
+	--btn-primary-active-border: #692629;
+	--btn-primary-disabled-bg: #c58d90;
+	--btn-primary-disabled-border: #c58d90;
+	--btn-success-bg: #a84c51;
+	--btn-success-border: #a84c51;
+	--btn-success-hover-bg: #913e42;
+	--btn-success-hover-border: #913e42;
+	--btn-success-active-bg: #692629;
+	--btn-success-active-border: #692629;
+	--btn-success-disabled-bg: #c89ea0;
+	--btn-success-disabled-border: #c89ea0;
 }
 
 header {
@@ -41,26 +57,6 @@ header, header>ul>li>a {
 }
 .account-menu li a:hover {
     background: #c7bce9;
-}
-.btn-primary {
-	background: #8B3035;
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #8B3035;
-    --bs-btn-border-color: #8B3035;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #913e42;
-    --bs-btn-hover-border-color: #913e42;
-    --bs-btn-focus-shadow-rgb: 49,132,253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #913e42;
-    --bs-btn-active-border-color: #ce4148;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #8B3035;
-    --bs-btn-disabled-border-color: #8B3035;
-}
-.btn-success {
-    background: #a84c51 !important;
 }
 .btn-secondary {
     background: #969091 !important;

@@ -12,6 +12,22 @@
 	--sidebar-item-active-hover-color: #ffffff;
 	--sidebar-tree-open-bg: #e8f0fb;
 	--sidebar-tree-open-color: #013062;
+	--btn-primary-bg: #013062;
+	--btn-primary-border: #013062;
+	--btn-primary-hover-bg: #034c9b;
+	--btn-primary-hover-border: #034c9b;
+	--btn-primary-active-bg: #184474;
+	--btn-primary-active-border: #184474;
+	--btn-primary-disabled-bg: #7d95b2;
+	--btn-primary-disabled-border: #7d95b2;
+	--btn-success-bg: #0769d1;
+	--btn-success-border: #0769d1;
+	--btn-success-hover-bg: #034c9b;
+	--btn-success-hover-border: #034c9b;
+	--btn-success-active-bg: #013062;
+	--btn-success-active-border: #013062;
+	--btn-success-disabled-bg: #7ba7d5;
+	--btn-success-disabled-border: #7ba7d5;
 }
 
 header {
@@ -47,26 +63,6 @@ header, header>ul>li>a {
 }
 .account-menu li a:hover {
     background: #c7bce9;
-}
-.btn-primary {
-	background: #013062;
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #013062;
-    --bs-btn-border-color: #013062;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #034c9b;
-    --bs-btn-hover-border-color: #034c9b;
-    --bs-btn-focus-shadow-rgb: 49,132,253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #034c9b;
-    --bs-btn-active-border-color: #207fe4;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #013062;
-    --bs-btn-disabled-border-color: #013062;
-}
-.btn-success {
-    background: #0769d1 !important;
 }
 .btn-secondary {
     background: #969091 !important;

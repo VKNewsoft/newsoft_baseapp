@@ -5,6 +5,24 @@
 <meta name="descrition" content="Kasir"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="mobile-web-app-capable" content="yes" />
+<?php
+$fontFamilyMap = [
+	'open-sans' => '"Open Sans", "Segoe UI", Arial, sans-serif',
+	'roboto' => '"Roboto", "Segoe UI", Arial, sans-serif',
+	'montserrat' => '"Montserrat", "Segoe UI", Arial, sans-serif',
+	'poppins' => '"Poppins", "Segoe UI", Arial, sans-serif',
+	'arial' => 'Arial, "Helvetica Neue", sans-serif',
+	'verdana' => 'Verdana, Geneva, sans-serif',
+	'tahoma' => 'Tahoma, "Segoe UI", sans-serif',
+	'trebuchet-ms' => '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
+	'georgia' => 'Georgia, "Times New Roman", serif'
+];
+$currentFontKey = $app_layout['font_family'] ?? 'open-sans';
+$currentFontFamily = $fontFamilyMap[$currentFontKey] ?? $fontFamilyMap['open-sans'];
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
+$fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
+?>
+<style>:root{--app-font-family: <?=$currentFontFamily?>;}</style>
 <link rel="manifest" href="manifest.json"/>
 <link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time()?>" />
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css'?>"/>
@@ -23,8 +41,9 @@
 
 <link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time()?>"/>
 <link rel="stylesheet" id="style-switch-sidebar" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?r='.time()?>"/>
-<link rel="stylesheet" id="font-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$app_layout['font_family'].'.css?r='.time()?>"/>
-<link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?r='.time()?>"/>
+<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion?>"/>
 <link rel="stylesheet" id="logo-background-color-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?r='.time()?>"/>
 
 <?php

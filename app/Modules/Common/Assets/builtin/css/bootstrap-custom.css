@@ -6,22 +6,57 @@
 */
 
 /* BUTTON */
+.btn-primary,
+.btn-success,
+.btn-secondary {
+	--bs-btn-color: #fff;
+	--bs-btn-focus-shadow-rgb: 37, 99, 235;
+}
+.btn-primary {
+	--bs-btn-color: var(--btn-primary-color, #fff);
+	--bs-btn-bg: var(--btn-primary-bg, var(--primary));
+	--bs-btn-border-color: var(--btn-primary-border, var(--primary));
+	--bs-btn-hover-color: var(--btn-primary-color, #fff);
+	--bs-btn-hover-bg: var(--btn-primary-hover-bg, var(--btn-primary-bg, var(--primary)));
+	--bs-btn-hover-border-color: var(--btn-primary-hover-border, var(--btn-primary-border, var(--primary)));
+	--bs-btn-active-color: var(--btn-primary-color, #fff);
+	--bs-btn-active-bg: var(--btn-primary-active-bg, var(--btn-primary-hover-bg, var(--btn-primary-bg, var(--primary))));
+	--bs-btn-active-border-color: var(--btn-primary-active-border, var(--btn-primary-hover-border, var(--btn-primary-border, var(--primary))));
+	--bs-btn-disabled-color: var(--btn-primary-color, #fff);
+	--bs-btn-disabled-bg: var(--btn-primary-disabled-bg, var(--btn-primary-bg, var(--primary)));
+	--bs-btn-disabled-border-color: var(--btn-primary-disabled-border, var(--btn-primary-border, var(--primary)));
+}
 .btn-success {
-	/* background: #06bb0c;
-	color: #FFFFFF !important;
-	text-decoration: none !important; */
+	--bs-btn-color: var(--btn-success-color, #fff);
+	--bs-btn-bg: var(--btn-success-bg, var(--btn-primary-bg, var(--primary)));
+	--bs-btn-border-color: var(--btn-success-border, var(--btn-success-bg, var(--btn-primary-bg, var(--primary))));
+	--bs-btn-hover-color: var(--btn-success-color, #fff);
+	--bs-btn-hover-bg: var(--btn-success-hover-bg, var(--btn-success-bg, var(--btn-primary-bg, var(--primary))));
+	--bs-btn-hover-border-color: var(--btn-success-hover-border, var(--btn-success-hover-bg, var(--btn-success-bg, var(--btn-primary-bg, var(--primary)))));
+	--bs-btn-active-color: var(--btn-success-color, #fff);
+	--bs-btn-active-bg: var(--btn-success-active-bg, var(--btn-success-hover-bg, var(--btn-success-bg, var(--btn-primary-bg, var(--primary)))));
+	--bs-btn-active-border-color: var(--btn-success-active-border, var(--btn-success-active-bg, var(--btn-success-hover-bg, var(--btn-success-bg, var(--btn-primary-bg, var(--primary))))));
+	--bs-btn-disabled-color: var(--btn-success-color, #fff);
+	--bs-btn-disabled-bg: var(--btn-success-disabled-bg, var(--btn-success-bg, var(--btn-primary-bg, var(--primary))));
+	--bs-btn-disabled-border-color: var(--btn-success-disabled-border, var(--btn-success-border, var(--btn-success-bg, var(--btn-primary-bg, var(--primary)))));
+}
+.btn-secondary {
+	--bs-btn-color: var(--btn-secondary-color, #fff);
+	--bs-btn-bg: var(--btn-secondary-bg, #94a3b8);
+	--bs-btn-border-color: var(--btn-secondary-border, #94a3b8);
+	--bs-btn-hover-color: var(--btn-secondary-color, #fff);
+	--bs-btn-hover-bg: var(--btn-secondary-hover-bg, #64748b);
+	--bs-btn-hover-border-color: var(--btn-secondary-hover-border, #64748b);
+	--bs-btn-active-color: var(--btn-secondary-color, #fff);
+	--bs-btn-active-bg: var(--btn-secondary-active-bg, #475569);
+	--bs-btn-active-border-color: var(--btn-secondary-active-border, #475569);
+	--bs-btn-disabled-color: var(--btn-secondary-color, #fff);
+	--bs-btn-disabled-bg: var(--btn-secondary-disabled-bg, #cbd5e1);
+	--bs-btn-disabled-border-color: var(--btn-secondary-disabled-border, #cbd5e1);
 }
 .btn-navy {
 	background: #94a3b3;
     color: #ffffff;
-}
-
-.btn-primary {
-	/* background: #2873d0;
-    color: #FFFFFF; */
-}
-.btn-primary:hover {
-    /* background: #315b9a; */
 }
 .btn-danger {
 	/* background: #ec3f3f;

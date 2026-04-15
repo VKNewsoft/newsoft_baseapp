@@ -171,6 +171,7 @@ jQuery(document).ready(function () {
 		const colorLabel = getSelectedThemeLabel(colorScheme);
 
 		$previewThemeName.text(colorLabel + ' / ' + themeLabel);
+		document.documentElement.style.setProperty('--app-font-family', getSelectedFontFamily());
 		$previewRoot.css('font-family', getSelectedFontFamily());
 		$fontPreviewNote.css('font-family', getSelectedFontFamily());
 		$previewMain.css('background', themePreview.surface);

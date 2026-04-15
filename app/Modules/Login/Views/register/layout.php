@@ -6,6 +6,23 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
+<?php
+$fontFamilyMap = [
+	'open-sans' => '"Open Sans", "Segoe UI", Arial, sans-serif',
+	'roboto' => '"Roboto", "Segoe UI", Arial, sans-serif',
+	'montserrat' => '"Montserrat", "Segoe UI", Arial, sans-serif',
+	'poppins' => '"Poppins", "Segoe UI", Arial, sans-serif',
+	'arial' => 'Arial, "Helvetica Neue", sans-serif',
+	'verdana' => 'Verdana, Geneva, sans-serif',
+	'tahoma' => 'Tahoma, "Segoe UI", sans-serif',
+	'trebuchet-ms' => '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
+	'georgia' => 'Georgia, "Times New Roman", serif'
+];
+$currentFontKey = $app_layout['font_family'] ?? 'open-sans';
+$currentFontFamily = $fontFamilyMap[$currentFontKey] ?? $fontFamilyMap['open-sans'];
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
+?>
+<style>:root{--app-font-family: <?=$currentFontFamily?>;}</style>
 <link rel="manifest" href="manifest.json"/>
 <link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time()?>" />
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?r='.time()?>"/>
@@ -25,6 +42,8 @@ if (@$styles) {
 ?>
 
 <link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time()?>"/>
+<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
 
 <script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js?r='.time()?>"></script>
 <script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.min.js?r='.time()?>"></script>
