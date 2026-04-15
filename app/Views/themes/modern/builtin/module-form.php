@@ -44,6 +44,16 @@
 				$$val = '';
 			}
 		}
+
+		$permission_label_map = [
+			'create' => 'Membuat data baru',
+			'read_all' => 'Melihat semua data',
+			'read_own' => 'Melihat data milik sendiri',
+			'update_all' => 'Mengubah semua data',
+			'update_own' => 'Mengubah data milik sendiri',
+			'delete_all' => 'Menghapus semua data',
+			'delete_own' => 'Menghapus data milik sendiri'
+		];
 		
 		// Id Module
 		$id = '';
@@ -102,31 +112,58 @@
 			
 			if (empty($id)) {
 				?>
-				<div class="bg-lightgrey p-3 mt-4 mb-4 ps-4">
-					<h5>Permission</h5>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Module Permission</label>
-					<div class="col-sm-5">
-						<?=options(['name' => 'generate_permission']
-									, ['' => 'Tidak', 'crud_all' => 'CRUD All', 'crud_own' => 'CRUD Own', 'crud_all_crud_own' => 'CRUD + CRUD Own']
-									, set_value('generate_permission', @$generate_permission) 
-								)?>
-						<small>Tambah permission pada module. Permission CRUD: create, read_all, update_all, delete_all (<u>jika permission sudah ada, maka tidak akan dibuat</u>). CRUD Own: read_own, update_own, dan delete_own</small>
+				<div class="module-permission-panel mt-4">
+					<div class="module-permission-panel-header">
+						<div>
+							<h5 class="mb-1">Permission</h5>
+							<p class="text-muted mb-0">Tentukan paket permission awal agar module langsung siap dipakai.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Module Role</label>
-					<div class="col-sm-5">
-						<?php
-						$options = [];
-						$options[''] = 'Tidak';
-						foreach ($roles as $val) {
-							$options[$val['id_role']] = $val['judul_role'];
-						}
-						echo options(['name' => 'id_role'], $options, set_value('id_role', ''));
-						?>
-						<small>Assign role pada module. Role akan memiliki module permission sesuai permission diatas</small>
+					<div class="module-permission-grid">
+						<div class="permission-guide-card">
+							<h6>Template Permission</h6>
+							<p class="text-muted">Pilih paket akses sesuai skenario penggunaan module.</p>
+							<?=options(['name' => 'generate_permission', 'class' => 'form-select']
+										, ['' => 'Tidak', 'crud_all' => 'CRUD All', 'crud_own' => 'CRUD Own', 'crud_all_crud_own' => 'CRUD + CRUD Own']
+										, set_value('generate_permission', @$generate_permission) 
+									)?>
+							<div class="permission-guide-list mt-3">
+								<div class="permission-guide-item">
+									<strong>CRUD All</strong>
+									<small>Create, read_all, update_all, delete_all</small>
+								</div>
+								<div class="permission-guide-item">
+									<strong>CRUD Own</strong>
+									<small>Read_own, update_own, delete_own</small>
+								</div>
+								<div class="permission-guide-item">
+									<strong>Catatan</strong>
+									<small>Permission yang sudah ada tidak akan dibuat ulang.</small>
+								</div>
+							</div>
+						</div>
+						<div class="permission-guide-card">
+							<h6>Role Awal</h6>
+							<p class="text-muted">Assign role default agar permission hasil generate langsung terhubung.</p>
+							<?php
+							$options = [];
+							$options[''] = 'Tidak';
+							foreach ($roles as $val) {
+								$options[$val['id_role']] = $val['judul_role'];
+							}
+							echo options(['name' => 'id_role', 'class' => 'form-select'], $options, set_value('id_role', ''));
+							?>
+							<div class="permission-guide-list mt-3">
+								<div class="permission-guide-item">
+									<strong>Tujuan</strong>
+									<small>Role terpilih akan menerima permission module sesuai template di kiri.</small>
+								</div>
+								<div class="permission-guide-item">
+									<strong>Saran</strong>
+									<small>Pilih role utama terlebih dahulu, lalu detailnya bisa disesuaikan setelah module dibuat.</small>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			<?php
@@ -140,79 +177,142 @@
 	
 		if ($id) {
 			?>
-			<div class="bg-lightgrey p-3 mt-4 mb-4 ps-4">
-				<h5>Permission</h5>
-			</div>
-			<div class="row mb-3">
-				<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Module Permission</label>
-				<div class="col-sm-5">
+			<div class="module-permission-panel mt-4">
+				<div class="module-permission-panel-header">
+					<div>
+						<h5 class="mb-1">Permission</h5>
+						<p class="text-muted mb-0">Kelola permission module dan distribusinya ke setiap role dengan tampilan yang lebih ringkas.</p>
+					</div>
+				</div>
+
+				<div class="permission-summary-card mb-4">
+					<div class="permission-summary-head">
+						<div>
+							<h6 class="mb-1">Module Permission</h6>
+							<p class="text-muted mb-0">Permission dasar yang tersedia untuk module ini.</p>
+						</div>
+						<a href="javascript:void(0)" class="btn btn-outline-success btn-sm add-module-permission" data-id-module="<?=$id?>">
+							<i class="fas fa-plus me-1"></i>Tambah Permission
+						</a>
+					</div>
 					<?php
 					$display = $module_permission ? '' : ' style="display:none"';
-					echo '
-					<div class="module-permission-container"' . $display . '>
-						Permission pada module ini:
-						<ul class="list-circle module-permission">';
+					echo '<div class="module-permission-container"' . $display . '>';
+					echo '<div class="permission-chip-list module-permission">';
 					foreach ($module_permission as $val) {
-						echo '<li><small>' . $val['nama_permission'] . ' (' . $val['judul_permission'] . ')</small>
+						echo '<div class="permission-chip-item">
+								<div class="permission-chip-content">
+									<strong>' . $val['nama_permission'] . '</strong>
+									<small>' . $val['judul_permission'] . '</small>
+								</div>
 								<a href="javascript:void(0)" title="Hapus permission ' . $val['nama_permission'] . '" class="delete-module-permission text-danger" data-url="' . base_url() . '/builtin/permission/ajaxDelete" data-id-permission="'. $val['id_module_permission'].'">
-									<i class="ms-2 fas fa-times"></i>
+									<i class="fas fa-times"></i>
 								</a>
-						</li>';
+							</div>';
 					}
-					
+					echo '</div>';
 					$display = count($module_permission) > 1 ? '' :  ' style="display:none"';
-					echo '</ul>
-						<a href="javascript:void(0)" class="ms-2 small text-danger delete-all-module-permission"' . $display . ' data-id-module="' . $id . '"><i class="fas fa-times"></i>&nbsp;&nbsp;Delete All Permission</a>
-					</div>';
-					
-					echo '<a href="javascript:void(0)" class="text-success add-module-permission" data-id-module="' . $id . '"><small><i class="fas fa-plus"></i>&nbsp;&nbsp;Tambah Permission</small></a>';
+					echo '<a href="javascript:void(0)" class="small text-danger delete-all-module-permission"' . $display . ' data-id-module="' . $id . '"><i class="fas fa-times me-1"></i>Delete All Permission</a>';
+					echo '</div>';
+					if (!$module_permission) {
+						echo '<div class="permission-empty-state module-permission-empty">
+								<i class="fas fa-shield-alt"></i>
+								<div>
+									<strong>Belum ada permission module</strong>
+									<small>Tambahkan permission dasar agar role bisa diberi akses yang sesuai.</small>
+								</div>
+							</div>';
+					}
 					?>
 				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-sm-3 col-md-2 col-lg-3 col-xl-2 col-form-label">Role Module Permission</label>
-				<div class="col-sm-5">
-					<?php
-					// ROLE
-					$module_role_check = [];
-					if ( $roles ) {
-						foreach ($roles as $val) {
-							$module_role_check[$val['id_role']] = $val;
-						}
-					}
-					
-					echo '<div>';
-					foreach ($roles as $val_role) 
-					{						
-						echo '
-						<div><strong id="judul-role-' . $val_role['id_role'] . '">' . $val_role['judul_role'] . '</strong> <small>|</small> <a href="javascript:void(0)" class="text-success add-role-module-permission" data-id-module="' . $id . '" data-id-role="' . $val_role['id_role'] . '"><small>Edit Permission</small></a></div>
-						<div class="ms-2 role-module-permission-container">
-							<ul class="list-circle" id="role-permission-'. $val_role['id_role'] . '">';
+
+				<div class="permission-summary-card">
+					<div class="permission-summary-head">
+						<div>
+							<h6 class="mb-1">Role Module Permission</h6>
+							<p class="text-muted mb-0">Setiap card di bawah menunjukkan permission yang dimiliki tiap role pada module ini.</p>
+						</div>
+					</div>
+					<div class="role-permission-toolbar">
+						<div class="role-permission-search">
+							<i class="fas fa-search"></i>
+							<input type="text" class="form-control" id="role-permission-search" placeholder="Cari role...">
+						</div>
+						<div class="role-permission-toolbar-actions">
+							<button type="button" class="btn btn-light btn-sm" id="expand-all-role-permission">Expand All</button>
+							<button type="button" class="btn btn-light btn-sm" id="collapse-all-role-permission">Collapse All</button>
+						</div>
+					</div>
+					<div class="role-permission-summary">
+						<div class="role-permission-summary-item">
+							<strong id="visible-role-permission-count"><?=count($roles)?></strong>
+							<small>Role Ditampilkan</small>
+						</div>
+						<div class="role-permission-summary-item">
+							<strong><?=count(array_filter($role_permission_module))?></strong>
+							<small>Role Dengan Permission</small>
+						</div>
+						<div class="role-permission-summary-item">
+							<strong><?=count($roles) - count(array_filter($role_permission_module))?></strong>
+							<small>Perlu Review</small>
+						</div>
+					</div>
+					<div class="role-permission-grid">
+						<?php
+						foreach ($roles as $val_role) 
+						{
 							$count_permission = 0;
+							if (key_exists($val_role['id_role'], $role_permission_module)) {
+								$count_permission = count($role_permission_module[$val_role['id_role']]);
+							}
+							$is_expanded = $count_permission > 0 ? 'true' : 'false';
+							$card_class = $count_permission > 0 ? ' is-expanded' : '';
+							echo '<div class="role-permission-card role-permission-accordion'. $card_class .'" data-role-name="' . strtolower(esc($val_role['judul_role'])) . '" data-role-id="' . $val_role['id_role'] . '" data-permission-count="' . $count_permission . '">
+									<div class="role-permission-card-head role-permission-toggle" role="button" tabindex="0" aria-expanded="' . $is_expanded . '">
+										<div>
+											<strong id="judul-role-' . $val_role['id_role'] . '">' . $val_role['judul_role'] . '</strong>
+											<div class="role-permission-caption">Permission khusus untuk role ini pada module ' . $module['judul_module'] . '</div>
+										</div>
+										<div class="role-permission-card-meta">
+											<span class="role-permission-badge">'. $count_permission .' permission</span>
+											<a href="javascript:void(0)" class="btn btn-outline-success btn-sm add-role-module-permission" data-id-module="' . $id . '" data-id-role="' . $val_role['id_role'] . '">Edit Permission</a>
+											<span class="role-permission-chevron"><i class="fas fa-chevron-down"></i></span>
+										</div>
+									</div>
+									<div class="role-module-permission-container">';
+
+							echo '<div class="permission-chip-list role-permission-chip-list" id="role-permission-'. $val_role['id_role'] . '">';
 							if (key_exists($val_role['id_role'], $role_permission_module)) {
 								foreach ($role_permission_module[$val_role['id_role']] as $key => $val_permission) 
 								{
-									echo '<li data-id-permission="'. $val_permission['id_module_permission'] . '"><small>' . $val_permission['nama_permission'] . '</small>
-										<a href="javascript:void(0)" title="Hapus permission ' . $val_permission['nama_permission'] . ' dari role ' . $val_role['judul_role'] .' pada module ' . $module['judul_module'] . '" class="delete-role-module-permission text-danger" data-url="' . base_url() . '/builtin/role-permission/ajaxDeletePermission" data-id-role="' . $val_role['id_role'] . '" data-id-permission="'. $val_permission['id_module_permission'].'">
-											<i class="ms-2 fas fa-times"></i>
-										</a>
-									</li>';
-									$count_permission++;
+									echo '<div class="permission-chip-item" data-id-permission="'. $val_permission['id_module_permission'] . '">
+											<div class="permission-chip-content">
+												<strong>' . $val_permission['nama_permission'] . '</strong>
+												<small>' . ($permission_label_map[$val_permission['nama_permission']] ?? 'Permission tambahan untuk aksi khusus') . '</small>
+											</div>
+											<a href="javascript:void(0)" title="Hapus permission ' . $val_permission['nama_permission'] . ' dari role ' . $val_role['judul_role'] .' pada module ' . $module['judul_module'] . '" class="delete-role-module-permission text-danger" data-url="' . base_url() . '/builtin/role-permission/ajaxDeletePermission" data-id-role="' . $val_role['id_role'] . '" data-id-permission="'. $val_permission['id_module_permission'].'">
+												<i class="fas fa-times"></i>
+											</a>
+										</div>';
 								}
-								
 							}
-							echo '
-							</ul>';
-							
-							$display = $count_permission > 1 ? '' :  ' style="display:none"';
-							echo '<a'. $display .' href="javascript:void(0)" class="ms-2 small text-danger delete-all-role-module-permission" data-id-role="' . $val_role['id_role'] . '" data-id-module="' . $id . '"><i class="fas fa-times"></i>&nbsp;&nbsp;Delete All Permission</a>';
-						echo '
-						</div>';
-					}
+							echo '</div>';
 
-					echo '</div>';
-					?>
+							echo '<div class="permission-empty-state role-permission-empty"'. ($count_permission ? ' style="display:none"' : '') .'>
+									<i class="fas fa-user-shield"></i>
+									<div>
+										<strong>Belum ada permission</strong>
+										<small>Gunakan tombol edit untuk memilih akses yang relevan bagi role ini.</small>
+									</div>
+								</div>';
+
+							$display = $count_permission > 1 ? '' :  ' style="display:none"';
+							echo '<a'. $display .' href="javascript:void(0)" class="small text-danger delete-all-role-module-permission" data-id-role="' . $val_role['id_role'] . '" data-id-module="' . $id . '"><i class="fas fa-times me-1"></i>Delete All Permission</a>';
+							echo '</div></div>';
+						}
+						?>
 					</div>
+				</div>
 			</div>
 		<?php
 		}

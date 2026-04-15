@@ -1,4 +1,87 @@
 $(document).ready(function() {
+
+	function getPermissionHelperText(permissionName) {
+		const map = {
+			'create': 'Membuat data baru',
+			'read_all': 'Melihat semua data',
+			'read_own': 'Melihat data milik sendiri',
+			'update_all': 'Mengubah semua data',
+			'update_own': 'Mengubah data milik sendiri',
+			'delete_all': 'Menghapus semua data',
+			'delete_own': 'Menghapus data milik sendiri'
+		};
+
+		return map[permissionName] || 'Permission tambahan untuk aksi khusus';
+	}
+
+	function renderModulePermissionItem(permission) {
+		return '<div class="permission-chip-item">' +
+			'<div class="permission-chip-content">' +
+				'<strong>' + permission['nama_permission'] + '</strong>' +
+				'<small>' + permission['judul_permission'] + '</small>' +
+			'</div>' +
+			'<a href="javascript:void(0)" title="Hapus permission ' + permission['nama_permission'] + '" class="delete-module-permission text-danger" data-url="' + base_url + 'builtin/permission/ajaxDelete" data-id-permission="' + permission['id_module_permission'] + '">' +
+				'<i class="fas fa-times"></i>' +
+			'</a>' +
+		'</div>';
+	}
+
+	function renderRolePermissionItem(permission, idRole) {
+		let judulRole = $('#judul-role-' + idRole).html();
+		let namaModule = $('#judul-module').html();
+		return '<div class="permission-chip-item" data-id-permission="' + permission['id_module_permission'] + '">' +
+			'<div class="permission-chip-content">' +
+				'<strong>' + permission['nama_permission'] + '</strong>' +
+				'<small>' + getPermissionHelperText(permission['nama_permission']) + '</small>' +
+			'</div>' +
+			'<a href="javascript:void(0)" title="Hapus permission ' + permission['nama_permission'] + ' dari role ' + judulRole + ' pada module ' + namaModule + '" class="delete-role-module-permission text-danger" data-url="' + base_url + 'builtin/role-permission/ajaxDeletePermission" data-id-role="' + idRole + '" data-id-permission="' + permission['id_module_permission'] + '">' +
+				'<i class="fas fa-times"></i>' +
+			'</a>' +
+		'</div>';
+	}
+
+	function updateRolePermissionCardState(idRole) {
+		let $list = $('#role-permission-' + idRole);
+		let $card = $list.closest('.role-permission-card');
+		let count = $list.children().length;
+		$card.attr('data-permission-count', count);
+		$card.find('.role-permission-badge').text(count + ' permission');
+		$list.siblings('.role-permission-empty').toggle(count < 1);
+		if (count > 0) {
+			$card.addClass('is-expanded');
+			$card.find('.role-permission-toggle').attr('aria-expanded', 'true');
+		}
+	}
+
+	function toggleRolePermissionCard($card, forceExpand) {
+		if (!$card.length) {
+			return;
+		}
+
+		let shouldExpand = typeof forceExpand === 'boolean' ? forceExpand : !$card.hasClass('is-expanded');
+		$card.toggleClass('is-expanded', shouldExpand);
+		$card.find('.role-permission-toggle').attr('aria-expanded', shouldExpand ? 'true' : 'false');
+	}
+
+	function filterRolePermissionCards() {
+		let keyword = ($('#role-permission-search').val() || '').toLowerCase().trim();
+		let visibleCount = 0;
+
+		$('.role-permission-accordion').each(function() {
+			let $card = $(this);
+			let roleName = ($card.attr('data-role-name') || '').toLowerCase();
+			let match = !keyword || roleName.indexOf(keyword) !== -1;
+			$card.toggleClass('is-hidden', !match);
+			if (match) {
+				visibleCount++;
+				if (keyword) {
+					toggleRolePermissionCard($card, true);
+				}
+			}
+		});
+
+		$('#visible-role-permission-count').text(visibleCount);
+	}
 	
 	let dataTables = '';
 	$('#table-result').delegate('.switch', 'click', function()
@@ -192,15 +275,13 @@ $(document).ready(function() {
 									num_permission = 0;
 									$.each(data.data, function (i, v) {
 										$.each(v, function(j, val) {
-											li += '<li><small>' + val['nama_permission'] + ' (' + val['judul_permission'] + ')</small> <a href="javascript:void(0)" title="Hapus permission ' + val['nama_permission'] + '" class="delete-module-permission" data-url="' + base_url + 'builtin/permission/ajaxDelete" data-id-permission="' + val['id_module_permission'] + '">' + 
-												'<i class="ms-2 text-danger fas fa-times"></i>' +
-											'</a></li>';
+											li += renderModulePermissionItem(val);
 											num_permission++;
 										});
 									});
 									$('.module-permission-container').show();
+									$('.module-permission-empty').hide();
 									$('.module-permission').empty().append(li);
-									// console.log(num_permission);
 									if (num_permission > 1) {
 										$('.module-permission-container').find('.delete-all-module-permission').show();
 									}
@@ -270,9 +351,11 @@ $(document).ready(function() {
 							msg = $.parseJSON(msg);
 							if (msg.status == 'ok') {
 								$('.module-permission').empty();
-								$('.role-module-permission-container').children('ul').empty();
+								$('.role-module-permission-container').children('.role-permission-chip-list').empty();
+								$('.role-permission-empty').show();
 								$('.role-module-permission-container').find('a').hide();
 								$('.module-permission-container').hide();
+								$('.module-permission-empty').show();
 								$this.hide();
 							} else {
 								Swal.fire({
@@ -329,7 +412,7 @@ $(document).ready(function() {
 					$this.addClass('disabled');
 					$loader_icon = $('<i class="fas fa-circle-notch fa-spin ms-2 text-secondary"></i>');
 					$this.prepend($loader_icon);
-					$ul = $this.parents('ul').eq(0);
+					$ul = $this.parents('.module-permission').eq(0);
 					
 					url_delete = $this.attr('data-url');
 					$.ajax({
@@ -341,10 +424,10 @@ $(document).ready(function() {
 							if (msg.status == 'ok') {
 								id_permission = $this.attr('data-id-permission');
 								$this.parent().fadeOut('fast', function() {
-									$('li[data-id-permission="'+ id_permission + '"').remove();
 									$(this).remove();
 									if ($ul.children().length == 0) {
 										$('.module-permission-container').hide();
+										$('.module-permission-empty').show();
 									}
 									
 									if ($ul.children().length < 2) {
@@ -430,20 +513,16 @@ $(document).ready(function() {
 											$elm = $(elm);
 											if ($elm.is(':checked')) 
 											{					
-												id_permission = $elm.val();
-												nama_permission = $elm.attr('data-nama-permission');
-												judul_role = $('#judul-role-' + id_role).html();
-												nama_module = $('#judul-module').html();
-												li += '<li data-id-permission="' + id_permission + '"><small>' + nama_permission + '</small>' +
-															'<a href="javascript:void(0)" title="Hapus permission ' + nama_permission + ' dari role ' + judul_role + ' pada module ' + nama_module + '" class="delete-role-module-permission" data-url="' + base_url + 'builtin/role-permission/ajaxDeletePermission" data-id-permission="' + id_permission + '">' +
-																'<i class="ms-2 text-danger fas fa-times"></i>' +
-															'</a>' +  
-														'</li>';
+												li += renderRolePermissionItem({
+													id_module_permission: $elm.val(),
+													nama_permission: $elm.attr('data-nama-permission')
+												}, id_role);
 												num_permission++;
 											}
 										});
 										$ul = $('#role-permission-' + id_role);
 										$ul.empty().append(li);
+										$ul.siblings('.role-permission-empty').toggle(num_permission < 1);
 										if (num_permission > 1) {
 											$ul.parent().find('.delete-all-role-module-permission').show();
 										}
@@ -512,7 +591,7 @@ $(document).ready(function() {
 					$this.addClass('disabled');
 					$loader_icon = $('<i class="fas fa-circle-notch fa-spin ms-2 text-secondary"></i>');
 					$this.prepend($loader_icon);
-					$ul = $this.parents('ul').eq(0);
+					$ul = $this.parents('.role-permission-chip-list').eq(0);
 
 					url_delete = $this.attr('data-url');
 					$.ajax({
@@ -524,6 +603,9 @@ $(document).ready(function() {
 							if (msg.status == 'ok') {
 								$this.parent().fadeOut('fast', function() {
 									$(this).remove();
+									if ($ul.children().length == 0) {
+										$ul.siblings('.role-permission-empty').show();
+									}
 									if ($ul.children().length < 2) {
 										$ul.parent().find('.delete-all-role-module-permission').hide();
 									}
@@ -597,6 +679,7 @@ $(document).ready(function() {
 								$loader_icon.remove();
 								$close_icon.show();
 								$('#role-permission-' + id_role).empty();
+								$('#role-permission-' + id_role).siblings('.role-permission-empty').show();
 								$this.hide();
 							} else {
 								$close_icon.show();
@@ -633,4 +716,43 @@ $(document).ready(function() {
 		});
 	});
 	//-- Role Module Permission
+
+	$('body').on('click', '.role-permission-toggle', function(e) {
+		if ($(e.target).closest('.add-role-module-permission').length) {
+			return;
+		}
+
+		toggleRolePermissionCard($(this).closest('.role-permission-card'));
+	});
+
+	$('body').on('keydown', '.role-permission-toggle', function(e) {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			toggleRolePermissionCard($(this).closest('.role-permission-card'));
+		}
+	});
+
+	$('#role-permission-search').on('input', function() {
+		filterRolePermissionCards();
+	});
+
+	$('#expand-all-role-permission').on('click', function() {
+		$('.role-permission-accordion').not('.is-hidden').each(function() {
+			toggleRolePermissionCard($(this), true);
+		});
+	});
+
+	$('#collapse-all-role-permission').on('click', function() {
+		$('.role-permission-accordion').not('.is-hidden').each(function() {
+			toggleRolePermissionCard($(this), false);
+		});
+	});
+
+	$('.role-permission-accordion').each(function() {
+		let $card = $(this);
+		let idRole = $card.attr('data-role-id');
+		updateRolePermissionCardState(idRole);
+	});
+
+	filterRolePermissionCards();
 });

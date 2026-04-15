@@ -64,6 +64,7 @@ class Module extends \App\Modules\Common\Controllers\BaseController
 		$this->data['site_title'] = 'Module';
 		$this->addJs ($this->config->baseURL . 'public/themes/modern/js/result-table.js' . $resultTableVersion);
 		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/module.js');
+		$this->addStyle ($this->config->baseURL . 'public/themes/modern/builtin/css/module.css');
 		$this->addStyle ($this->config->baseURL . 'public/themes/modern/css/result-page.css' . $resultPageVersion);
 	}
 	
