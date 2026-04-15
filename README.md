@@ -99,4 +99,55 @@ Setelah instalasi selesai, login dengan:
 
 ## **Pengembangan Selanjutnya**
 
-Database yang sudah terinstall bersifat **final** dan sudah siap digunakan. Untuk perubahan struktur database di masa mendatang, gunakan **CodeIgniter Migrations** agar setiap perubahan dapat dilacak dan didokumentasikan dengan baik.
+### **v1.1.0 (15-04-2026)**
+
+- Refactor arsitektur menjadi **full HMVC modular** (controller, model, view, asset dalam satu module).
+- Implementasi **module asset loader (module-assets)** dengan resolver otomatis + MIME type fix (CSS/JS tidak lagi terbaca sebagai text/plain).
+- Perbaikan routing asset HMVC untuk mendukung path bertingkat.
+- Migrasi & penghapusan folder legacy:
+  - `app/Views/themes/modern`
+  - `public/themes/modern`
+
+- Standardisasi **view resolver ke namespaced view** (`App\Modules\...\Views\...`) tanpa dependency ke path filesystem.
+- Perbaikan layout Login/Register/Recovery (HTML valid + asset ter-load normal).
+- Konsolidasi asset ke **Common shared** (CSS/JS reusable lintas module).
+- Penghapusan asset duplikat di berbagai module.
+
+- Pembuatan **global design system (site.css)**:
+  - page-shell, page-hero, page-toolbar, page-card, form-card, card-table-wrap
+  - konsistensi spacing, typography, dan responsive behavior
+- Refactor seluruh view ke class global (hapus class lama seperti role-list-card, result-list-toolbar, dll).
+
+- Standardisasi tampilan **DataTable**:
+  - wrapper seragam (card-table-wrap)
+  - alignment header, search, pagination lebih rapi & konsisten
+  - responsive mobile diperbaiki
+
+- Refactor UI/UX **Module & Role Permission**:
+  - tampilan berbasis card + chip permission
+  - grouping per role (accordion)
+  - penambahan search/filter role
+  - badge jumlah permission per role
+  - summary counter & empty state
+  - peningkatan readability & navigasi
+
+- Refactor UI **Security Monitor**:
+  - dashboard-style ala panel modern
+  - blocked IP management lebih clean & terstruktur
+  - perbaikan hierarchy, spacing, dan mobile UX
+
+- Modularisasi JavaScript:
+  - pemindahan JS inline ke file module (sidebar.js, user.js, setting-layout.js, dll)
+  - penambahan fitur filter/search sidebar & realtime UI state
+
+- Performa dashboard HR:
+  - optimasi query (eliminasi N+1, redundant query, JOIN optimization)
+  - pengurangan jumlah query saat load dashboard
+
+- Perbaikan bug & stabilitas:
+  - perbaikan namespace legacy model
+  - perbaikan routing HMVC
+  - normalisasi path view & asset
+  - perbaikan Content-Type asset
+
+- Tidak ada perubahan pada logic bisnis utama (no breaking change)
