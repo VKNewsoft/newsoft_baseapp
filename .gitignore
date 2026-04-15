@@ -35,6 +35,7 @@ app/Config/Encryption.php
 .env
 .env.*
 !.env.example
+.claude/*
 
 #-------------------------
 # Temporary Files

@@ -28,10 +28,15 @@ function get_filename($file_name, $path) {
 
 function upload_image($path, $file, $max_w = 500, $max_h = 500) 
 {
-	
-	$file_type = $file['type'];
-	$new_name =  get_filename(stripslashes($file['name']), $path); ;
-	$move = move_uploaded_file($file['tmp_name'], $path . $new_name);
+	if (is_object($file) && method_exists($file, 'getClientMimeType')) {
+		$file_type = $file->getClientMimeType();
+		$new_name = get_filename(stripslashes($file->getName()), $path);
+		$move = $file->move($path, $new_name, true);
+	} else {
+		$file_type = $file['type'];
+		$new_name = get_filename(stripslashes($file['name']), $path);
+		$move = move_uploaded_file($file['tmp_name'], $path . $new_name);
+	}
 	
 	$save_image = false;
 	if ($move) {
@@ -122,8 +127,13 @@ function create_image ($tipe_file, $resized_img, $newfile)
 
 function upload_file($path, $file) 
 {
-	$new_name =  get_filename(stripslashes($file['name']), $path); ;
-	$move = move_uploaded_file($file['tmp_name'], $path . $new_name);
+	if (is_object($file) && method_exists($file, 'getName')) {
+		$new_name = get_filename(stripslashes($file->getName()), $path);
+		$move = $file->move($path, $new_name, true);
+	} else {
+		$new_name = get_filename(stripslashes($file['name']), $path);
+		$move = move_uploaded_file($file['tmp_name'], $path . $new_name);
+	}
 	if ($move) 
 		return $new_name;
 	else

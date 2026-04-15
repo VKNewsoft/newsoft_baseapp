@@ -76,6 +76,20 @@ jQuery(document).ready(function () {
 		openImagePreview($(this).data('preview-title'), $(this).data('preview-image'));
 	});
 
+	$('body').on('click', '.setting-app-remove-btn', function(e) {
+		e.preventDefault();
+		const $button = $(this);
+		const targetInput = $button.data('target-input');
+		const targetFile = $button.data('target-file');
+		const $field = $button.closest('.setting-app-field');
+
+		$field.find('input[name="' + targetInput + '"]').val(1);
+		$field.find('input[name="' + targetFile + '"]').val('');
+		$button.closest('.setting-app-preview-wrap').remove();
+		$field.find('.upload-img-thumb img').remove();
+		$field.find('.upload-img-thumb .img-prop').empty();
+	});
+
 	$('body').on('click', '.setting-app-current-image img, .setting-app-card .upload-img-thumb img', function(e) {
 		e.preventDefault();
 		const $image = $(this);

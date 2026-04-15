@@ -66,10 +66,24 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Handle upload Logo Login
 		$logoLogin = $currDb['logo_login'] ?? '';
+		if ($this->request->getPost('logo_login_delete_img') == '1') {
+			if (!empty($currDb['logo_login']) && file_exists($path . $currDb['logo_login'])) {
+				$unlink = delete_file($path . $currDb['logo_login']);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo login'];
+				}
+			}
+			$logoLogin = '';
+		}
 		$fileLogoLogin = $this->request->getFile('logo_login');
 		if ($fileLogoLogin && $fileLogoLogin->isValid() && $fileLogoLogin->getName()) {
 			// Hapus file lama
-			if (!empty($currDb['logo_login']) && file_exists($path . $currDb['logo_login'])) {
+			if (!empty($logoLogin) && file_exists($path . $logoLogin)) {
+				$unlink = delete_file($path . $logoLogin);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo login lama'];
+				}
+			} elseif (!empty($currDb['logo_login']) && file_exists($path . $currDb['logo_login'])) {
 				$unlink = delete_file($path . $currDb['logo_login']);
 				if (!$unlink) {
 					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo login lama'];
@@ -80,9 +94,23 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Handle upload Logo App
 		$logoApp = $currDb['logo_app'] ?? '';
+		if ($this->request->getPost('logo_app_delete_img') == '1') {
+			if (!empty($currDb['logo_app']) && file_exists($path . $currDb['logo_app'])) {
+				$unlink = delete_file($path . $currDb['logo_app']);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo app'];
+				}
+			}
+			$logoApp = '';
+		}
 		$fileLogoApp = $this->request->getFile('logo_app');
 		if ($fileLogoApp && $fileLogoApp->isValid() && $fileLogoApp->getName()) {
-			if (!empty($currDb['logo_app']) && file_exists($path . $currDb['logo_app'])) {
+			if (!empty($logoApp) && file_exists($path . $logoApp)) {
+				$unlink = delete_file($path . $logoApp);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo app lama'];
+				}
+			} elseif (!empty($currDb['logo_app']) && file_exists($path . $currDb['logo_app'])) {
 				$unlink = delete_file($path . $currDb['logo_app']);
 				if (!$unlink) {
 					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo app lama'];
@@ -93,9 +121,23 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Handle upload Favicon
 		$favicon = $currDb['favicon'] ?? '';
+		if ($this->request->getPost('favicon_delete_img') == '1') {
+			if (!empty($currDb['favicon']) && file_exists($path . $currDb['favicon'])) {
+				$unlink = delete_file($path . $currDb['favicon']);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus favicon'];
+				}
+			}
+			$favicon = '';
+		}
 		$fileFavicon = $this->request->getFile('favicon');
 		if ($fileFavicon && $fileFavicon->isValid() && $fileFavicon->getName()) {
-			if (!empty($currDb['favicon']) && file_exists($path . $currDb['favicon'])) {
+			if (!empty($favicon) && file_exists($path . $favicon)) {
+				$unlink = delete_file($path . $favicon);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus favicon lama'];
+				}
+			} elseif (!empty($currDb['favicon']) && file_exists($path . $currDb['favicon'])) {
 				$unlink = delete_file($path . $currDb['favicon']);
 				if (!$unlink) {
 					return ['status' => 'error', 'message' => 'Gagal menghapus favicon lama'];
@@ -106,9 +148,23 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Handle upload Logo Register
 		$logoRegister = $currDb['logo_register'] ?? '';
+		if ($this->request->getPost('logo_register_delete_img') == '1') {
+			if (!empty($currDb['logo_register']) && file_exists($path . $currDb['logo_register'])) {
+				$unlink = delete_file($path . $currDb['logo_register']);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo register'];
+				}
+			}
+			$logoRegister = '';
+		}
 		$fileLogoRegister = $this->request->getFile('logo_register');
 		if ($fileLogoRegister && $fileLogoRegister->isValid() && $fileLogoRegister->getName()) {
-			if (!empty($currDb['logo_register']) && file_exists($path . $currDb['logo_register'])) {
+			if (!empty($logoRegister) && file_exists($path . $logoRegister)) {
+				$unlink = delete_file($path . $logoRegister);
+				if (!$unlink) {
+					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo register lama'];
+				}
+			} elseif (!empty($currDb['logo_register']) && file_exists($path . $currDb['logo_register'])) {
 				$unlink = delete_file($path . $currDb['logo_register']);
 				if (!$unlink) {
 					return ['status' => 'error', 'message' => 'Gagal menghapus gambar logo register lama'];
@@ -118,7 +174,7 @@ class SettingAppModel extends \App\Modules\Common\Models\BaseModel
 		}
 		
 		// Validasi semua file berhasil
-		if ($logoLogin && $logoApp && $favicon && $logoRegister) {
+		if ($logoLogin !== false && $logoApp !== false && $favicon !== false && $logoRegister !== false) {
 			$dataDb = [];
 			$dataDb[] = ['type' => 'app', 'param' => 'logo_login', 'value' => $logoLogin];
 			$dataDb[] = ['type' => 'app', 'param' => 'logo_app', 'value' => $logoApp];

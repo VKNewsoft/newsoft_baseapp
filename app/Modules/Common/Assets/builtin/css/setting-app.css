@@ -30,6 +30,10 @@
 	min-width: 0;
 }
 
+.setting-app-preview-wrap {
+	position: relative;
+}
+
 .setting-app-current-image {
 	display: flex;
 	align-items: center;
@@ -43,6 +47,29 @@
 	border-radius: .95rem;
 	background: linear-gradient(180deg, #f8fafc, #f1f5f9);
 	cursor: zoom-in;
+}
+
+.setting-app-remove-btn {
+	position: absolute;
+	top: .65rem;
+	right: .65rem;
+	width: 30px;
+	height: 30px;
+	border: 0;
+	border-radius: 999px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(220, 38, 38, 0.92);
+	color: #fff;
+	box-shadow: 0 6px 18px rgba(220, 38, 38, 0.18);
+	z-index: 2;
+}
+
+.setting-app-remove-btn:hover,
+.setting-app-remove-btn:focus {
+	background: #b91c1c;
+	color: #fff;
 }
 
 .setting-app-current-image img {

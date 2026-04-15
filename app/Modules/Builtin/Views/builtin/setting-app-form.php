@@ -32,9 +32,13 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_app) && file_exists($config->imagesPath . $logo_app)) {
-										echo '<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="' . $config->imagesURL . $logo_app . '?r='.time().'" data-preview-title="Logo Aplikasi"><img src="' . $config->imagesURL . $logo_app . '?r='.time().'"/></button>';
+										echo '<div class="setting-app-preview-wrap">
+											<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="' . $config->imagesURL . $logo_app . '?r='.time().'" data-preview-title="Logo Aplikasi"><img src="' . $config->imagesURL . $logo_app . '?r='.time().'"/></button>
+											<button type="button" class="setting-app-remove-btn" data-target-input="logo_app_delete_img" data-target-file="logo_app" title="Hapus Logo Aplikasi"><i class="fas fa-times"></i></button>
+										</div>';
 									}
 									?>
+									<input type="hidden" name="logo_app_delete_img" value="0">
 									<input type="file" class="file form-control" name="logo_app">
 									<?php if (!empty($form_errors['logo_app'])) echo '<small class="alert alert-danger d-block mb-0">' . $form_errors['logo_app'] . '</small>'?>
 									<small class="form-text text-muted"><strong>Gunakan file PNG transparan</strong>. Maksimal 300Kb, Minimal 50px x 50px, Tipe file: .JPG, .JPEG, .PNG</small>
@@ -48,9 +52,13 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($favicon) && file_exists($config->imagesPath . $favicon)) {
-										echo '<button type="button" class="setting-app-current-image setting-app-current-image-sm setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $favicon . '?r='.time().'" data-preview-title="Fav Icon"><img src="'. $config->imagesURL . $favicon . '?r='.time().'"/></button>';
+										echo '<div class="setting-app-preview-wrap">
+											<button type="button" class="setting-app-current-image setting-app-current-image-sm setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $favicon . '?r='.time().'" data-preview-title="Fav Icon"><img src="'. $config->imagesURL . $favicon . '?r='.time().'"/></button>
+											<button type="button" class="setting-app-remove-btn" data-target-input="favicon_delete_img" data-target-file="favicon" title="Hapus Fav Icon"><i class="fas fa-times"></i></button>
+										</div>';
 									}
 									?>
+									<input type="hidden" name="favicon_delete_img" value="0">
 									<input type="file" class="file form-control" name="favicon">
 									<?php if (!empty($form_errors['favicon'])) echo '<small class="alert alert-danger d-block mb-0">' . $form_errors['favicon'] . '</small>'?>
 									<small class="form-text text-muted"><strong>Gunakan file PNG transparan, width dan height sama, misal: 64px x 64px</strong></small>
@@ -64,9 +72,13 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_login) && file_exists($config->imagesPath . $logo_login)) {
-										echo '<button type="button" class="setting-app-current-image edit-logo-login-container setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_login . '?r='.time().'" data-preview-title="Logo Login"><img src="'. $config->imagesURL . $logo_login . '?r='.time().'"/></button>';
+										echo '<div class="setting-app-preview-wrap">
+											<button type="button" class="setting-app-current-image edit-logo-login-container setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_login . '?r='.time().'" data-preview-title="Logo Login"><img src="'. $config->imagesURL . $logo_login . '?r='.time().'"/></button>
+											<button type="button" class="setting-app-remove-btn" data-target-input="logo_login_delete_img" data-target-file="logo_login" title="Hapus Logo Login"><i class="fas fa-times"></i></button>
+										</div>';
 									}
 									?>
+									<input type="hidden" name="logo_login_delete_img" value="0">
 									<input type="file" class="file form-control" name="logo_login">
 									<?php if (!empty($form_errors['logo_login'])) echo '<small class="alert alert-danger d-block mb-0">' . $form_errors['logo_login'] . '</small>'?>
 									<small class="form-text text-muted"><strong>Gunakan file PNG transparan</strong>. Maksimal 300Kb, tipe file: .JPG, .JPEG, .PNG</small>
@@ -80,9 +92,13 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_register) && file_exists($config->imagesPath . $logo_register)) {
-										echo '<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_register . '" data-preview-title="Logo Form Registrasi"><img src="'. $config->imagesURL . $logo_register . '"/></button>';
+										echo '<div class="setting-app-preview-wrap">
+											<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_register . '" data-preview-title="Logo Form Registrasi"><img src="'. $config->imagesURL . $logo_register . '"/></button>
+											<button type="button" class="setting-app-remove-btn" data-target-input="logo_register_delete_img" data-target-file="logo_register" title="Hapus Logo Form Registrasi"><i class="fas fa-times"></i></button>
+										</div>';
 									}
 									?>
+									<input type="hidden" name="logo_register_delete_img" value="0">
 									<input type="file" class="file form-control" name="logo_register">
 									<?php if (!empty($form_errors['logo_register'])) echo '<small class="alert alert-danger d-block mb-0">' . $form_errors['logo_register'] . '</small>'?>
 									<small class="form-text text-muted"><strong>Gunakan file PNG transparan</strong>. Maksimal 300Kb, Minimal 50px x 50px, Tipe file: .JPG, .JPEG, .PNG</small>
