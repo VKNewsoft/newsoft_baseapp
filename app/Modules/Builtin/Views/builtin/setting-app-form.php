@@ -32,7 +32,7 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_app) && file_exists($config->imagesPath . $logo_app)) {
-										echo '<div class="setting-app-current-image"><img src="' . $config->imagesURL . $logo_app . '?r='.time().'"/></div>';
+										echo '<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="' . $config->imagesURL . $logo_app . '?r='.time().'" data-preview-title="Logo Aplikasi"><img src="' . $config->imagesURL . $logo_app . '?r='.time().'"/></button>';
 									}
 									?>
 									<input type="file" class="file form-control" name="logo_app">
@@ -48,7 +48,7 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($favicon) && file_exists($config->imagesPath . $favicon)) {
-										echo '<div class="setting-app-current-image setting-app-current-image-sm"><img src="'. $config->imagesURL . $favicon . '?r='.time().'"/></div>';
+										echo '<button type="button" class="setting-app-current-image setting-app-current-image-sm setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $favicon . '?r='.time().'" data-preview-title="Fav Icon"><img src="'. $config->imagesURL . $favicon . '?r='.time().'"/></button>';
 									}
 									?>
 									<input type="file" class="file form-control" name="favicon">
@@ -64,7 +64,7 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_login) && file_exists($config->imagesPath . $logo_login)) {
-										echo '<div class="setting-app-current-image edit-logo-login-container"><img src="'. $config->imagesURL . $logo_login . '?r='.time().'"/></div>';
+										echo '<button type="button" class="setting-app-current-image edit-logo-login-container setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_login . '?r='.time().'" data-preview-title="Logo Login"><img src="'. $config->imagesURL . $logo_login . '?r='.time().'"/></button>';
 									}
 									?>
 									<input type="file" class="file form-control" name="logo_login">
@@ -80,7 +80,7 @@
 								<div class="setting-app-upload">
 									<?php
 									if (!empty($logo_register) && file_exists($config->imagesPath . $logo_register)) {
-										echo '<div class="setting-app-current-image"><img src="'. $config->imagesURL . $logo_register . '"/></div>';
+										echo '<button type="button" class="setting-app-current-image setting-app-preview-trigger" data-preview-image="'. $config->imagesURL . $logo_register . '" data-preview-title="Logo Form Registrasi"><img src="'. $config->imagesURL . $logo_register . '"/></button>';
 									}
 									?>
 									<input type="file" class="file form-control" name="logo_register">
@@ -164,5 +164,21 @@
 				</div>
 			</div>
 		</form>
+	</div>
+</div>
+<div class="modal fade" id="settingAppImagePreviewModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl setting-app-preview-modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="settingAppImagePreviewTitle">Preview Gambar</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="setting-app-preview-stage" id="settingAppPreviewStage">
+					<img src="" alt="Preview" id="settingAppPreviewImage">
+				</div>
+				<div class="setting-app-preview-hint">Gerakkan cursor di atas gambar untuk zoom detail.</div>
+			</div>
+		</div>
 	</div>
 </div>

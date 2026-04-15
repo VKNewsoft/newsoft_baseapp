@@ -27,23 +27,32 @@
 	display: flex;
 	flex-direction: column;
 	gap: .65rem;
+	min-width: 0;
 }
 
 .setting-app-current-image {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 100%;
+	max-width: 100%;
+	overflow: hidden;
 	min-height: 84px;
 	padding: .85rem;
 	border: 1px solid rgba(15, 23, 42, 0.08);
 	border-radius: .95rem;
 	background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+	cursor: zoom-in;
 }
 
 .setting-app-current-image img {
+	display: block;
 	max-width: 100%;
 	max-height: 84px;
+	width: auto;
+	height: auto;
 	object-fit: contain;
+	pointer-events: none;
 }
 
 .setting-app-current-image-sm img {
@@ -136,11 +145,92 @@
 	padding: .8rem .9rem;
 	border-radius: .95rem;
 	background: #f8fafc;
+	width: 100%;
+	max-width: 100%;
+	overflow: hidden;
+}
+
+.setting-app-card .upload-img-thumb img {
+	display: block;
+	max-width: 100%;
+	max-height: 96px;
+	width: auto;
+	height: auto;
+	margin: 0 auto .75rem;
+	object-fit: contain;
+}
+
+.setting-app-card .upload-img-thumb ul {
+	margin: 0;
+	padding-left: 1rem;
+	word-break: break-word;
+}
+
+.setting-app-card .upload-img-thumb .img-prop {
+	display: block;
+	width: 100%;
+	overflow-wrap: anywhere;
 }
 
 .setting-app-card .alert-danger {
 	padding: .65rem .8rem;
 	border-radius: .75rem;
+}
+
+.setting-app-preview-modal .modal-content {
+	border: 0;
+	border-radius: 20px;
+	overflow: hidden;
+}
+
+.setting-app-preview-modal .modal-header,
+.setting-app-preview-modal .modal-body {
+	padding: 1rem 1.25rem;
+}
+
+.setting-app-preview-stage {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: min(70vh, 720px);
+	max-height: 78vh;
+	overflow: auto;
+	border-radius: 18px;
+	background:
+		linear-gradient(45deg, rgba(226, 232, 240, 0.75) 25%, transparent 25%),
+		linear-gradient(-45deg, rgba(226, 232, 240, 0.75) 25%, transparent 25%),
+		linear-gradient(45deg, transparent 75%, rgba(226, 232, 240, 0.75) 75%),
+		linear-gradient(-45deg, transparent 75%, rgba(226, 232, 240, 0.75) 75%);
+	background-size: 24px 24px;
+	background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+
+.setting-app-preview-stage img {
+	display: block;
+	max-width: min(92vw, 1400px);
+	max-height: none;
+	width: auto;
+	height: auto;
+	transform-origin: center center;
+	transition: transform .08s ease-out, transform-origin .08s ease-out;
+	will-change: transform;
+}
+
+.setting-app-preview-stage.is-zoomable {
+	cursor: zoom-in;
+}
+
+.setting-app-preview-stage.is-zooming {
+	cursor: crosshair;
+}
+
+.setting-app-preview-hint {
+	margin-top: .85rem;
+	font-size: .9rem;
+	color: #64748b;
+	text-align: center;
 }
 
 @media (max-width: 991.98px) {
@@ -154,5 +244,15 @@
 
 	.setting-app-field {
 		padding: .9rem;
+	}
+
+	.setting-app-preview-modal .modal-header,
+	.setting-app-preview-modal .modal-body {
+		padding: .85rem 1rem;
+	}
+
+	.setting-app-preview-stage {
+		min-height: 56vh;
+		max-height: 68vh;
 	}
 }
