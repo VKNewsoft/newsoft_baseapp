@@ -6,9 +6,14 @@
 	<div class="card-body">
 		<?php 
 		helper('html');
+		helper('setting_layout');
 		if (!empty($msg)) {
 			show_message($msg['content'], $msg['status']);
 		}
+
+		$fontMap = setting_layout_font_map();
+		$fontOptions = setting_layout_font_options();
+		$currentFontFamily = setting_layout_normalize_font_family(@$font_family);
 		
 		$list = ['logo_background_color', 'color_scheme', 'sidebar_color', 'font_family'];
 		foreach ($list as $val) {
@@ -70,7 +75,7 @@
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Font Family</label>
-									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], ['open-sans' => 'Open Sans (Default)', 'roboto' => 'Roboto', 'montserrat' => 'Montserrat', 'poppins' => 'Poppins', 'arial' => 'Arial', 'verdana' => 'Verdana', 'tahoma' => 'Tahoma', 'trebuchet-ms' => 'Trebuchet MS', 'georgia' => 'Georgia'], set_value('font_family', @$font_family))?>
+									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], $fontOptions, set_value('font_family', $currentFontFamily))?>
 									<div class="font-preview-note" id="font-preview-note">Preview cepat: The quick brown fox jumps over the lazy dog.</div>
 								</div>
 								<div class="col-md-6">
@@ -151,3 +156,6 @@
 		</form>
 	</div>
 </div>
+<script>
+window.FONT_MAP = <?=json_encode($fontMap, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)?>;
+</script>

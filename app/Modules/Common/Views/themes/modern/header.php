@@ -14,21 +14,18 @@ if (empty($session->get('user'))) {
 }
 
 $user = $session->get('user');
-$fontFamilyMap = [
-	'open-sans' => '"Open Sans", "Segoe UI", Arial, sans-serif',
-	'roboto' => '"Roboto", "Segoe UI", Arial, sans-serif',
-	'montserrat' => '"Montserrat", "Segoe UI", Arial, sans-serif',
-	'poppins' => '"Poppins", "Segoe UI", Arial, sans-serif',
-	'arial' => 'Arial, "Helvetica Neue", sans-serif',
-	'verdana' => 'Verdana, Geneva, sans-serif',
-	'tahoma' => 'Tahoma, "Segoe UI", sans-serif',
-	'trebuchet-ms' => '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
-	'georgia' => 'Georgia, "Times New Roman", serif'
-];
-$currentFontKey = $app_layout['font_family'] ?? 'open-sans';
-$currentFontFamily = $fontFamilyMap[$currentFontKey] ?? $fontFamilyMap['open-sans'];
+helper('setting_layout');
+$currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sans');
+$currentFontFamily = setting_layout_normalize_font_family($app_layout['font_family'] ?? 'open-sans');
 $fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
 $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
+$fontPreloadMap = [
+	'open-sans' => 'opensans_400.woff2',
+	'roboto' => 'Roboto-400-normal-latin.woff2',
+	'montserrat' => 'Montserrat-400-normal-latin.woff2',
+	'poppins' => 'poppins_400.woff2'
+];
+$fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,6 +36,10 @@ $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/
 	<meta name="robots" content="noindex, nofollow" />
 	<meta name="googlebot" content="noindex, nofollow" />
 	<style>:root{--app-font-family: <?= $currentFontFamily ?>;}</style>
+	<script>
+		window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
+		document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
+	</script>
 	<link rel="shortcut icon" href="<?= $config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time() ?>" />
 
 	<!-- Styles: vendors / theme / dynamic -->
@@ -53,6 +54,9 @@ $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/
 	<link id="style-switch-bootswatch" rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootswatch/'. ( empty($_COOKIE['nsd_adm_theme']) || @$_COOKIE['nsd_adm_theme'] == 'light' ? esc($app_layout['bootswatch_theme']) : 'default' ) .'/bootstrap.min.css?r='.time() ?>" />
 	<link id="style-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time() ?>" />
 	<link id="style-switch-sidebar" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?r='.time() ?>" />
+	<?php if ($fontPreloadFile): ?>
+	<link rel="preload" as="font" type="font/woff2" crossorigin href="<?= $config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile ?>" />
+	<?php endif; ?>
 	<link rel="preload" as="style" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion ?>" />
 	<link id="font-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion ?>" />
 	<link id="font-size-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion ?>" />
@@ -117,7 +121,8 @@ $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/
 		<?php endforeach; ?>
 	<?php endif; ?>
 </head>
-<body class="<?= @$_COOKIE['nsd_adm_mobile'] ? 'mobile-menu-show' : '' ?>">
+<body class="<?= @$_COOKIE['nsd_adm_mobile'] ? 'mobile-menu-show' : '' ?>" style="font-family: <?=esc($currentFontFamily, 'attr')?>;">
+	<script>document.body.style.fontFamily = window.__APP_FONT_FAMILY__ || '<?=esc($currentFontFamily, 'js')?>';</script>
 	<header class="nav-header shadow">
 		<div class="nav-header-logo pull-left">
 			<a class="header-logo" href="<?= $config->baseURL ?>">

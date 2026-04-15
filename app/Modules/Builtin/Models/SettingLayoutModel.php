@@ -49,6 +49,8 @@ class SettingLayoutModel extends \App\Modules\Common\Models\BaseModel
 	 */
 	public function saveData() 
 	{
+		helper('setting_layout');
+
 		$userSession = session()->get('user');
 		$permissions = $userSession['permission'] ?? [];
 		$idUser = $userSession['id_user'] ?? 0;
@@ -67,6 +69,9 @@ class SettingLayoutModel extends \App\Modules\Common\Models\BaseModel
 		$arr = [];
 		foreach ($params as $param => $title) {
 			$value = $this->request->getPost($param);
+			if ($param === 'font_family') {
+				$value = setting_layout_normalize_font_family($value);
+			}
 			$dataDb[] = ['type' => 'layout', 'param' => $param, 'value' => $value];
 			$arr[$param] = $value;
 		}

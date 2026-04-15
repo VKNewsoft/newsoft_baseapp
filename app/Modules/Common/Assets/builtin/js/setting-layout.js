@@ -25,17 +25,7 @@ jQuery(document).ready(function () {
 	const $previewLogo = $previewSidebar.find('.preview-sidebar-logo');
 	const $previewGroupHeaders = $previewSidebar.find('.preview-sidebar-group-header');
 	const $previewSidebarItems = $previewSidebar.find('.preview-sidebar-item');
-	const fontFamilyMap = {
-		'open-sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
-		'roboto': '"Roboto", "Segoe UI", Arial, sans-serif',
-		'montserrat': '"Montserrat", "Segoe UI", Arial, sans-serif',
-		'poppins': '"Poppins", "Segoe UI", Arial, sans-serif',
-		'arial': 'Arial, "Helvetica Neue", sans-serif',
-		'verdana': 'Verdana, Geneva, sans-serif',
-		'tahoma': 'Tahoma, "Segoe UI", sans-serif',
-		'trebuchet-ms': '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
-		'georgia': 'Georgia, "Times New Roman", serif'
-	};
+	const FONT_MAP = window.FONT_MAP || {};
 	const previewColorMap = {
 		'blue-dark': '#183b77',
 		'blue': '#1976d2',
@@ -98,8 +88,34 @@ jQuery(document).ready(function () {
 		}
 	}
 
-	function getSelectedFontFamily() {
-		return fontFamilyMap[$font.val()] || fontFamilyMap['open-sans'];
+	function getDefaultFontEntry() {
+		return FONT_MAP['open-sans'] || Object.values(FONT_MAP)[0] || { family: '"Open Sans", "Segoe UI", Arial, sans-serif' };
+	}
+
+	function getFontEntry(fontValue) {
+		const defaultEntry = getDefaultFontEntry();
+		const value = String(fontValue || '').trim();
+		if (!value) {
+			return Object.assign({ key: 'open-sans' }, defaultEntry);
+		}
+
+		for (const [key, fontEntry] of Object.entries(FONT_MAP)) {
+			if (key === value || fontEntry.family === value) {
+				return Object.assign({ key: key }, fontEntry);
+			}
+		}
+
+		return Object.assign({ key: 'open-sans' }, defaultEntry);
+	}
+
+	function applyFontFamily(fontValue) {
+		const fontEntry = getFontEntry(fontValue);
+		document.documentElement.style.setProperty('--app-font-family', fontEntry.family);
+		if (document.body) {
+			document.body.style.fontFamily = fontEntry.family;
+		}
+		$body.css('font-family', fontEntry.family);
+		return fontEntry;
 	}
 
 	function getSelectedThemeLabel(colorScheme) {
@@ -169,11 +185,11 @@ jQuery(document).ready(function () {
 		const themePreview = bootswatchPreviewMap[bootswatchTheme] || bootswatchPreviewMap['default'];
 		const themeLabel = $bootswatchTheme.find('option:selected').text();
 		const colorLabel = getSelectedThemeLabel(colorScheme);
+		const fontEntry = applyFontFamily($font.val());
 
 		$previewThemeName.text(colorLabel + ' / ' + themeLabel);
-		document.documentElement.style.setProperty('--app-font-family', getSelectedFontFamily());
-		$previewRoot.css('font-family', getSelectedFontFamily());
-		$fontPreviewNote.css('font-family', getSelectedFontFamily());
+		$previewRoot.css('font-family', fontEntry.family);
+		$fontPreviewNote.css('font-family', fontEntry.family);
 		$previewMain.css('background', themePreview.surface);
 		$previewCard.css('background', themePreview.card);
 		$previewButton.css('background', 'linear-gradient(135deg, ' + themePreview.button + ', ' + previewColor + ')');
@@ -340,7 +356,8 @@ jQuery(document).ready(function () {
 	});
 
 	$font.on('change', function() {
-		setStylesheetHref('#font-switch', buildAssetUrl(theme_url, 'css/fonts/' + $(this).val() + '.css', false));
+		const fontEntry = applyFontFamily($(this).val());
+		setStylesheetHref('#font-switch', buildAssetUrl(theme_url, 'css/fonts/' + fontEntry.key + '.css', false));
 		updateThemePreview();
 	});
 
