@@ -15,11 +15,15 @@ class Role_permission extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() {
 		
 		parent::__construct();
+		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
 		
 		$this->model = new RolePermissionModel;	
 		$this->data['site_title'] = 'Halaman Role';
 		
+		$this->addJs(base_url() . '/public/themes/modern/js/result-table.js' . $resultTableVersion);
 		$this->addJs(base_url() . '/public/themes/modern/builtin/js/role-permission.js');
+		$this->addStyle(base_url() . '/public/themes/modern/css/result-page.css' . $resultPageVersion);
 		
 		helper(['cookie', 'form']);
 	}

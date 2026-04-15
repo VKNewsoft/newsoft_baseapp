@@ -25,6 +25,7 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
 		$this->addJs ($this->config->baseURL . 'public/themes/modern/builtin/js/role.js');
+		$this->addStyle($this->config->baseURL . 'public/themes/modern/builtin/css/role.css');
 		
 		helper(['cookie', 'form']);
 	}
@@ -65,6 +66,9 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 	public function add() 
 	{
 		$this->hasPermission('create');
+		if ($this->request->isAJAX()) {
+			return $this->ajaxForm();
+		}
 		
 		$this->setData();
 		$data = $this->data;
@@ -86,6 +90,9 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 	public function edit()
 	{
 		$this->hasPermission('update_all');
+		if ($this->request->isAJAX()) {
+			return $this->ajaxForm();
+		}
 		
 		if (!$this->request->getGet('id')) {
 			$this->printError(['status' => 'error', 'message' => 'Parameter tidak lengkap']);
@@ -106,6 +113,70 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 		}
 
 		$this->view('builtin/role-form.php', $data);
+	}
+
+	public function ajaxForm()
+	{
+		$this->setData();
+		$data = $this->data;
+		$data['msg'] = [];
+		$data['role'] = [];
+		$data['title'] = 'Tambah Role';
+
+		$idRole = (int) ($this->request->getGet('id') ?? 0);
+		if ($idRole > 0) {
+			$data['role'] = $this->model->getRoleById($idRole);
+			if (!$data['role']) {
+				return $this->response->setStatusCode(404)->setBody('Data role tidak ditemukan');
+			}
+			$data['title'] = 'Edit Role';
+		}
+
+		return $this->response->setBody(view('themes/modern/builtin/role-form-ajax.php', $data));
+	}
+
+	public function ajaxSave()
+	{
+		$result = [
+			'status' => 'error',
+			'message' => 'Data gagal disimpan'
+		];
+
+		if (!$this->request->isAJAX() || !$this->request->getPost('submit')) {
+			return $this->response->setJSON([
+				'status' => 'error',
+				'message' => 'Invalid request'
+			]);
+		}
+
+		$idRole = (int) ($this->request->getPost('id') ?? 0);
+		if ($idRole > 0) {
+			if (!$this->hasPermission('update_all')) {
+				return $this->response->setJSON([
+					'status' => 'error',
+					'message' => 'Anda tidak memiliki permission update_all'
+				]);
+			}
+		} else {
+			if (!$this->hasPermission('create')) {
+				return $this->response->setJSON([
+					'status' => 'error',
+					'message' => 'Anda tidak memiliki permission create'
+				]);
+			}
+		}
+
+		$save = $this->saveData();
+		if (!empty($save['form_errors'])) {
+			$result['message'] = $save['form_errors'];
+		} elseif (($save['msg']['status'] ?? '') === 'ok') {
+			$result['status'] = 'ok';
+			$result['message'] = $save['msg']['message'];
+		} else {
+			$result['message'] = $save['msg']['message'] ?? $result['message'];
+		}
+
+		return $this->response->setJSON($result);
 	}
 	
 	public function setData() {

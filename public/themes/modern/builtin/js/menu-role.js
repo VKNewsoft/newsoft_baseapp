@@ -81,6 +81,10 @@ jQuery(document).ready(function () {
 		}
 		
 		dataTables =  $('#table-result').DataTable( settings );
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+			WDIResultTable.bindResize(dataTables, '#table-result', 'menu-role-table');
+		}
 	}
 	
 	$('#table-result').delegate('.btn-edit', 'click', function(e) {

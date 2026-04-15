@@ -52,6 +52,10 @@ jQuery(document).ready(function () {
 		}
 		
 		table =  $('#table-result').DataTable( settings );
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(table, '#table-result');
+			WDIResultTable.bindResize(table, '#table-result', 'user-table');
+		}
 	}
 	
 	$('.select2, .form-select').select2({

@@ -18,7 +18,11 @@ class Menu_role extends \App\Modules\Common\Controllers\BaseController
 	public function __construct() 
 	{
 		parent::__construct();
+		$resultPageVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/css/result-page.css');
+		$resultTableVersion = '?v=' . @filemtime(ROOTPATH . 'public/themes/modern/js/result-table.js');
+		$this->addJs($this->config->baseURL . 'public/themes/modern/js/result-table.js' . $resultTableVersion);
 		$this->addJs($this->config->baseURL . 'public/themes/modern/builtin/js/menu-role.js');
+		$this->addStyle($this->config->baseURL . 'public/themes/modern/css/result-page.css' . $resultPageVersion);
 		$this->addStyle($this->config->baseURL . 'public/vendors/wdi/wdi-loader.css');
 
 		$this->model = new MenuRoleModel;	
