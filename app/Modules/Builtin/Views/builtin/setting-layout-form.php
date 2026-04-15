@@ -70,19 +70,28 @@
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Font Family</label>
-									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], ['open-sans' => 'Open Sans (Default)', 'roboto' => 'Roboto', 'montserrat' => 'Montserrat', 'poppins' => 'Poppins', 'arial' => 'Arial', 'verdana' => 'Verdana'], set_value('font_family', @$font_family))?>
+									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], ['open-sans' => 'Open Sans (Default)', 'roboto' => 'Roboto', 'montserrat' => 'Montserrat', 'poppins' => 'Poppins', 'arial' => 'Arial', 'verdana' => 'Verdana', 'tahoma' => 'Tahoma', 'trebuchet-ms' => 'Trebuchet MS', 'georgia' => 'Georgia'], set_value('font_family', @$font_family))?>
+									<div class="font-preview-note" id="font-preview-note">Preview cepat: The quick brown fox jumps over the lazy dog.</div>
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Font Size</label>
-									<div class="range-slider-test">
+									<div class="range-slider-test" id="font-size-control">
 										<?php
 										$value = @$font_size ? $font_size : $request->getPost('font_size');
 										?>
+									  <div class="range-slider-track"><span class="range-slider-progress" id="font-size-progress"></span></div>
 									  <input class="range-slider" id="font-size" type="range" step="0.5" name="font_size" value="<?=$value?>" min="10" max="18">
 									  <?php
 									  $pos_left = (($value - 10 ) * 33);
 									  ?>
-									  <output for="font-size" style="left:<?=$pos_left?>px"><?=$value?></output><span class="range-value-suffix">px</span>
+									  <output for="font-size" id="font-size-output" style="left:<?=$pos_left?>px"><?=$value?></output><span class="range-value-suffix">px</span>
+									  <div class="range-slider-scale">
+									  	<span>10</span>
+									  	<span>12</span>
+									  	<span>14</span>
+									  	<span>16</span>
+									  	<span>18</span>
+									  </div>
 									</div>
 								</div>
 							</div>

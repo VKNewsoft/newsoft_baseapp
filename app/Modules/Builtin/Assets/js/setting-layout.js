@@ -6,7 +6,10 @@ jQuery(document).ready(function () {
 
 	const $body = $('body');
 	const $fontSize = $('#font-size');
+	const $fontSizeProgress = $('#font-size-progress');
+	const $fontSizeOutput = $('#font-size-output');
 	const $font = $('#font');
+	const $fontPreviewNote = $('#font-preview-note');
 	const $bootswatchTheme = $('#bootswatch-theme');
 	const $sidebarColor = $('#sidebar-color');
 	const $logoBackgroundColor = $('#logo-background-color');
@@ -28,7 +31,10 @@ jQuery(document).ready(function () {
 		'montserrat': '"Montserrat", "Segoe UI", Arial, sans-serif',
 		'poppins': '"Poppins", "Segoe UI", Arial, sans-serif',
 		'arial': 'Arial, "Helvetica Neue", sans-serif',
-		'verdana': 'Verdana, Geneva, sans-serif'
+		'verdana': 'Verdana, Geneva, sans-serif',
+		'tahoma': 'Tahoma, "Segoe UI", sans-serif',
+		'trebuchet-ms': '"Trebuchet MS", "Lucida Sans Unicode", sans-serif',
+		'georgia': 'Georgia, "Times New Roman", serif'
 	};
 	const previewColorMap = {
 		'blue-dark': '#183b77',
@@ -133,17 +139,20 @@ jQuery(document).ready(function () {
 			return;
 		}
 
-		const $output = $fontSize.next('output');
 		const fontSize = parseFloat($fontSize.val()) || 14;
-		const box = $output.outerWidth() / 2;
-		const current = ((fontSize - 10) * 33) - box;
+		const min = parseFloat($fontSize.attr('min')) || 10;
+		const max = parseFloat($fontSize.attr('max')) || 18;
+		const percent = ((fontSize - min) / (max - min)) * 100;
+		const box = $fontSizeOutput.outerWidth() / 2;
+		const current = (($fontSize.width() * percent) / 100) - box;
 		const topPos = 22 + $fontSize.position().top;
 
 		$body.css('font-size', fontSize + 'px');
 		$previewRoot.css('font-size', fontSize + 'px');
+		$fontSizeProgress.css('width', percent + '%');
 
-		if ($output.length) {
-			$output.css({
+		if ($fontSizeOutput.length) {
+			$fontSizeOutput.css({
 				left: current + 25,
 				top: topPos
 			}).text(fontSize);
@@ -163,6 +172,7 @@ jQuery(document).ready(function () {
 
 		$previewThemeName.text(colorLabel + ' / ' + themeLabel);
 		$previewRoot.css('font-family', getSelectedFontFamily());
+		$fontPreviewNote.css('font-family', getSelectedFontFamily());
 		$previewMain.css('background', themePreview.surface);
 		$previewCard.css('background', themePreview.card);
 		$previewButton.css('background', 'linear-gradient(135deg, ' + themePreview.button + ', ' + previewColor + ')');
