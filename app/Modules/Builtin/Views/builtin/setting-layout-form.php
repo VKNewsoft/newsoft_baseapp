@@ -12,7 +12,6 @@
 		}
 
 		$fontMap = setting_layout_font_map();
-		$fontOptions = setting_layout_font_options();
 		$currentFontFamily = setting_layout_normalize_font_family(@$font_family);
 		
 		$list = ['logo_background_color', 'color_scheme', 'sidebar_color', 'font_family'];
@@ -75,7 +74,15 @@
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Font Family</label>
-									<?=options(['name' => 'font_family', 'id' => 'font', 'class' => 'form-select'], $fontOptions, set_value('font_family', $currentFontFamily))?>
+									<select name="font_family" id="font" class="form-select">
+										<?php
+										$selectedFontFamily = set_value('font_family', $currentFontFamily);
+										foreach ($fontMap as $fontKey => $font) {
+											$selected = $selectedFontFamily === $font['family'] ? ' selected' : '';
+											echo '<option value="'.esc($font['family'], 'attr').'" data-font-key="'.esc($fontKey, 'attr').'" data-css-path="'.esc($font['css_path'], 'attr').'"'.$selected.'>'.$font['label'].'</option>';
+										}
+										?>
+									</select>
 									<div class="font-preview-note" id="font-preview-note">Preview cepat: The quick brown fox jumps over the lazy dog.</div>
 								</div>
 								<div class="col-md-6">

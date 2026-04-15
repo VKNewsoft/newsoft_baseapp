@@ -9,8 +9,10 @@
 <?php
 helper('setting_layout');
 $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sans');
-$currentFontFamily = setting_layout_normalize_font_family($app_layout['font_family'] ?? 'open-sans');
-$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
+$currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
+$currentFontFamily = $currentFont['family'];
+$currentFontCssPath = $currentFont['css_path'];
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
 $fontPreloadMap = [
 	'open-sans' => 'opensans_400.woff2',
 	'roboto' => 'Roboto-400-normal-latin.woff2',
@@ -46,8 +48,8 @@ if (@$styles) {
 <?php if ($fontPreloadFile): ?>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile?>"/>
 <?php endif; ?>
-<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
-<link rel="stylesheet" id="font-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
+<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 
 <script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js?r='.time()?>"></script>
 <script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.min.js?r='.time()?>"></script>

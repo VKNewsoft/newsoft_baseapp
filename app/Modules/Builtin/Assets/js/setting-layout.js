@@ -92,9 +92,28 @@ jQuery(document).ready(function () {
 		return FONT_MAP['open-sans'] || Object.values(FONT_MAP)[0] || { family: '"Open Sans", "Segoe UI", Arial, sans-serif' };
 	}
 
+	function getSelectedFontOption() {
+		const element = $font.get(0);
+		if (!element || element.selectedIndex < 0) {
+			return null;
+		}
+		return element.options[element.selectedIndex] || null;
+	}
+
 	function getFontEntry(fontValue) {
 		const defaultEntry = getDefaultFontEntry();
 		const value = String(fontValue || '').trim();
+		const selectedOption = getSelectedFontOption();
+		if (selectedOption) {
+			const optionValue = String(selectedOption.value || '').trim();
+			if (!value || optionValue === value) {
+				const optionFontKey = selectedOption.getAttribute('data-font-key') || 'open-sans';
+				const optionCssPath = selectedOption.getAttribute('data-css-path') || ('css/fonts/' + optionFontKey + '.css');
+				const optionEntry = FONT_MAP[optionFontKey] || defaultEntry;
+				return Object.assign({ key: optionFontKey, css_path: optionCssPath }, optionEntry);
+			}
+		}
+
 		if (!value) {
 			return Object.assign({ key: 'open-sans' }, defaultEntry);
 		}
@@ -108,8 +127,34 @@ jQuery(document).ready(function () {
 		return Object.assign({ key: 'open-sans' }, defaultEntry);
 	}
 
-	function applyFontFamily(fontValue) {
+	function ensureFontStylesheet(fontValue) {
 		const fontEntry = getFontEntry(fontValue);
+		const cssPath = fontEntry.css_path || ('css/fonts/' + fontEntry.key + '.css');
+		const href = buildAssetUrl(theme_url, cssPath, false);
+		if (!href) {
+			return fontEntry;
+		}
+
+		const existingLink = document.getElementById('font-switch');
+		if (existingLink) {
+			if (existingLink.getAttribute('href') !== href) {
+				existingLink.setAttribute('href', href);
+			}
+			existingLink.setAttribute('data-font-key', fontEntry.key);
+			return fontEntry;
+		}
+
+		const link = document.createElement('link');
+		link.id = 'font-switch';
+		link.rel = 'stylesheet';
+		link.href = href;
+		link.setAttribute('data-font-key', fontEntry.key);
+		document.head.appendChild(link);
+		return fontEntry;
+	}
+
+	function applyFontFamily(fontValue) {
+		const fontEntry = ensureFontStylesheet(fontValue);
 		document.documentElement.style.setProperty('--app-font-family', fontEntry.family);
 		if (document.body) {
 			document.body.style.fontFamily = fontEntry.family;
@@ -356,8 +401,7 @@ jQuery(document).ready(function () {
 	});
 
 	$font.on('change', function() {
-		const fontEntry = applyFontFamily($(this).val());
-		setStylesheetHref('#font-switch', buildAssetUrl(theme_url, 'css/fonts/' + fontEntry.key + '.css', false));
+		applyFontFamily($(this).val());
 		updateThemePreview();
 	});
 

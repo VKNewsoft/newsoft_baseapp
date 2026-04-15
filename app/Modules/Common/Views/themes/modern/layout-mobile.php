@@ -8,8 +8,10 @@
 <?php
 helper('setting_layout');
 $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sans');
-$currentFontFamily = setting_layout_normalize_font_family($app_layout['font_family'] ?? 'open-sans');
-$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/' . $currentFontKey . '.css');
+$currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
+$currentFontFamily = $currentFont['family'];
+$currentFontCssPath = $currentFont['css_path'];
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
 $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
 $fontPreloadMap = [
 	'open-sans' => 'opensans_400.woff2',
@@ -45,8 +47,8 @@ document.documentElement.style.setProperty('--app-font-family', window.__APP_FON
 <?php if ($fontPreloadFile): ?>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile?>"/>
 <?php endif; ?>
-<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
-<link rel="stylesheet" id="font-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/'.$currentFontKey.'.css?v='.$fontAssetVersion?>"/>
+<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 <link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion?>"/>
 <link rel="stylesheet" id="logo-background-color-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?r='.time()?>"/>
 
