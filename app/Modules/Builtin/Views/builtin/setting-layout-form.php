@@ -101,9 +101,20 @@
 									<div class="preview-frame">
 										<div class="preview-sidebar" id="preview-sidebar">
 											<div class="preview-sidebar-logo">NSD</div>
-											<div class="preview-sidebar-item active">Dashboard</div>
-											<div class="preview-sidebar-item">Master Data</div>
-											<div class="preview-sidebar-item">Pengaturan</div>
+											<div class="preview-sidebar-group">
+												<div class="preview-sidebar-group-header active">Core Module</div>
+												<div class="preview-sidebar-menu">
+													<div class="preview-sidebar-item active">Dashboard</div>
+													<div class="preview-sidebar-item tree-open">Master Data</div>
+												</div>
+											</div>
+											<div class="preview-sidebar-group">
+												<div class="preview-sidebar-group-header">Configuration</div>
+												<div class="preview-sidebar-menu">
+													<div class="preview-sidebar-item highlight">Pengaturan Layout</div>
+													<div class="preview-sidebar-item">Role Permission</div>
+												</div>
+											</div>
 										</div>
 										<div class="preview-main">
 											<div class="preview-topbar" id="preview-topbar"></div>

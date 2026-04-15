@@ -53,12 +53,12 @@ $user = $session->get('user');
 	<style>
 		.sidebar-menu a.active,
 		.sidebar-menu .active {
-			background-color: #2563eb !important;
-			color: #ffffff !important;
+			background-color: var(--sidebar-item-active-bg, var(--primary)) !important;
+			color: var(--sidebar-item-active-color, #ffffff) !important;
 		}
 		.sidebar-group-header.active-group {
-			background-color: #f8fafc;
-			color: #2563eb;
+			background-color: var(--sidebar-group-active-bg, rgba(var(--primary-rgb), 0.08));
+			color: var(--sidebar-group-active-color, var(--primary));
 		}
 		.sidebar-group { margin-bottom: .5rem; }
 		.sidebar-group-header { cursor: default; border-radius: .25rem; }

@@ -145,6 +145,20 @@
 	background: #0f172a;
 }
 
+.preview-sidebar-group {
+	margin-bottom: .75rem;
+}
+
+.preview-sidebar-group-header {
+	padding: .55rem .75rem;
+	margin-bottom: .45rem;
+	border-radius: 12px;
+	font-size: .74rem;
+	font-weight: 700;
+	letter-spacing: .02em;
+	text-transform: uppercase;
+}
+
 .preview-sidebar-logo {
 	padding: .65rem .8rem;
 	margin-bottom: 1rem;
@@ -167,6 +181,24 @@
 .preview-sidebar-item.active {
 	background: rgba(255, 255, 255, 0.14);
 	color: #ffffff;
+}
+
+.preview-sidebar-item.tree-open {
+	position: relative;
+}
+
+.preview-sidebar-item.tree-open::after {
+	content: "";
+	position: absolute;
+	right: .75rem;
+	top: 50%;
+	width: 8px;
+	height: 8px;
+	margin-top: -4px;
+	border-top: 2px solid currentColor;
+	border-right: 2px solid currentColor;
+	transform: rotate(135deg);
+	opacity: .75;
 }
 
 .preview-main {

@@ -20,6 +20,7 @@ jQuery(document).ready(function () {
 	const $previewButton = $('.preview-button');
 	const $previewChip = $('.preview-chip');
 	const $previewLogo = $previewSidebar.find('.preview-sidebar-logo');
+	const $previewGroupHeaders = $previewSidebar.find('.preview-sidebar-group-header');
 	const $previewSidebarItems = $previewSidebar.find('.preview-sidebar-item');
 	const fontFamilyMap = {
 		'open-sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
@@ -39,6 +40,17 @@ jQuery(document).ready(function () {
 		'yellow': '#d97706',
 		'jnn': '#8b3035',
 		'payday': '#013062'
+	};
+	const previewSidebarSchemeMap = {
+		'blue-dark': { group: '#183b77', groupBg: '#e8eff8', groupMuted: '#6b7e99', itemHoverBg: '#edf4ff', itemHoverColor: '#183b77', itemActiveBg: '#2784c5', itemActiveHoverBg: '#2378b4', treeOpenBg: '#e8eff8', treeOpenColor: '#183b77' },
+		'blue': { group: '#1976d2', groupBg: '#eaf4ff', groupMuted: '#6d89a6', itemHoverBg: '#edf5ff', itemHoverColor: '#1976d2', itemActiveBg: '#1976d2', itemActiveHoverBg: '#1164ac', treeOpenBg: '#eaf4ff', treeOpenColor: '#1976d2' },
+		'green': { group: '#2e8332', groupBg: '#ecf8ee', groupMuted: '#6e8b70', itemHoverBg: '#e7f7e8', itemHoverColor: '#2e8332', itemActiveBg: '#43a047', itemActiveHoverBg: '#2e8332', treeOpenBg: '#ecf8ee', treeOpenColor: '#2e8332' },
+		'grey': { group: '#475569', groupBg: '#eef2f7', groupMuted: '#64748b', itemHoverBg: '#f1f5f9', itemHoverColor: '#475569', itemActiveBg: '#64748b', itemActiveHoverBg: '#414659', treeOpenBg: '#eef2f7', treeOpenColor: '#475569' },
+		'purple': { group: '#5a43a0', groupBg: '#f3ebff', groupMuted: '#7d6c9f', itemHoverBg: '#f1e8ff', itemHoverColor: '#5a43a0', itemActiveBg: '#735cb9', itemActiveHoverBg: '#473385', treeOpenBg: '#f3ebff', treeOpenColor: '#5a43a0' },
+		'red': { group: '#dc2626', groupBg: '#feeeee', groupMuted: '#a36f6f', itemHoverBg: '#ffe5e5', itemHoverColor: '#dc2626', itemActiveBg: '#e53935', itemActiveHoverBg: '#de2e2a', treeOpenBg: '#feeeee', treeOpenColor: '#dc2626' },
+		'yellow': { group: '#b45309', groupBg: '#fff5e8', groupMuted: '#9b7a4d', itemHoverBg: '#ffeed6', itemHoverColor: '#b45309', itemActiveBg: '#ffae00', itemActiveHoverBg: '#ffa40a', treeOpenBg: '#fff5e8', treeOpenColor: '#b45309' },
+		'jnn': { group: '#8b3035', groupBg: '#f7ebec', groupMuted: '#936b6d', itemHoverBg: '#f3dfe0', itemHoverColor: '#8b3035', itemActiveBg: '#a84c51', itemActiveHoverBg: '#692629', treeOpenBg: '#f7ebec', treeOpenColor: '#8b3035' },
+		'payday': { group: '#013062', groupBg: '#e8f0fb', groupMuted: '#617a99', itemHoverBg: '#dde8f7', itemHoverColor: '#013062', itemActiveBg: '#013062', itemActiveHoverBg: '#184474', treeOpenBg: '#e8f0fb', treeOpenColor: '#013062' }
 	};
 	const bootswatchPreviewMap = {
 		'default': { surface: '#f8fafc', card: '#ffffff', button: '#2563eb', chip: 'rgba(37, 99, 235, 0.12)' },
@@ -142,6 +154,7 @@ jQuery(document).ready(function () {
 		const colorScheme = $colorSchemeInput.val() || 'blue';
 		const bootswatchTheme = $bootswatchTheme.val() || 'default';
 		const previewColor = previewColorMap[colorScheme] || previewColorMap.blue;
+		const sidebarTheme = previewSidebarSchemeMap[colorScheme] || previewSidebarSchemeMap.blue;
 		const sidebarMode = $sidebarColor.val();
 		const logoBackground = $logoBackgroundColor.val();
 		const themePreview = bootswatchPreviewMap[bootswatchTheme] || bootswatchPreviewMap['default'];
@@ -165,19 +178,99 @@ jQuery(document).ready(function () {
 				background: '#f8fafc',
 				color: '#0f172a'
 			});
-			$previewSidebarItems.css('color', '#475569');
-			$previewSidebar.find('.preview-sidebar-item.active').css({
-				background: 'rgba(37, 99, 235, 0.12)',
-				color: previewColor
+			$previewGroupHeaders.css({
+				background: 'transparent',
+				color: sidebarTheme.group
+			});
+			$previewGroupHeaders.filter('.active').css({
+				background: sidebarTheme.groupBg,
+				color: sidebarTheme.group
+			});
+			$previewSidebarItems.css({
+				background: 'transparent',
+				color: sidebarTheme.groupMuted
+			});
+			$previewSidebarItems.filter('.tree-open').css({
+				background: sidebarTheme.treeOpenBg,
+				color: sidebarTheme.treeOpenColor
+			});
+			$previewSidebarItems.not('.active').off('mouseenter mouseleave').hover(function() {
+				if ($(this).hasClass('tree-open')) {
+					$(this).css({
+						background: sidebarTheme.itemActiveHoverBg,
+						color: '#ffffff'
+					});
+					return;
+				}
+				$(this).css({
+					background: sidebarTheme.itemHoverBg,
+					color: sidebarTheme.itemHoverColor
+				});
+			}, function() {
+				if ($(this).hasClass('tree-open')) {
+					$(this).css({
+						background: sidebarTheme.treeOpenBg,
+						color: sidebarTheme.treeOpenColor
+					});
+					return;
+				}
+				$(this).css({
+					background: 'transparent',
+					color: sidebarTheme.groupMuted
+				});
+			});
+			$previewSidebar.find('.preview-sidebar-item.active, .preview-sidebar-item.highlight').css({
+				background: sidebarTheme.itemActiveBg,
+				color: '#ffffff'
 			});
 		} else {
 			$previewSidebar.css({
 				background: '#0f172a',
 				color: '#ffffff'
 			});
-			$previewSidebarItems.css('color', 'rgba(255,255,255,.72)');
-			$previewSidebar.find('.preview-sidebar-item.active').css({
-				background: 'rgba(255,255,255,.14)',
+			$previewGroupHeaders.css({
+				background: 'rgba(255,255,255,.06)',
+				color: '#d7e3f4'
+			});
+			$previewGroupHeaders.filter('.active').css({
+				background: 'rgba(255,255,255,.12)',
+				color: '#ffffff'
+			});
+			$previewSidebarItems.css({
+				background: 'transparent',
+				color: 'rgba(255,255,255,.72)'
+			});
+			$previewSidebarItems.filter('.tree-open').css({
+				background: 'rgba(255,255,255,.12)',
+				color: '#ffffff'
+			});
+			$previewSidebarItems.not('.active').off('mouseenter mouseleave').hover(function() {
+				if ($(this).hasClass('tree-open')) {
+					$(this).css({
+						background: sidebarTheme.itemActiveHoverBg,
+						color: '#ffffff'
+					});
+					return;
+				}
+				$(this).css({
+					background: 'rgba(255,255,255,.08)',
+					color: '#ffffff'
+				});
+			}, function() {
+				if ($(this).hasClass('tree-open')) {
+					$(this).css({
+						background: 'rgba(255,255,255,.12)',
+						color: '#ffffff'
+					});
+					return;
+				}
+				$(this).css({
+					background: 'transparent',
+					color: 'rgba(255,255,255,.72)'
+				});
+			});
+			$previewSidebar.find('.preview-sidebar-item.active, .preview-sidebar-item.highlight').css({
+				background: sidebarTheme.itemActiveBg,
 				color: '#ffffff'
 			});
 		}

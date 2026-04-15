@@ -1,3 +1,19 @@
+:root {
+	--sidebar-group-color: #183b77;
+	--sidebar-group-active-bg: #e8eff8;
+	--sidebar-group-active-color: #183b77;
+	--sidebar-group-active-border: rgba(24, 59, 119, 0.18);
+	--sidebar-group-muted: #6b7e99;
+	--sidebar-item-hover-bg: #edf4ff;
+	--sidebar-item-hover-color: #183b77;
+	--sidebar-item-active-bg: #2784c5;
+	--sidebar-item-active-color: #ffffff;
+	--sidebar-item-active-hover-bg: #2378b4;
+	--sidebar-item-active-hover-color: #ffffff;
+	--sidebar-tree-open-bg: #e8eff8;
+	--sidebar-tree-open-color: #183b77;
+}
+
 header {
 	background: #2784C5;
 }
