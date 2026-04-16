@@ -130,6 +130,7 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 			'extra_tables' => 0,
 			'extra_columns' => 0,
 			'extra_indexes' => 0,
+			'missing_seed_data' => 0,
 			'safe_changes' => 0,
 			'manual_review' => 0,
 		];
@@ -331,8 +332,176 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 			}
 		}
 
+		// Sinkronisasi seed data penting ikut dihitung agar module tetap bisa
+		// melakukan self-registration saat source baru di-pull ke database lama.
+		$items = array_merge($items, $this->buildRegistrationDiff());
+
 		return [
 			'items' => $items
+		];
+	}
+
+	/**
+	 * Bangun diff untuk seed data wajib module DB Synchronisation.
+	 *
+	 * Diff ini menangani kondisi database lama yang schema tabelnya sudah sama,
+	 * tetapi data core_module/core_menu/core_permission untuk module ini belum ada.
+	 */
+	protected function buildRegistrationDiff(): array
+	{
+		$items = [];
+		foreach ($this->getRequiredSeedRows() as $seed) {
+			$exists = (bool) $this->db->table($seed['table'])
+				->select($seed['key_column'])
+				->where($seed['where'])
+				->get()
+				->getRowArray();
+
+			if ($exists) {
+				continue;
+			}
+
+			$items[] = $this->createDiffItem([
+				'scope' => 'seed',
+				'status' => 'missing_in_current',
+				'table' => $seed['table'],
+				'name' => $seed['label'],
+				'label' => $seed['description'],
+				'current' => '-',
+				'target' => json_encode($seed['data'], JSON_UNESCAPED_UNICODE),
+				'sql' => $seed['sql'],
+				'is_safe' => true,
+				'counter' => 'missing_seed_data'
+			]);
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Seed data minimum yang wajib ada agar module bisa beralih dari fallback ke
+	 * mode database penuh setelah proses sinkronisasi dijalankan.
+	 */
+	protected function getRequiredSeedRows(): array
+	{
+		return [
+			[
+				'table' => 'core_module',
+				'key_column' => 'id_module',
+				'where' => ['id_module' => 124],
+				'label' => 'core_module.db-synchronisation',
+				'description' => 'Registrasi module DB Synchronisation belum ada',
+				'data' => [
+					'id_module' => 124,
+					'nama_module' => 'db-synchronisation',
+					'judul_module' => 'CORE - DB Synchronisation',
+					'id_module_status' => 1,
+					'login' => 'Y',
+					'deskripsi' => 'Module untuk membandingkan schema database aktif dengan dump installer'
+				],
+				'sql' => "INSERT INTO `core_module` (`id_module`,`nama_module`,`judul_module`,`id_module_status`,`login`,`deskripsi`) SELECT 124,'db-synchronisation','CORE - DB Synchronisation',1,'Y','Module untuk membandingkan schema database aktif dengan dump installer' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_module` WHERE `id_module` = 124 OR `nama_module` = 'db-synchronisation')"
+			],
+			[
+				'table' => 'core_menu',
+				'key_column' => 'id_menu',
+				'where' => ['id_menu' => 172],
+				'label' => 'core_menu.db-synchronisation',
+				'description' => 'Registrasi menu DB Synchronisation belum ada',
+				'data' => [
+					'id_menu' => 172,
+					'nama_menu' => 'DB Synchronisation',
+					'id_menu_kategori' => 1,
+					'class' => null,
+					'url' => 'db-synchronisation',
+					'id_module' => 124,
+					'id_parent' => 13,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 5
+				],
+				'sql' => "INSERT INTO `core_menu` (`id_menu`,`nama_menu`,`id_menu_kategori`,`class`,`url`,`id_module`,`id_parent`,`aktif`,`new`,`urut`) SELECT 172,'DB Synchronisation',1,NULL,'db-synchronisation',124,13,1,0,5 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_menu` WHERE `id_menu` = 172 OR `url` = 'db-synchronisation')"
+			],
+			[
+				'table' => 'core_menu_role',
+				'key_column' => 'id_menu',
+				'where' => ['id_menu' => 172, 'id_role' => 1],
+				'label' => 'core_menu_role.db-synchronisation.admin',
+				'description' => 'Akses menu Administrator ke DB Synchronisation belum ada',
+				'data' => ['id_menu' => 172, 'id_role' => 1],
+				'sql' => "INSERT INTO `core_menu_role` (`id_menu`,`id_role`) SELECT 172,1 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_menu_role` WHERE `id_menu` = 172 AND `id_role` = 1)"
+			],
+			[
+				'table' => 'core_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_module_permission' => 450],
+				'label' => 'core_module_permission.db-sync.create',
+				'description' => 'Permission create DB Synchronisation belum ada',
+				'data' => ['id_module_permission' => 450, 'id_module' => 124, 'nama_permission' => 'create'],
+				'sql' => "INSERT INTO `core_module_permission` (`id_module_permission`,`id_module`,`nama_permission`,`judul_permission`,`keterangan`) SELECT 450,124,'create','Create Data','Hak akses untuk menambah data sinkronisasi schema' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_module_permission` WHERE `id_module_permission` = 450)"
+			],
+			[
+				'table' => 'core_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_module_permission' => 451],
+				'label' => 'core_module_permission.db-sync.read',
+				'description' => 'Permission read_all DB Synchronisation belum ada',
+				'data' => ['id_module_permission' => 451, 'id_module' => 124, 'nama_permission' => 'read_all'],
+				'sql' => "INSERT INTO `core_module_permission` (`id_module_permission`,`id_module`,`nama_permission`,`judul_permission`,`keterangan`) SELECT 451,124,'read_all','Read All Data','Hak akses untuk melihat diff sinkronisasi schema' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_module_permission` WHERE `id_module_permission` = 451)"
+			],
+			[
+				'table' => 'core_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_module_permission' => 452],
+				'label' => 'core_module_permission.db-sync.update',
+				'description' => 'Permission update_all DB Synchronisation belum ada',
+				'data' => ['id_module_permission' => 452, 'id_module' => 124, 'nama_permission' => 'update_all'],
+				'sql' => "INSERT INTO `core_module_permission` (`id_module_permission`,`id_module`,`nama_permission`,`judul_permission`,`keterangan`) SELECT 452,124,'update_all','Update All Data','Hak akses untuk mengeksekusi sinkronisasi schema aman' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_module_permission` WHERE `id_module_permission` = 452)"
+			],
+			[
+				'table' => 'core_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_module_permission' => 453],
+				'label' => 'core_module_permission.db-sync.delete',
+				'description' => 'Permission delete_all DB Synchronisation belum ada',
+				'data' => ['id_module_permission' => 453, 'id_module' => 124, 'nama_permission' => 'delete_all'],
+				'sql' => "INSERT INTO `core_module_permission` (`id_module_permission`,`id_module`,`nama_permission`,`judul_permission`,`keterangan`) SELECT 453,124,'delete_all','Delete All Data','Hak akses placeholder agar pattern permission module tetap konsisten' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_module_permission` WHERE `id_module_permission` = 453)"
+			],
+			[
+				'table' => 'core_role_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_role' => 1, 'id_module_permission' => 450],
+				'label' => 'core_role_module_permission.db-sync.450',
+				'description' => 'Assignment permission create untuk role Administrator belum ada',
+				'data' => ['id_role' => 1, 'id_module_permission' => 450],
+				'sql' => "INSERT INTO `core_role_module_permission` (`id_role`,`id_module_permission`) SELECT 1,450 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_role_module_permission` WHERE `id_role` = 1 AND `id_module_permission` = 450)"
+			],
+			[
+				'table' => 'core_role_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_role' => 1, 'id_module_permission' => 451],
+				'label' => 'core_role_module_permission.db-sync.451',
+				'description' => 'Assignment permission read_all untuk role Administrator belum ada',
+				'data' => ['id_role' => 1, 'id_module_permission' => 451],
+				'sql' => "INSERT INTO `core_role_module_permission` (`id_role`,`id_module_permission`) SELECT 1,451 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_role_module_permission` WHERE `id_role` = 1 AND `id_module_permission` = 451)"
+			],
+			[
+				'table' => 'core_role_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_role' => 1, 'id_module_permission' => 452],
+				'label' => 'core_role_module_permission.db-sync.452',
+				'description' => 'Assignment permission update_all untuk role Administrator belum ada',
+				'data' => ['id_role' => 1, 'id_module_permission' => 452],
+				'sql' => "INSERT INTO `core_role_module_permission` (`id_role`,`id_module_permission`) SELECT 1,452 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_role_module_permission` WHERE `id_role` = 1 AND `id_module_permission` = 452)"
+			],
+			[
+				'table' => 'core_role_module_permission',
+				'key_column' => 'id_module_permission',
+				'where' => ['id_role' => 1, 'id_module_permission' => 453],
+				'label' => 'core_role_module_permission.db-sync.453',
+				'description' => 'Assignment permission delete_all untuk role Administrator belum ada',
+				'data' => ['id_role' => 1, 'id_module_permission' => 453],
+				'sql' => "INSERT INTO `core_role_module_permission` (`id_role`,`id_module_permission`) SELECT 1,453 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `core_role_module_permission` WHERE `id_role` = 1 AND `id_module_permission` = 453)"
+			]
 		];
 	}
 

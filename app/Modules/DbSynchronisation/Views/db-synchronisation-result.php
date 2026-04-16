@@ -95,6 +95,10 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 						<strong><?=esc((string) ($summary['different_indexes'] ?? 0))?></strong>
 					</div>
 					<div class="db-sync-metric">
+						<span>Seed Belum Ada</span>
+						<strong><?=esc((string) ($summary['missing_seed_data'] ?? 0))?></strong>
+					</div>
+					<div class="db-sync-metric">
 						<span>Objek Tambahan</span>
 						<strong><?=esc((string) (($summary['extra_tables'] ?? 0) + ($summary['extra_columns'] ?? 0) + ($summary['extra_indexes'] ?? 0)))?></strong>
 					</div>
