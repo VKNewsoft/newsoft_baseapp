@@ -11,15 +11,10 @@ $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sa
 $currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
 $currentFontFamily = $currentFont['family'];
 $currentFontCssPath = $currentFont['css_path'];
+$fontPreloadFiles = setting_layout_font_preload_files($app_layout['font_family'] ?? 'open-sans');
+$criticalFontCss = setting_layout_font_critical_css($app_layout['font_family'] ?? 'open-sans');
 $fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
 $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
-$fontPreloadMap = [
-	'open-sans' => 'opensans_400.woff2',
-	'roboto' => 'Roboto-400-normal-latin.woff2',
-	'montserrat' => 'Montserrat-400-normal-latin.woff2',
-	'poppins' => 'poppins_400.woff2'
-];
-$fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 $faviconVersion = @filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon']);
 $fontawesomeVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
 $bootstrapVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
@@ -43,14 +38,48 @@ $paceJsVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace.min.js');
 $mainMobileJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/js/main-mobile.js');
 $datatablesJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js');
 $datatablesBootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js');
+
+/**
+ * Menjaga cache asset dinamis tetap stabil agar perpindahan halaman mobile
+ * tidak memicu unduhan ulang asset yang sama pada setiap request.
+ */
+if (!function_exists('append_dynamic_asset_version')) {
+	function append_dynamic_asset_version($file)
+	{
+		if (strpos($file, '://') === false && strpos($file, '//') !== 0 && strpos($file, 'data:') !== 0) {
+			$cleanFile = strtok($file, '#');
+			if (strpos($cleanFile, '?v=') !== false || strpos($cleanFile, '?r=') !== false || strpos($cleanFile, '&v=') !== false || strpos($cleanFile, '&r=') !== false) {
+				return $file;
+			}
+
+			$baseUrl = rtrim(base_url(), '/');
+			if (strpos($cleanFile, $baseUrl) === 0) {
+				$relativePath = ltrim(substr($cleanFile, strlen($baseUrl)), '/');
+				$absolutePath = ROOTPATH . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+				if (is_file($absolutePath)) {
+					$separator = strpos($file, '?') !== false ? '&' : '?';
+					return $file . $separator . 'v=' . @filemtime($absolutePath);
+				}
+			}
+		}
+
+		return $file;
+	}
+}
 ?>
-<style>:root{--app-font-family: <?=$currentFontFamily?>;}</style>
+<style>:root{--app-font-family: <?=$currentFontFamily?>;}html,body{font-family:var(--app-font-family);}<?=$criticalFontCss?></style>
 <script>
 window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
 </script>
 <link rel="manifest" href="manifest.json"/>
 <link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?v='.$faviconVersion?>" />
+<?php foreach ($fontPreloadFiles as $fontFile): ?>
+<link rel="preload" as="font" type="font/woff2" crossorigin fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontFile['file'].'?v='.@filemtime(APPPATH . 'Modules/Common/Assets/builtin/fonts/'.$fontFile['file'])?>"/>
+<?php endforeach; ?>
+<link rel="preload" as="style" fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
+<link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion?>"/>
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css?v='.$fontawesomeVersion?>"/>
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?v='.$bootstrapVersion?>"/>
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap-custom.min.css?v='.@filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap-custom.min.css')?>"/>
@@ -67,12 +96,6 @@ document.documentElement.style.setProperty('--app-font-family', window.__APP_FON
 
 <link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?v='.$colorSchemeVersion?>"/>
 <link rel="stylesheet" id="style-switch-sidebar" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?v='.$sidebarSchemeVersion?>"/>
-<?php if ($fontPreloadFile): ?>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile?>"/>
-<?php endif; ?>
-<link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
-<link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
-<link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion?>"/>
 <link rel="stylesheet" id="logo-background-color-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?v='.$logoSchemeVersion?>"/>
 
 <?php
@@ -87,9 +110,9 @@ if (@$styles) {
 				}					
 			}
 				
-			echo '<link rel="stylesheet" data-type="dynamic-resource-head" ' . $attr . ' type="text/css" href="'.$file['file'].'?v='.time().'"/>' . "\n";
+			echo '<link rel="stylesheet" data-type="dynamic-resource-head" ' . $attr . ' type="text/css" href="'.append_dynamic_asset_version($file['file']).'"/>' . "\n";
 		} else {
-			echo '<link rel="stylesheet" data-type="dynamic-resource-head" type="text/css" href="'.$file.'?v='.time().'"/>' . "\n";
+			echo '<link rel="stylesheet" data-type="dynamic-resource-head" type="text/css" href="'.append_dynamic_asset_version($file).'"/>' . "\n";
 		}
 	}
 }
@@ -133,10 +156,10 @@ if (@$scripts) {
 			if (@$file['print']) {
 				echo '<script type="text/javascript" data-type="dynamic-resource-head" ' . $attr . '>' . $file['script'] . '</script>' . "\n";
 			} else {
-				echo '<script defer type="text/javascript" data-type="dynamic-resource-head" ' . $attr . ' src="'.$file['script'].'?v='.time().'"></script>' . "\n";
+				echo '<script defer type="text/javascript" data-type="dynamic-resource-head" ' . $attr . ' src="'.append_dynamic_asset_version($file['script']).'"></script>' . "\n";
 			}
 		} else {
-			echo '<script defer type="text/javascript" data-type="dynamic-resource-head" src="'.$file.'?v='.time().'"></script>' . "\n";
+			echo '<script defer type="text/javascript" data-type="dynamic-resource-head" src="'.append_dynamic_asset_version($file).'"></script>' . "\n";
 		}
 	}
 }
@@ -149,7 +172,6 @@ if (@$scripts) {
 <link rel="apple-touch-icon" href="<?=$config->baseURL?>/public/images/<?=$setting_aplikasi['favicon']?>" type="image/png">
 <head>
 <body style="font-family: <?=esc($currentFontFamily, 'attr')?>;">
-	<script>document.body.style.fontFamily = window.__APP_FONT_FAMILY__ || '<?=esc($currentFontFamily, 'js')?>';</script>
 	
 	<div class="page-container" id="page-container">
 		<div id="page-content">

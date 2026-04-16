@@ -108,7 +108,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-4">
+						<div class="col-xl-4 page-defer-section">
 							<div class="theme-preview-surface setting-layout-preview">
 								<div class="setting-layout-preview-header">
 									<span class="setting-layout-preview-badge">Preview</span>

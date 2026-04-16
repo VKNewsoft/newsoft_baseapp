@@ -1,5 +1,10 @@
 jQuery(document).ready(function () {
 	let dataTables = '';
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-result');
+		}
+	}
 	$('body').delegate('#check-all', 'click', function() {
 		var prop = $(this).prop('checked');
 		$('#check-all-wrapper').find('input[type="checkbox"]').prop('checked', prop);
@@ -65,11 +70,17 @@ jQuery(document).ready(function () {
 			"ajax": {
 				"url": url,
 				"type": "POST",
+				"error": function() {
+					hideTableSkeleton();
+				},
 				/* "dataSrc": function (json) {
 					// console.log(json)
 				} */
 			},
-			"columns": column
+			"columns": column,
+			"initComplete": function() {
+				hideTableSkeleton();
+			}
 		}
 		
 		$add_setting = $('#dataTables-setting');
@@ -80,10 +91,20 @@ jQuery(document).ready(function () {
 			}
 		}
 		
-		dataTables =  $('#table-result').DataTable( settings );
-		if (window.WDIResultTable) {
-			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
-			WDIResultTable.bindResize(dataTables, '#table-result', 'menu-role-table');
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.defer(function() {
+				dataTables = $('#table-result').DataTable(settings);
+				if (window.WDIResultTable) {
+					WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+					WDIResultTable.bindResize(dataTables, '#table-result', 'menu-role-table');
+				}
+			});
+		} else {
+			dataTables = $('#table-result').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+				WDIResultTable.bindResize(dataTables, '#table-result', 'menu-role-table');
+			}
 		}
 	}
 	

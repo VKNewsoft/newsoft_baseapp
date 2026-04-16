@@ -103,7 +103,10 @@ class User_role extends \App\Modules\Common\Controllers\BaseController
 		helper('html');
 	
 		$userRole = [];
-		$userRoleAll = $this->model->getUserRole();
+		$userIds = array_column($query['data'], 'id_user');
+		// Assignment role hanya diambil untuk user yang tampil pada page aktif
+		// agar request awal tidak melakukan full scan relasi user-role.
+		$userRoleAll = $this->model->getUserRoleByUserIds($userIds);
 		foreach($userRoleAll as $row) {
 			$userRole[$row['id_user']][] = $row;
 		}

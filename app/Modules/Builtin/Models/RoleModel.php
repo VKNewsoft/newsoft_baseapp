@@ -21,6 +21,7 @@ class RoleModel extends \App\Modules\Common\Models\BaseModel
 	public function getAllModules() 
 	{
 		return $this->db->table('core_module')
+			->select('id_module, nama_module, judul_module')
 			->get()
 			->getResultArray();
 	}
@@ -58,6 +59,7 @@ class RoleModel extends \App\Modules\Common\Models\BaseModel
 	public function getAllRole() 
 	{
 		return $this->db->table('core_role')
+			->select('id_role, nama_role, judul_role, keterangan, id_module')
 			->get()
 			->getResultArray();
 	}
@@ -70,10 +72,54 @@ class RoleModel extends \App\Modules\Common\Models\BaseModel
 	public function getListModules() 
 	{
 		return $this->db->table('core_role_module_permission')
+			->select('core_role_module_permission.id_role, core_module.id_module, core_module.nama_module, core_module.judul_module, core_module.id_module_status')
 			->join('core_module_permission', 'core_role_module_permission.id_module_permission = core_module_permission.id_module_permission')
 			->join('core_module', 'core_module_permission.id_module = core_module.id_module')
 			->join('core_module_status', 'core_module.id_module_status = core_module_status.id_module_status')
 			->orderBy('nama_module', 'ASC')
+			->get()
+			->getResultArray();
+	}
+
+	/**
+	 * Ambil data module seperlunya berdasarkan ID pada halaman aktif.
+	 *
+	 * @param array $moduleIds
+	 * @return array
+	 */
+	public function getModulesByIds(array $moduleIds)
+	{
+		$moduleIds = array_filter(array_map('intval', $moduleIds));
+		if (!$moduleIds) {
+			return [];
+		}
+
+		return $this->db->table('core_module')
+			->select('id_module, judul_module')
+			->whereIn('id_module', $moduleIds)
+			->get()
+			->getResultArray();
+	}
+
+	/**
+	 * Ambil relasi role-module yang sudah memiliki permission untuk role pada
+	 * halaman aktif supaya tidak perlu memuat seluruh assignment.
+	 *
+	 * @param array $roleIds
+	 * @return array
+	 */
+	public function getRoleModulePermissionMap(array $roleIds)
+	{
+		$roleIds = array_filter(array_map('intval', $roleIds));
+		if (!$roleIds) {
+			return [];
+		}
+
+		return $this->db->table('core_role_module_permission')
+			->select('core_role_module_permission.id_role, core_module_permission.id_module')
+			->join('core_module_permission', 'core_role_module_permission.id_module_permission = core_module_permission.id_module_permission')
+			->whereIn('core_role_module_permission.id_role', $roleIds)
+			->groupBy('core_role_module_permission.id_role, core_module_permission.id_module')
 			->get()
 			->getResultArray();
 	}
@@ -183,7 +229,9 @@ class RoleModel extends \App\Modules\Common\Models\BaseModel
 		$allowedColumns = ['id_role', 'nama_role', 'judul_role', 'keterangan', 'id_module'];
 		
 		// Build query dengan Query Builder
-		$builder = $this->db->table('core_role');
+		$builder = $this->db->table('core_role')
+			// Pilih field seperlunya agar payload dan proses query tetap ringan.
+			->select('id_role, nama_role, judul_role, keterangan, id_module');
 		
 		// Search - menggunakan groupStart/groupEnd untuk kondisi OR yang aman
 		$searchValue = $this->request->getPost('search')['value'] ?? '';

@@ -237,7 +237,11 @@ $(document).ready(function()
 		{
 			$button.prop('disabled', false);
 			$bootbox.find('.modal-body').html(result);
-			$('.select2').select2({theme: 'bootstrap-5', dropdownParent: $(".bootbox")});
+			if (window.NSModulePerformance) {
+				window.NSModulePerformance.initSelect2($bootbox).catch(function() {
+					show_alert('Error !!!', 'Asset form menu gagal dimuat', 'error');
+				});
+			}
 			if (type == 'add') {
 				id_menu_kategori = $('#list-kategori').find('.list-group-item-primary').attr('data-id-kategori');
 				$bootbox.find('select[name="id_menu_kategori"]').val(id_menu_kategori);

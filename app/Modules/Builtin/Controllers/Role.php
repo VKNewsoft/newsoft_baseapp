@@ -19,10 +19,6 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 		
 		$this->model = new RoleModel;	
 		$this->data['site_title'] = 'Halaman Role';
-
-		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery.select2/js/select2.full.min.js' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
 		
 		// HMVC asset load: form/list role pakai asset shared builtin agar class UI tetap sinkron.
 		$this->addJs($this->commonAsset('builtin/js/role.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/role.js'));
@@ -45,7 +41,8 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 	public function index()
 	{
 		$this->hasPermission('read_all');
-		$this->setData();
+		// Halaman list cukup membawa data layout dasar karena isi tabel dimuat
+		// bertahap lewat DataTable server-side untuk menjaga render awal tetap cepat.
 		$data = $this->data;
 		if ($this->request->getPost('delete')) 
 		{
@@ -57,9 +54,6 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 				$data['msg'] = ['status' => 'warning', 'message' => 'Tidak ada data yang dihapus'];
 			}
 		}
-		
-		$data['module'] = $this->model->getAllModules();
-		$data['result'] = $this->model->getAllRole();
 		
 		$this->view('builtin/role-result.php', $data);
 	}
@@ -241,11 +235,27 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 		helper('html');		
 		$no = $this->request->getPost('start') + 1 ?: 1;
 		
-		$listModules = $this->model->getListModules();
-		$module = [];
-		foreach ($listModules as $val) {
+		// Optimasi query list: ambil module dan permission assignment hanya untuk data
+		// pada halaman aktif agar render awal DataTable tetap ringan.
+		$modules = [];
+		$modulesRole = [];
+		$moduleIds = [];
+		$roleIds = [];
+		foreach ($query['data'] as $val) {
+			if (!empty($val['id_module'])) {
+				$moduleIds[] = (int) $val['id_module'];
+			}
+			if (!empty($val['id_role'])) {
+				$roleIds[] = (int) $val['id_role'];
+			}
+		}
+
+		foreach ($this->model->getModulesByIds(array_unique($moduleIds)) as $val) {
 			$modules[$val['id_module']] = $val;
-			$modulesRole[$val['id_role']][$val['id_module']] = $val;
+		}
+
+		foreach ($this->model->getRoleModulePermissionMap(array_unique($roleIds)) as $val) {
+			$modulesRole[$val['id_role']][$val['id_module']] = true;
 		}
 		
 		foreach ($query['data'] as $key => &$val) 

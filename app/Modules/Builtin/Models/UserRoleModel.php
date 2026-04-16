@@ -35,6 +35,28 @@ class UserRoleModel extends \App\Modules\Common\Models\BaseModel
 			->get()
 			->getResultArray();
 	}
+
+	/**
+	 * Ambil relasi user-role hanya untuk user pada halaman aktif agar DataTable
+	 * tidak memuat seluruh assignment role setiap request.
+	 *
+	 * @param array $userIds
+	 * @return array
+	 */
+	public function getUserRoleByUserIds(array $userIds) {
+		$userIds = array_filter(array_map('intval', $userIds));
+		if (!$userIds) {
+			return [];
+		}
+
+		return $this->db->table('core_user_role')
+			->select('core_user_role.id_user, core_user_role.id_role, core_role.judul_role')
+			->join('core_role', 'core_role.id_role = core_user_role.id_role', 'left')
+			->whereIn('core_user_role.id_user', $userIds)
+			->orderBy('core_role.judul_role', 'ASC')
+			->get()
+			->getResultArray();
+	}
 	
 	/**
 	 * Mendapatkan role yang dimiliki user berdasarkan ID
@@ -124,6 +146,8 @@ class UserRoleModel extends \App\Modules\Common\Models\BaseModel
 		$columns = $this->request->getPost('columns') ?: [];
 		$allowedColumns = ['id_user', 'username', 'email', 'nama', 'created_at'];
 		$builder = $this->db->table('core_user')
+			// Ambil field inti saja agar pagination server-side tetap efisien.
+			->select('id_user, username, email, nama, created_at')
 			->where('isDeleted', 0);
 		
 		$searchAll = $this->request->getPost('search')['value'] ?? '';

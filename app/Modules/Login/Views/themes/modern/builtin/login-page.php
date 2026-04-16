@@ -1,30 +1,57 @@
 <!DOCTYPE HTML>
 <html lang="en">
+<?php
+helper('setting_layout');
+$fontSettingValue = $app_layout['font_family'] ?? 'open-sans';
+$currentFontKey = setting_layout_font_key($fontSettingValue);
+$currentFont = setting_layout_font_entry($fontSettingValue);
+$currentFontFamily = $currentFont['family'];
+$currentFontCssPath = $currentFont['css_path'];
+$fontPreloadFiles = setting_layout_font_preload_files($fontSettingValue);
+$criticalFontCss = setting_layout_font_critical_css($fontSettingValue);
+$faviconVersion = @filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon']);
+$bootstrapVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
+$bootstrapCustomVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/bootstrap-custom.css');
+$fontawesomeVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
+$loginCssVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/login.css');
+$loginHeaderCssVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/login-header.css');
+$paceCssVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace-theme-default.css');
+$jqueryVersion = @filemtime(ROOTPATH . 'public/vendors/jquery/jquery.min.js');
+$bootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/js/bootstrap.min.js');
+$paceJsVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace.min.js');
+$fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
+?>
 <title><?=$site_title?></title>
 <meta name="descrition" content="<?=$site_title?>"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time()?>" />
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?r=' . time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/login.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/login-header.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/pace/pace-theme-default.css?r='.time()?>"/>
+<style>:root{--app-font-family: <?=$currentFontFamily?>;}html,body{font-family:var(--app-font-family);}<?=$criticalFontCss?></style>
+<?php foreach ($fontPreloadFiles as $fontFile): ?>
+<link rel="preload" as="font" type="font/woff2" crossorigin fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontFile['file'].'?v='.@filemtime(APPPATH . 'Modules/Common/Assets/builtin/fonts/'.$fontFile['file'])?>" />
+<?php endforeach; ?>
+<link rel="preload" as="style" fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>" />
+<link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
+<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?v='.$faviconVersion?>" />
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?v='.$bootstrapVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?v=' . $bootstrapCustomVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css?v='.$fontawesomeVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/login.css?v='.$loginCssVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/login-header.css?v='.$loginHeaderCssVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/pace/pace-theme-default.css?v='.$paceCssVersion?>"/>
 
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.min.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/pace/pace.min.js?r='.time()?>"></script>
+<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js?v='.$jqueryVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.min.js?v='.$bootstrapJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/pace/pace.min.js?v='.$paceJsVersion?>"></script>
 <script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootbox/bootbox.min.js'?>"></script>
 <?php
 if (!empty($js)) {
 	foreach($js as $file) {
-		echo '<script type="text/javascript" src="'.$file.'?r='.time().'"></script>';
+		echo '<script defer type="text/javascript" src="'.$file.'"></script>';
 	}
 }
 
 ?>
 </html>
-<body>
+<body style="font-family: <?=esc($currentFontFamily, 'attr')?>;">
 	<div class="background"></div>
 	<div class="backdrop"></div>
 	<div class="login-container">

@@ -47,7 +47,16 @@
 					$index++;
 				}
 				?>
-				<table id="table-data" class="table display nowrap table-striped table-bordered table-hover align-middle mb-0" style="width:100%">
+				<div id="table-data-skeleton" class="result-table-skeleton" aria-hidden="true">
+					<?php
+					// Skeleton ringan ini menjaga tabel tetap stabil saat request awal
+					// DataTable belum selesai memuat data server-side.
+					for ($i = 0; $i < 5; $i++) {
+						echo '<span class="result-table-skeleton__row"></span>';
+					}
+					?>
+				</div>
+				<table id="table-data" class="table display nowrap table-striped table-bordered table-hover align-middle mb-0 result-table-ready" style="width:100%">
 				<thead>
 					<tr>
 						<?=$th?>

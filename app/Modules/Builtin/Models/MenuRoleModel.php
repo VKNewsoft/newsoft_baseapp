@@ -44,6 +44,28 @@ class MenuRoleModel extends \App\Modules\Common\Models\BaseModel
 			->get()
 			->getResultArray();
 	}
+
+	/**
+	 * Ambil relasi menu-role hanya untuk menu yang tampil pada halaman aktif agar
+	 * list DataTable tidak perlu memuat seluruh assignment global.
+	 *
+	 * @param array $menuIds
+	 * @return array
+	 */
+	public function getMenuRoleByMenuIds(array $menuIds) {
+		$menuIds = array_filter(array_map('intval', $menuIds));
+		if (!$menuIds) {
+			return [];
+		}
+
+		return $this->db->table('core_menu_role')
+			->select('core_menu_role.id_menu, core_menu_role.id_role, core_role.judul_role')
+			->join('core_role', 'core_role.id_role = core_menu_role.id_role', 'left')
+			->whereIn('core_menu_role.id_menu', $menuIds)
+			->orderBy('core_role.judul_role', 'ASC')
+			->get()
+			->getResultArray();
+	}
 	
 	/**
 	 * Mendapatkan role yang bisa mengakses menu tertentu
@@ -181,7 +203,9 @@ class MenuRoleModel extends \App\Modules\Common\Models\BaseModel
 		$columns = $this->request->getPost('columns');
 
 		// Build query
-		$builder = $this->db->table('core_menu');
+		$builder = $this->db->table('core_menu')
+			// Pilih field inti agar response server-side tetap hemat payload.
+			->select('id_menu, nama_menu, url, urut, aktif');
 
 		// Search
 		$searchAll = @$this->request->getPost('search')['value'];

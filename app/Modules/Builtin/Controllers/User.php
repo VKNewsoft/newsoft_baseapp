@@ -29,10 +29,6 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		$this->addJs($this->commonAsset('builtin/js/user.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/user.js'));
 		$this->addJs($this->commonAsset('js/image-upload.js') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/image-upload.js'));
 		
-		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery.select2/js/select2.full.min.js' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
-		
 		$this->addStyle($this->commonAsset('css/image-upload.css') . '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/image-upload.css'));
 		$this->addStyle($this->commonAsset('css/result-page.css') . $resultPageVersion);
 		
@@ -70,8 +66,19 @@ class User extends \App\Modules\Common\Controllers\BaseController
 		
 		$numUsers = $this->model->countAllUsers();
 		$user = $this->model->getListUsers();
-		$aksesData = $this->model->getTenantRaw();
-		$keys = array_column($aksesData, 'id_company');
+		$companyIds = [];
+		foreach ($user['data'] as $row) {
+			if (!empty($row['access_company'])) {
+				foreach (explode(',', $row['access_company']) as $companyId) {
+					if ($companyId !== '') {
+						$companyIds[] = (int) $companyId;
+					}
+				}
+			}
+		}
+		// Nama tenant hanya diambil untuk company yang muncul pada page aktif
+		// agar render DataTable user tidak memuat seluruh tenant.
+		$tenantMap = $this->model->getTenantMapByIds(array_unique($companyIds));
 		
 		$result['draw'] = $start = $this->request->getPost('draw') ?: 1;
 		$result['recordsTotal'] = $numUsers;
@@ -94,8 +101,11 @@ class User extends \App\Modules\Common\Controllers\BaseController
 				$accessCompany = "";
 				$counter = 0;
 				foreach ($splitter as $vAccess) {
-					$key = array_search($vAccess, $keys);
-					$accessCompany .= '<span class="badge bg-secondary me-2">' . $aksesData[$key]['nama_company'] . '</span>';
+					$tenantName = $tenantMap[(int) $vAccess] ?? '';
+					if ($tenantName === '') {
+						continue;
+					}
+					$accessCompany .= '<span class="badge bg-secondary me-2">' . $tenantName . '</span>';
 					$counter++;
 					if ($counter % 4 == 0 && $counter < count($splitter)) {
 						$accessCompany .= '<br>';
@@ -109,7 +119,9 @@ class User extends \App\Modules\Common\Controllers\BaseController
 			$val['verified'] =  $val['verified'] == 1 ? 'Ya' : 'Tidak' ;
 
 			$actions = [
-				['type' => 'link', 'href' => $this->moduleURL . '/edit?id='. $val['id_user'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit', 'data-id' => $val['id_module']]],
+				// Aksi edit harus memakai id_user karena dataset list user tidak
+				// membawa id_module dan route edit memang berbasis user.
+				['type' => 'link', 'href' => $this->moduleURL . '/edit?id='. $val['id_user'], 'icon' => 'fas fa-edit text-success', 'label' => 'Edit', 'attrs' => ['class' => 'btn-edit', 'data-id' => $val['id_user']]],
 			];
 			if ($this->hasPermission('delete_own') || $this->hasPermission('delete_all')) {
 				$actions[] = ['type' => 'form', 'action' => $this->moduleURL, 'icon' => 'fas fa-times text-danger', 'label' => 'Delete', 'attrs' => ['data-action' => 'delete-data', 'id' => $val['id_user'], 'data-delete-title' => 'Hapus data user: <strong>'.$val['nama'].'</strong> ?']];

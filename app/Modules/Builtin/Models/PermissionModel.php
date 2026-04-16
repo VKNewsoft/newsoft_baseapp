@@ -452,6 +452,8 @@ class PermissionModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Build query dengan Query Builder
 		$builder = $this->db->table('core_module_permission')
+			// Pilih field inti untuk result page agar query awal permission lebih ringan.
+			->select('core_module_permission.id_module_permission, core_module_permission.id_module, core_module_permission.nama_permission, core_module_permission.judul_permission, core_module_permission.keterangan, core_module.judul_module')
 			->join('core_module', 'core_module_permission.id_module = core_module.id_module');
 		
 		$searchValue = $this->request->getPost('search')['value'] ?? '';

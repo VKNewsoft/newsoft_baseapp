@@ -19,10 +19,6 @@ class Securitymonitor extends \App\Modules\Common\Controllers\BaseController
 		$this->logModel = new SecurityLogModel();
         $this->blockModel = new BlockedIpModel();
         $this->data['title'] = 'Security Aplikasi';
-		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery.select2/js/select2.full.min.js' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
-		
 		$this->addJs($this->commonAsset('js/wilayah.js'));
 		$this->addJs($this->commonAsset('js/identitas.js'));
 		

@@ -1,4 +1,5 @@
 jQuery(document).ready(function () {
+	const initializeSettingLayout = function() {
 	const $form = $('#form-setting');
 	if (!$form.length) {
 		return;
@@ -445,4 +446,13 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
+	};
+
+	// Preview layout dan wiring AJAX form dijalankan setelah first paint agar
+	// kontrol utama halaman lebih cepat tampil.
+	if (window.NSModulePerformance) {
+		window.NSModulePerformance.defer(initializeSettingLayout);
+	} else {
+		setTimeout(initializeSettingLayout, 16);
+	}
 });

@@ -7,6 +7,12 @@
 jQuery(document).ready(function () {
 	
 	let dataTables = '';
+
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-data');
+		}
+	}
 	
 	if ($('#table-data').length) {
 		const column = $.parseJSON($('#dataTables-column').html());
@@ -19,9 +25,18 @@ jQuery(document).ready(function () {
 			"scrollY": window.WDIResultTable ? WDIResultTable.getScrollY('#table-data') : ($('#dataTables-scrolls').text() || '510'),
 			"ajax": {
 				"url": url,
-				"type": "POST"
+				"type": "POST",
+				"error": function() {
+					// Skeleton tetap dilepas jika request gagal supaya halaman tidak
+					// terlihat menggantung pada loading awal.
+					hideTableSkeleton();
+				}
 			},
-			"columns": column
+			"columns": column,
+			"initComplete": function() {
+				// Tabel ditampilkan penuh setelah data awal siap dirender.
+				hideTableSkeleton();
+			}
 		}
 		
 		let $add_setting = $('#dataTables-setting');
@@ -32,10 +47,20 @@ jQuery(document).ready(function () {
 			}
 		}
 		
-		dataTables =  $('#table-data').DataTable( settings );
-		if (window.WDIResultTable) {
-			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-data');
-			WDIResultTable.bindResize(dataTables, '#table-data', 'company-table');
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.defer(function() {
+				dataTables = $('#table-data').DataTable(settings);
+				if (window.WDIResultTable) {
+					WDIResultTable.applyScrollBodyHeight(dataTables, '#table-data');
+					WDIResultTable.bindResize(dataTables, '#table-data', 'company-table');
+				}
+			});
+		} else {
+			dataTables = $('#table-data').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(dataTables, '#table-data');
+				WDIResultTable.bindResize(dataTables, '#table-data', 'company-table');
+			}
 		}
 	}
 		
@@ -210,7 +235,11 @@ jQuery(document).ready(function () {
 		$.get(current_url + '/ajaxGetFormData?id=' + id, function(html){
 			$button.prop('disabled', false);
 			$bootbox.find('.modal-body').empty().append(html);
-			$bootbox.find('.select2').select2({theme: 'bootstrap-5', dropdownParent: $(".bootbox")});
+			if (window.NSModulePerformance) {
+				window.NSModulePerformance.initSelect2($bootbox).catch(function() {
+					show_alert('Error !!!', 'Asset form company gagal dimuat', 'error');
+				});
+			}
 		});
 	};
 });

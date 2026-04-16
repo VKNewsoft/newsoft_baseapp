@@ -223,3 +223,113 @@ function show_toast(message, type = null) {
 		html: '<div class="toast-content d-flex"><i class="far fa-check-circle me-2 mt-1"></i>' + message + '</div>'
 	});
 }
+
+window.NSModulePerformance = window.NSModulePerformance || (function() {
+	let select2ResourcePromise = null;
+
+	function defer(callback) {
+		// Penjadwalan ringan ini membantu memprioritaskan konten above-the-fold
+		// sebelum inisialisasi widget non-kritis dijalankan.
+		if (window.requestAnimationFrame) {
+			window.requestAnimationFrame(function() {
+				window.setTimeout(callback, 0);
+			});
+			return;
+		}
+
+		window.setTimeout(callback, 16);
+	}
+
+	function appendStylesheetOnce(href) {
+		if (!href || document.querySelector('link[href^="' + href + '"]')) {
+			return;
+		}
+
+		const link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = href;
+		document.head.appendChild(link);
+	}
+
+	function appendScriptOnce(src) {
+		return new Promise(function(resolve, reject) {
+			const existing = document.querySelector('script[src^="' + src + '"]');
+			if (existing) {
+				if (typeof window.jQuery !== 'undefined' && typeof jQuery.fn.select2 === 'function') {
+					resolve();
+					return;
+				}
+
+				existing.addEventListener('load', resolve, { once: true });
+				existing.addEventListener('error', reject, { once: true });
+				return;
+			}
+
+			const script = document.createElement('script');
+			script.src = src;
+			script.defer = true;
+			script.onload = resolve;
+			script.onerror = reject;
+			document.body.appendChild(script);
+		});
+	}
+
+	function ensureSelect2Assets() {
+		if (typeof window.jQuery !== 'undefined' && typeof jQuery.fn.select2 === 'function') {
+			return Promise.resolve();
+		}
+
+		if (select2ResourcePromise) {
+			return select2ResourcePromise;
+		}
+
+		// Select2 hanya dimuat saat benar-benar dibutuhkan agar halaman list
+		// tidak ikut menanggung asset form pada render awal.
+		appendStylesheetOnce(base_url + 'public/vendors/jquery.select2/css/select2.min.css');
+		appendStylesheetOnce(base_url + 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css');
+		select2ResourcePromise = appendScriptOnce(base_url + 'public/vendors/jquery.select2/js/select2.full.min.js');
+
+		return select2ResourcePromise;
+	}
+
+	function initSelect2(context) {
+		const $root = context && context.length ? context : $(document);
+		const $selects = $root.find('.select2');
+		if (!$selects.length) {
+			return Promise.resolve();
+		}
+
+		return ensureSelect2Assets().then(function() {
+			$selects.each(function() {
+				const $element = $(this);
+				if ($element.data('select2')) {
+					return;
+				}
+
+				const options = { theme: 'bootstrap-5' };
+				const $modal = $element.closest('.bootbox');
+				if ($modal.length) {
+					options.dropdownParent = $modal;
+				}
+
+				$element.select2(options);
+			});
+		});
+	}
+
+	function hideTableSkeleton(tableSelector) {
+		const tableId = String(tableSelector || '').replace('#', '');
+		if (!tableId) {
+			return;
+		}
+
+		$('#' + tableId + '-skeleton').addClass('result-table-skeleton--hidden');
+		$(tableSelector).addClass('result-table-ready--loaded');
+	}
+
+	return {
+		defer: defer,
+		initSelect2: initSelect2,
+		hideTableSkeleton: hideTableSkeleton
+	};
+})();

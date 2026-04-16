@@ -137,6 +137,56 @@
 	text-underline-offset: 0.12rem;
 }
 
+/* Skeleton generik ini dipakai lintas module agar area tabel tetap stabil
+   selama DataTable menyiapkan data awal dari server. */
+.card-table-wrap {
+	position: relative;
+}
+
+.result-table-ready {
+	opacity: 0;
+	transition: opacity 0.18s ease;
+}
+
+.result-table-ready--loaded {
+	opacity: 1;
+}
+
+.result-table-skeleton {
+	display: grid;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: #fff;
+	border-bottom: 1px solid #e9ecef;
+}
+
+.result-table-skeleton--hidden {
+	display: none;
+}
+
+.result-table-skeleton__row {
+	display: block;
+	height: 2.7rem;
+	border-radius: 0.75rem;
+	background: linear-gradient(90deg, #f1f4f6 25%, #f8fafb 37%, #f1f4f6 63%);
+	background-size: 400% 100%;
+	animation: result-table-skeleton-loading 1.2s ease-in-out infinite;
+}
+
+.page-defer-section {
+	content-visibility: auto;
+	contain-intrinsic-size: 1px 520px;
+}
+
+@keyframes result-table-skeleton-loading {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0 50%;
+	}
+}
+
 @media (max-width: 767px) {
 	.card-table-wrap .dataTables_wrapper > .row:first-child {
 		align-items: stretch;

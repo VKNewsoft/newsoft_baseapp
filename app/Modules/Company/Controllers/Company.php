@@ -19,10 +19,6 @@ class Company extends \App\Modules\Common\Controllers\BaseController
 		$this->model = new CompanyModel;
 		$this->data['site_title'] = 'Company';
 		
-		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery.select2/js/select2.full.min.js' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
-		
 		// HMVC asset load: shared result-table/result-page dari Common, script company tetap lokal module.
 		$this->addJs($this->commonAsset('js/result-table.js') . $resultTableVersion);
 		$this->addJs($this->commonAsset('js/wilayah.js'));

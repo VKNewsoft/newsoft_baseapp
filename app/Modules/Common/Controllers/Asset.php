@@ -54,9 +54,16 @@ class Asset extends Controller
 			$mimeType = 'application/octet-stream';
 		}
 
+		/**
+		 * Asset yang sudah memiliki query versi dibuat lebih agresif untuk cache
+		 * agar perpindahan halaman tidak memicu unduhan ulang font/CSS/JS.
+		 */
+		$assetVersion = service('request')->getGet('v') ?: service('request')->getGet('r');
+		$cacheControl = $assetVersion ? 'public, max-age=31536000, immutable' : 'public, max-age=86400';
+
 		return service('response')
 			->setHeader('Content-Type', $mimeType)
-			->setHeader('Cache-Control', 'public, max-age=86400')
+			->setHeader('Cache-Control', $cacheControl)
 			->setBody(file_get_contents($filePath));
 	}
 }

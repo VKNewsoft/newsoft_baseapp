@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-result');
+		}
+	}
 
 	$(document).delegate('.delete-all-permission', 'click', function() {
 		id_role = $(this).attr('data-id-role');
@@ -204,9 +209,15 @@ $(document).ready(function() {
 		"scrollY": scrolls,
 		"ajax": {
             "url": url,
-            "type": "POST"
+            "type": "POST",
+			"error": function() {
+				hideTableSkeleton();
+			}
         },
-        "columns": column
+        "columns": column,
+		"initComplete": function() {
+			hideTableSkeleton();
+		}
     }
 	
 	let $add_setting = $('#dataTables-setting');
@@ -217,10 +228,21 @@ $(document).ready(function() {
 		}
 	}
 	
-	const dataTables =  $('#table-result').DataTable( settings );
-	if (window.WDIResultTable) {
-		WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
-		WDIResultTable.bindResize(dataTables, '#table-result', 'role-permission-table');
+	let dataTables = '';
+	if (window.NSModulePerformance) {
+		window.NSModulePerformance.defer(function() {
+			dataTables = $('#table-result').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+				WDIResultTable.bindResize(dataTables, '#table-result', 'role-permission-table');
+			}
+		});
+	} else {
+		dataTables = $('#table-result').DataTable(settings);
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+			WDIResultTable.bindResize(dataTables, '#table-result', 'role-permission-table');
+		}
 	}
 	
 	$('.checkall-module-permission').click(function(){

@@ -1,10 +1,92 @@
 $(document).ready(function() {
 
-	$('.select2').select2({
-		theme: 'bootstrap-5'
-	});
-
 	let dataTables = '';
+	let select2ResourcePromise = null;
+
+	function appendStylesheetOnce(href) {
+		if (!href || document.querySelector('link[href^="' + href + '"]')) {
+			return;
+		}
+
+		const link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = href;
+		document.head.appendChild(link);
+	}
+
+	function appendScriptOnce(src) {
+		return new Promise(function(resolve, reject) {
+			const existing = document.querySelector('script[src^="' + src + '"]');
+			if (existing) {
+				if (typeof window.jQuery !== 'undefined' && typeof jQuery.fn.select2 === 'function') {
+					resolve();
+					return;
+				}
+
+				existing.addEventListener('load', resolve, { once: true });
+				existing.addEventListener('error', reject, { once: true });
+				return;
+			}
+
+			const script = document.createElement('script');
+			script.src = src;
+			script.defer = true;
+			script.onload = resolve;
+			script.onerror = reject;
+			document.body.appendChild(script);
+		});
+	}
+
+	function ensureSelect2Assets() {
+		if (typeof window.jQuery !== 'undefined' && typeof jQuery.fn.select2 === 'function') {
+			return Promise.resolve();
+		}
+
+		if (select2ResourcePromise) {
+			return select2ResourcePromise;
+		}
+
+		// Asset Select2 ditunda sampai form benar-benar dibutuhkan agar halaman list
+		// tidak ikut memuat dependency modal pada initial render.
+		appendStylesheetOnce(base_url + 'public/vendors/jquery.select2/css/select2.min.css');
+		appendStylesheetOnce(base_url + 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css');
+		select2ResourcePromise = appendScriptOnce(base_url + 'public/vendors/jquery.select2/js/select2.full.min.js');
+
+		return select2ResourcePromise;
+	}
+
+	function initSelect2($context) {
+		const $root = $context && $context.length ? $context : $(document);
+		const $select2 = $root.find('.select2');
+		if (!$select2.length) {
+			return Promise.resolve();
+		}
+
+		return ensureSelect2Assets().then(function() {
+			$select2.each(function() {
+				const $element = $(this);
+				if ($element.data('select2')) {
+					return;
+				}
+
+				const options = {
+					theme: 'bootstrap-5'
+				};
+
+				const $modal = $element.closest('.bootbox');
+				if ($modal.length) {
+					options.dropdownParent = $modal;
+				}
+
+				$element.select2(options);
+			});
+		});
+	}
+
+	function hideTableSkeleton() {
+		$('#role-table-skeleton').addClass('role-table-skeleton--hidden');
+		$('#table-result').addClass('role-table-ready--loaded');
+	}
 
 	function initRoleTable() {
 		if (!$('#table-result').length) {
@@ -27,9 +109,18 @@ $(document).ready(function() {
 			autoWidth: false,
 			ajax: {
 				url: url,
-				type: 'POST'
+				type: 'POST',
+				error: function() {
+					// Skeleton tetap dilepas saat request gagal supaya halaman tidak
+					// terlihat stuck dan user masih bisa melihat header tabel.
+					hideTableSkeleton();
+				}
 			},
-			columns: column
+			columns: column,
+			initComplete: function() {
+				// Skeleton dilepas saat tabel siap agar user langsung melihat konten utama.
+				hideTableSkeleton();
+			}
 		};
 
 		const $add_setting = $('#dataTables-setting');
@@ -57,6 +148,8 @@ $(document).ready(function() {
 			}, 16);
 		}
 	}
+
+	initSelect2();
 
 	function showSuccessToast(message) {
 		const Toast = Swal.mixin({
@@ -94,9 +187,8 @@ $(document).ready(function() {
 	}
 
 	function bindModalPlugins($bootbox) {
-		$bootbox.find('.select2').select2({
-			theme: 'bootstrap-5',
-			dropdownParent: $('.bootbox')
+		initSelect2($bootbox).catch(function() {
+			show_alert('Error !!!', 'Asset form role gagal dimuat', 'error');
 		});
 	}
 

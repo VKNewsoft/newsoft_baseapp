@@ -31,10 +31,6 @@ class Menu extends \App\Modules\Common\Controllers\BaseController
 		$this->addJs ( $this->config->baseURL . 'public/vendors/js-yaml/js-yaml.min.js?r=' . time());
 		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery-nestable/jquery.wdi-menueditor.js?r=' . time());
 		
-		$this->addJs ( $this->config->baseURL . 'public/vendors/jquery.select2/js/select2.full.min.js' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/css/select2.min.css' );
-		$this->addStyle ( $this->config->baseURL . 'public/vendors/jquery.select2/bootstrap-5-theme/select2-bootstrap-5-theme.min.css' );
-		
 		$this->addJs($this->config->baseURL . 'public/vendors/dragula/dragula.min.js');
 		$this->addStyle($this->config->baseURL . 'public/vendors/dragula/dragula.min.css');
 

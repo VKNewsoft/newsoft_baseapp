@@ -114,7 +114,9 @@ class UserModel extends \App\Modules\Common\Models\BaseModel
 	private function getUserListBuilder()
 	{
 		return $this->db->table('core_user')
-			->select('core_user.*, GROUP_CONCAT(core_role.judul_role) AS judul_role, core_company.nama_company')
+			// Pilih field tabel yang benar-benar dipakai di list agar query awal
+			// lebih ringan saat DataTable melakukan pagination server-side.
+			->select('core_user.id_user, core_user.id_company, core_user.nama, core_user.username, core_user.email, core_user.verified, core_user.access_company, GROUP_CONCAT(core_role.judul_role) AS judul_role, core_company.nama_company')
 			->join('core_company', 'core_user.id_company = core_company.id_company', 'left')
 			->join('core_user_role', 'core_user.id_user = core_user_role.id_user', 'left')
 			->join('core_role', 'core_user_role.id_role = core_role.id_role', 'left')
@@ -173,6 +175,34 @@ class UserModel extends \App\Modules\Common\Models\BaseModel
 		return $this->db->table('core_role')
 			->get()
 			->getResultArray();
+	}
+
+	/**
+	 * Ambil tenant berdasarkan daftar ID agar badge akses company pada tabel user
+	 * tidak perlu memuat seluruh company ketika pagination server-side berjalan.
+	 *
+	 * @param array $companyIds
+	 * @return array
+	 */
+	public function getTenantMapByIds(array $companyIds)
+	{
+		$companyIds = array_filter(array_map('intval', $companyIds));
+		if (!$companyIds) {
+			return [];
+		}
+
+		$query = $this->db->table('core_company')
+			->select('id_company, nama_company')
+			->whereIn('id_company', $companyIds)
+			->get()
+			->getResultArray();
+
+		$result = [];
+		foreach ($query as $row) {
+			$result[$row['id_company']] = $row['nama_company'];
+		}
+
+		return $result;
 	}
 	
 	/**

@@ -21,7 +21,7 @@
 		?>
 		<form method="post" action="" id="form-setting" enctype="multipart/form-data" class="form-shell">
 			<div class="tab-content setting-app-shell">
-				<div class="form-shell-section">
+				<div class="form-shell-section page-defer-section">
 					<div class="form-shell-section-title">
 						<h5>Brand Assets</h5>
 					</div>
@@ -127,7 +127,7 @@
 					</div>
 				</div>
 
-				<div class="form-shell-section">
+				<div class="form-shell-section page-defer-section">
 					<div class="form-shell-section-title">
 						<h5>Text Content</h5>
 					</div>

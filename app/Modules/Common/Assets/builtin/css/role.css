@@ -64,6 +64,42 @@
 	margin-top: 1.5rem;
 }
 
+.card-table-wrap {
+	position: relative;
+}
+
+/* Skeleton tabel dipakai hanya saat initial load agar area hero dan tabel
+   above-the-fold langsung stabil tanpa lonjakan layout yang besar. */
+.role-table-ready {
+	opacity: 0;
+	transition: opacity 0.18s ease;
+}
+
+.role-table-ready--loaded {
+	opacity: 1;
+}
+
+.role-table-skeleton {
+	display: grid;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: #fff;
+	border-bottom: 1px solid #e9ecef;
+}
+
+.role-table-skeleton--hidden {
+	display: none;
+}
+
+.role-table-skeleton__row {
+	display: block;
+	height: 2.7rem;
+	border-radius: 0.75rem;
+	background: linear-gradient(90deg, #f1f4f6 25%, #f8fafb 37%, #f1f4f6 63%);
+	background-size: 400% 100%;
+	animation: role-table-skeleton-loading 1.2s ease-in-out infinite;
+}
+
 .bootbox .role-modal-grid {
 	grid-template-columns: 1fr;
 }
@@ -75,5 +111,14 @@
 @media (max-width: 991px) {
 	.role-modal-grid {
 		grid-template-columns: 1fr;
+	}
+}
+
+@keyframes role-table-skeleton-loading {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0 50%;
 	}
 }

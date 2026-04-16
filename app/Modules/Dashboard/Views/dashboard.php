@@ -61,7 +61,7 @@ helper('format');
 
 <div class="container-fluid">
 	<!-- Performance Metrics Cards -->
-	<div class="row g-3 mb-3">
+	<div class="row g-3 mb-3 page-defer-section">
 		<!-- CPU Usage -->
 		<div class="col-lg-3 col-md-6">
 			<div class="card dashboard-card stat-card border-0 shadow-sm">
@@ -159,7 +159,7 @@ helper('format');
 	</div>
 
 	<!-- Charts Row -->
-	<div class="row g-3 mb-3">
+	<div class="row g-3 mb-3 page-defer-section">
 		<!-- CPU & Memory Chart -->
 		<div class="col-lg-8">
 			<div class="card dashboard-card chart-card border-0 shadow-sm">
@@ -206,7 +206,7 @@ helper('format');
 	</div>
 
 	<!-- System Information -->
-	<div class="row g-3">
+	<div class="row g-3 page-defer-section">
 		<div class="col-12">
 			<div class="card dashboard-card border-0 shadow-sm" style="min-height: 200px;">
 				<div class="card-header bg-white border-bottom">
@@ -268,10 +268,32 @@ helper('format');
 	</div>
 </div>
 
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 <script>
+// Inisialisasi chart ditunda agar kartu metrik above-the-fold lebih cepat tampil.
+function loadDashboardChartJs() {
+	return new Promise(function(resolve, reject) {
+		if (window.Chart) {
+			resolve();
+			return;
+		}
+
+		const existing = document.querySelector('script[data-dashboard-chart="1"]');
+		if (existing) {
+			existing.addEventListener('load', resolve, { once: true });
+			existing.addEventListener('error', reject, { once: true });
+			return;
+		}
+
+		const script = document.createElement('script');
+		script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+		script.defer = true;
+		script.dataset.dashboardChart = '1';
+		script.onload = resolve;
+		script.onerror = reject;
+		document.body.appendChild(script);
+	});
+}
+
 // Real-time data storage
 let performanceData = {
 	labels: [],
@@ -286,8 +308,12 @@ let activityData = {
 	diskWrite: []
 };
 
-// Initialize charts
-const performanceChart = new Chart(document.getElementById('performanceChart'), {
+let performanceChart;
+let storageChart;
+let activityChart;
+
+function initDashboardCharts() {
+	performanceChart = new Chart(document.getElementById('performanceChart'), {
 	type: 'line',
 	data: {
 		labels: [],
@@ -322,9 +348,9 @@ const performanceChart = new Chart(document.getElementById('performanceChart'), 
 			}
 		}
 	}
-});
+	});
 
-const storageChart = new Chart(document.getElementById('storageChart'), {
+	storageChart = new Chart(document.getElementById('storageChart'), {
 	type: 'doughnut',
 	data: {
 		labels: ['Used', 'Available'],
@@ -346,9 +372,9 @@ const storageChart = new Chart(document.getElementById('storageChart'), {
 			}
 		}
 	}
-});
+	});
 
-const activityChart = new Chart(document.getElementById('activityChart'), {
+	activityChart = new Chart(document.getElementById('activityChart'), {
 	type: 'bar',
 	data: {
 		labels: [],
@@ -407,7 +433,8 @@ const activityChart = new Chart(document.getElementById('activityChart'), {
 			}
 		}
 	}
-});
+	});
+}
 
 // Fetch real-time metrics
 async function fetchMetrics() {
@@ -432,6 +459,9 @@ async function fetchMetrics() {
 		document.getElementById('disk-write').textContent = data.disk_write + ' MB/s';
 		
 		// Update charts
+		if (!performanceChart || !activityChart) {
+			return;
+		}
 		const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 		
 		// Performance chart (keep last 20 data points)
@@ -480,10 +510,29 @@ function updateTime() {
 	document.getElementById('current-time').textContent = now.toLocaleTimeString('id-ID');
 }
 
-// Initial data
-fetchMetrics();
+function startDashboardMetrics() {
+	fetchMetrics();
+	setInterval(fetchMetrics, 3000);
+}
 
-// Update every 3 seconds
-setInterval(fetchMetrics, 3000);
+function bootDashboardCharts() {
+	loadDashboardChartJs()
+		.then(function() {
+			initDashboardCharts();
+			startDashboardMetrics();
+		})
+		.catch(function() {
+			startDashboardMetrics();
+		});
+}
+
+if ('requestIdleCallback' in window) {
+	requestIdleCallback(bootDashboardCharts, { timeout: 1200 });
+} else if (window.NSModulePerformance) {
+	window.NSModulePerformance.defer(bootDashboardCharts);
+} else {
+	setTimeout(bootDashboardCharts, 200);
+}
+
 setInterval(updateTime, 1000);
 </script>

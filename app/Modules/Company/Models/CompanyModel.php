@@ -160,6 +160,8 @@ class CompanyModel extends \App\Modules\Common\Models\BaseModel
 		
 		// Build query dengan Query Builder
 		$builder = $this->db->table('core_company')
+			// Ambil kolom seperlunya untuk tabel agar payload awal tetap kecil.
+			->select('core_company.id_company, core_company.nama_company, core_company.kode_lokasi, core_company.deskripsi, core_company.tenant_aktif, core_company.no_rekening, core_company.id_bank, core_bank.nama_bank')
 			->join('core_bank', 'core_company.id_bank = core_bank.id_bank', 'left')
 			->where('isDeleted', 0)
 			->whereIn('sistem', ['core', 'pos']);

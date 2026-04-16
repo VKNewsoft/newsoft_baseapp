@@ -5,6 +5,11 @@
 */
 
 jQuery(document).ready(function () {
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-result');
+		}
+	}
 
 	window.removeImage = function() {
 		if (confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
@@ -51,9 +56,13 @@ jQuery(document).ready(function () {
 			"ajax": {
 				"url": url,
 				"type": "POST",
+				"error": function() {
+					hideTableSkeleton();
+				}
 			},
 			"columns": column,
 			"initComplete": function(settings, json) {
+				hideTableSkeleton();
 				table.rows().every(function(rowIdx, tableLoop, rowLoop) {
 					$row = $(this.node());
 				});
@@ -68,16 +77,28 @@ jQuery(document).ready(function () {
 			}
 		}
 
-		table = $('#table-result').DataTable(settings);
-		if (window.WDIResultTable) {
-			WDIResultTable.applyScrollBodyHeight(table, '#table-result');
-			WDIResultTable.bindResize(table, '#table-result', 'user-table');
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.defer(function() {
+				table = $('#table-result').DataTable(settings);
+				if (window.WDIResultTable) {
+					WDIResultTable.applyScrollBodyHeight(table, '#table-result');
+					WDIResultTable.bindResize(table, '#table-result', 'user-table');
+				}
+			});
+		} else {
+			table = $('#table-result').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(table, '#table-result');
+				WDIResultTable.bindResize(table, '#table-result', 'user-table');
+			}
 		}
 	}
 
-	$('.select2, .form-select').select2({
-		theme: 'bootstrap-5'
-	});
+	if (window.NSModulePerformance) {
+		window.NSModulePerformance.initSelect2($(document)).catch(function() {
+			show_alert('Error !!!', 'Asset form user gagal dimuat', 'error');
+		});
+	}
 
 	if (!$('#username').length) {
 		return;

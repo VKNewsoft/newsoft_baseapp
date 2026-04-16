@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-result');
+		}
+	}
 
 	function getPermissionHelperText(permissionName) {
 		const map = {
@@ -134,10 +139,26 @@ $(document).ready(function() {
 			}
 		}
 		
-		dataTables =  $('#table-result').DataTable( settings );
-		if (window.WDIResultTable) {
-			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
-			WDIResultTable.bindResize(dataTables, '#table-result', 'module-table');
+		settings.initComplete = function() {
+			hideTableSkeleton();
+		};
+		settings.ajax.error = function() {
+			hideTableSkeleton();
+		};
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.defer(function() {
+				dataTables = $('#table-result').DataTable(settings);
+				if (window.WDIResultTable) {
+					WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+					WDIResultTable.bindResize(dataTables, '#table-result', 'module-table');
+				}
+			});
+		} else {
+			dataTables = $('#table-result').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+				WDIResultTable.bindResize(dataTables, '#table-result', 'module-table');
+			}
 		}
 	}
 	

@@ -120,7 +120,10 @@ class Menu_role extends \App\Modules\Common\Controllers\BaseController
 		helper('html');
 		
 		$menuRole = [];
-		$menuRoleAll = $this->model->getAllMenuRole();
+		$menuIds = array_column($query['data'], 'id_menu');
+		// Query relasi role dibatasi ke menu pada halaman aktif agar tidak terjadi
+		// full load assignment setiap kali DataTable memuat page baru.
+		$menuRoleAll = $this->model->getMenuRoleByMenuIds($menuIds);
 		foreach($menuRoleAll as $row) {
 			$menuRole[$row['id_menu']][] = $row;
 		}

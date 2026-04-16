@@ -103,3 +103,82 @@ if (!function_exists('setting_layout_font_options')) {
 		return $options;
 	}
 }
+
+if (!function_exists('setting_layout_font_asset_map')) {
+	function setting_layout_font_asset_map(): array
+	{
+		return [
+			'open-sans' => [
+				'family_name' => 'Open Sans',
+				'faces' => [
+					['weight' => 400, 'file' => 'opensans_400.woff2'],
+					['weight' => 600, 'file' => 'opensans_600.woff2'],
+					['weight' => 700, 'file' => 'opensans_700.woff2']
+				]
+			],
+			'roboto' => [
+				'family_name' => 'Roboto',
+				'faces' => [
+					['weight' => 400, 'file' => 'Roboto-400-normal-latin.woff2'],
+					['weight' => 500, 'file' => 'Roboto-500-normal-latin.woff2'],
+					['weight' => 700, 'file' => 'Roboto-700-normal-latin.woff2']
+				]
+			],
+			'montserrat' => [
+				'family_name' => 'Montserrat',
+				'faces' => [
+					['weight' => 400, 'file' => 'Montserrat-400-normal-latin.woff2'],
+					['weight' => 500, 'file' => 'Montserrat-500-normal-latin.woff2'],
+					['weight' => 600, 'file' => 'Montserrat-600-normal-latin.woff2'],
+					['weight' => 700, 'file' => 'Montserrat-700-normal-latin.woff2']
+				]
+			],
+			'poppins' => [
+				'family_name' => 'Poppins',
+				'faces' => [
+					['weight' => 400, 'file' => 'poppins_400.woff2'],
+					['weight' => 500, 'file' => 'poppins_500.woff2'],
+					['weight' => 700, 'file' => 'poppins_700.woff2']
+				]
+			]
+		];
+	}
+}
+
+if (!function_exists('setting_layout_font_preload_files')) {
+	function setting_layout_font_preload_files(?string $value): array
+	{
+		$key = setting_layout_font_key($value);
+		$assetMap = setting_layout_font_asset_map();
+		return $assetMap[$key]['faces'] ?? [];
+	}
+}
+
+if (!function_exists('setting_layout_font_critical_css')) {
+	function setting_layout_font_critical_css(?string $value): string
+	{
+		$key = setting_layout_font_key($value);
+		$assetMap = setting_layout_font_asset_map();
+		if (empty($assetMap[$key]['faces']) || empty($assetMap[$key]['family_name'])) {
+			return '';
+		}
+
+		/**
+		 * Menyisipkan font-face kritikal langsung di HTML agar browser tidak
+		 * menunggu file CSS font terpisah sebelum merender teks utama.
+		 */
+		$css = [];
+		$familyName = $assetMap[$key]['family_name'];
+		foreach ($assetMap[$key]['faces'] as $face) {
+			$filePath = APPPATH . 'Modules/Common/Assets/builtin/fonts/' . $face['file'];
+			if (!is_file($filePath)) {
+				continue;
+			}
+
+			$fileUrl = base_url('module-assets/Common/builtin/fonts/' . $face['file']) . '?v=' . @filemtime($filePath);
+			$css[] = "@font-face{font-family:'" . addslashes($familyName) . "';font-style:normal;font-weight:" . (int) $face['weight'] . ";font-display:optional;src:url('" . $fileUrl . "') format('woff2');}";
+		}
+
+		return implode('', $css);
+	}
+}

@@ -627,12 +627,34 @@
 	</div>
 </div>
 
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 <script>
-// Lazy load chart data via AJAX
+// Chart dimuat setelah konten utama tampil agar statistik dan tabel log
+// di atas fold tidak ikut tertahan oleh asset visual non-kritis.
 let attackChart, typeChart;
+
+function loadSecurityChartJs() {
+	return new Promise(function(resolve, reject) {
+		if (window.Chart) {
+			resolve();
+			return;
+		}
+
+		const existing = document.querySelector('script[data-security-chart="1"]');
+		if (existing) {
+			existing.addEventListener('load', resolve, { once: true });
+			existing.addEventListener('error', reject, { once: true });
+			return;
+		}
+
+		const script = document.createElement('script');
+		script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+		script.defer = true;
+		script.dataset.securityChart = '1';
+		script.onload = resolve;
+		script.onerror = reject;
+		document.body.appendChild(script);
+	});
+}
 
 async function loadChartData() {
 	try {
@@ -713,8 +735,21 @@ async function loadChartData() {
 	}
 }
 
-// Load charts after page load
-document.addEventListener('DOMContentLoaded', function() {
-	loadChartData();
-});
+function bootSecurityCharts() {
+	loadSecurityChartJs()
+		.then(function() {
+			loadChartData();
+		})
+		.catch(function() {
+			console.error('Error loading chart library');
+		});
+}
+
+if ('requestIdleCallback' in window) {
+	requestIdleCallback(bootSecurityCharts, { timeout: 1200 });
+} else if (window.NSModulePerformance) {
+	window.NSModulePerformance.defer(bootSecurityCharts);
+} else {
+	setTimeout(bootSecurityCharts, 200);
+}
 </script>

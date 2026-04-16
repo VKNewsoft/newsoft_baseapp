@@ -1,4 +1,9 @@
 jQuery(document).ready(function () {
+	function hideTableSkeleton() {
+		if (window.NSModulePerformance) {
+			window.NSModulePerformance.hideTableSkeleton('#table-result');
+		}
+	}
 	$('select').change( function() {
 		$('#form-permission').find('button').click();
 	});
@@ -23,9 +28,15 @@ jQuery(document).ready(function () {
 		"scrollY": scrolls,
 		"ajax": {
             "url": url,
-            "type": "POST"
+            "type": "POST",
+			"error": function() {
+				hideTableSkeleton();
+			}
         },
-        "columns": column
+        "columns": column,
+		"initComplete": function() {
+			hideTableSkeleton();
+		}
     }
 	
 	let $add_setting = $('#dataTables-setting');
@@ -36,10 +47,21 @@ jQuery(document).ready(function () {
 		}
 	}
 	
-	const dataTables =  $('#table-result').DataTable( settings );
-	if (window.WDIResultTable) {
-		WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
-		WDIResultTable.bindResize(dataTables, '#table-result', 'permission-table');
+	let dataTables = '';
+	if (window.NSModulePerformance) {
+		window.NSModulePerformance.defer(function() {
+			dataTables = $('#table-result').DataTable(settings);
+			if (window.WDIResultTable) {
+				WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+				WDIResultTable.bindResize(dataTables, '#table-result', 'permission-table');
+			}
+		});
+	} else {
+		dataTables = $('#table-result').DataTable(settings);
+		if (window.WDIResultTable) {
+			WDIResultTable.applyScrollBodyHeight(dataTables, '#table-result');
+			WDIResultTable.bindResize(dataTables, '#table-result', 'permission-table');
+		}
 	}
 	
 	$('body').delegate('.edit', 'click', function(e) {

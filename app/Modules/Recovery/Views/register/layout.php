@@ -12,14 +12,9 @@ $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sa
 $currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
 $currentFontFamily = $currentFont['family'];
 $currentFontCssPath = $currentFont['css_path'];
+$fontPreloadFiles = setting_layout_font_preload_files($app_layout['font_family'] ?? 'open-sans');
+$criticalFontCss = setting_layout_font_critical_css($app_layout['font_family'] ?? 'open-sans');
 $fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
-$fontPreloadMap = [
-	'open-sans' => 'opensans_400.woff2',
-	'roboto' => 'Roboto-400-normal-latin.woff2',
-	'montserrat' => 'Montserrat-400-normal-latin.woff2',
-	'poppins' => 'poppins_400.woff2'
-];
-$fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 $bootstrapCssVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
 $bootstrapCustomCssVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/bootstrap-custom.css');
 $fontawesomeCssVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
@@ -27,7 +22,7 @@ $registerCssVersion = @filemtime(APPPATH . 'Modules/Common/Assets/css/register.c
 $paceCssVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace-theme-default.css');
 $swalCssVersion = @filemtime(ROOTPATH . 'public/vendors/sweetalert2/sweetalert2.min.css');
 ?>
-<style>:root{--app-font-family: <?=$currentFontFamily?>;}</style>
+<style>:root{--app-font-family: <?=$currentFontFamily?>;}html,body{font-family:var(--app-font-family);}<?=$criticalFontCss?></style>
 <script>
 window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
@@ -51,9 +46,9 @@ if (@$styles) {
 ?>
 
 <link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?v='.@filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css')?>"/>
-<?php if ($fontPreloadFile): ?>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile?>"/>
-<?php endif; ?>
+<?php foreach ($fontPreloadFiles as $fontFile): ?>
+<link rel="preload" as="font" type="font/woff2" crossorigin fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontFile['file'].'?v='.@filemtime(APPPATH . 'Modules/Common/Assets/builtin/fonts/'.$fontFile['file'])?>"/>
+<?php endforeach; ?>
 <link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 <link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 
@@ -75,7 +70,6 @@ if (@$scripts) {
 ?>
 </head>
 <body style="font-family: <?=esc($currentFontFamily, 'attr')?>;">
-	<script>document.body.style.fontFamily = window.__APP_FONT_FAMILY__ || '<?=esc($currentFontFamily, 'js')?>';</script>
 	<div class="background"></div>
 	<div class="backdrop"></div>
 	<div class="card-container" <?=@$style?>>

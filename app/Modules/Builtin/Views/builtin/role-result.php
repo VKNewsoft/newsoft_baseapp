@@ -1,3 +1,4 @@
+<?php helper('html'); ?>
 <div class="page-shell page-shell-list">
 	<div class="page-hero">
 		<div>
@@ -21,7 +22,7 @@
 				</div>
 			</div>
 
-			<div class="table-responsive card-table-wrap">
+			<div class="table-responsive card-table-wrap result-table-region">
 				<?php
 				if (!empty($message)) {
 					show_message($message);
@@ -39,7 +40,16 @@
 					$th .= '<th>' . $val . '</th>'; 
 				}
 				?>
-				<table id="table-result" class="table display nowrap table-striped table-bordered align-middle mb-0" style="width:100%">
+				<div id="role-table-skeleton" class="role-table-skeleton" aria-hidden="true">
+					<?php
+					// Skeleton ringan ini menjaga area above-the-fold tetap stabil sambil
+					// menunggu DataTable selesai inisialisasi tanpa menambah DOM berlebihan.
+					for ($i = 0; $i < 5; $i++) {
+						echo '<span class="role-table-skeleton__row"></span>';
+					}
+					?>
+				</div>
+				<table id="table-result" class="table display nowrap table-striped table-bordered align-middle mb-0 role-table-ready" style="width:100%">
 		        <thead>
 		            <tr>
 						<?=$th?>

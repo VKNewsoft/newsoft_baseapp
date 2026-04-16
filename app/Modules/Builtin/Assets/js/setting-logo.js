@@ -1,4 +1,5 @@
 jQuery(document).ready(function () {
+	const initializeSettingApp = function() {
 	$logo_login = $('input[name="logo_login"]');
 	$image_preview = $logo_login.parent().find('.upload-img-thumb');
 	$logo_container = $('.edit-logo-login-container');
@@ -156,4 +157,13 @@ jQuery(document).ready(function () {
 		resetPreviewZoom();
 		$previewImage.attr('src', '');
 	});
+	};
+
+	// Inisialisasi preview/logo ditunda sedikit agar konten form utama tampil
+	// lebih dulu pada first paint.
+	if (window.NSModulePerformance) {
+		window.NSModulePerformance.defer(initializeSettingApp);
+	} else {
+		setTimeout(initializeSettingApp, 16);
+	}
 });

@@ -350,7 +350,9 @@ class ModuleModel extends \App\Modules\Common\Models\BaseModel
 		$allowedColumns = ['id_module', 'nama_module', 'judul_module', 'deskripsi', 'id_module_status', 'login'];
 		
 		// Build query dengan Query Builder
-		$builder = $this->db->table('core_module');
+		$builder = $this->db->table('core_module')
+			// Ambil field list seperlunya agar payload DataTable tetap kecil.
+			->select('id_module, nama_module, judul_module, deskripsi, id_module_status, login');
 		
 		// Search - menggunakan groupStart/groupEnd untuk kondisi OR yang aman
 		$searchValue = $this->request->getPost('search')['value'] ?? '';

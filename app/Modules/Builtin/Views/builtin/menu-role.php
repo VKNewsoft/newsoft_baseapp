@@ -33,7 +33,16 @@
 					$th .= '<th>' . $val . '</th>'; 
 				}
 				?>
-				<table id="table-result" class="table display nowrap table-striped table-bordered align-middle mb-0" style="width:100%">
+				<div id="table-result-skeleton" class="result-table-skeleton" aria-hidden="true">
+					<?php
+					// Skeleton tabel membantu menjaga above-the-fold tetap responsif
+					// sambil menunggu data server-side untuk halaman aktif.
+					for ($i = 0; $i < 5; $i++) {
+						echo '<span class="result-table-skeleton__row"></span>';
+					}
+					?>
+				</div>
+				<table id="table-result" class="table display nowrap table-striped table-bordered align-middle mb-0 result-table-ready" style="width:100%">
 		        <thead>
 		            <tr>
 						<?=$th?>
