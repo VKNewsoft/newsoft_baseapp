@@ -1042,6 +1042,13 @@ function build_menu($current_module, $arr_menu, $submenu = false)
 			$menu_icon = '<i class="sidebar-menu-icon ' . $val['class'] . '"></i>';
 		}
 
+		// Indicator khusus DB Synchronisation dibuat di helper global agar status
+		// sinkronisasi bisa terlihat langsung dari sidebar tanpa mengubah flow menu.
+		$menu_indicator = '';
+		if (($val['nama_module'] ?? '') === 'db-synchronisation' && function_exists('db_sync_menu_indicator_html')) {
+			$menu_indicator = db_sync_menu_indicator_html();
+		}
+
 		// Menu
 		$config = new \Config\App();
 
@@ -1052,7 +1059,7 @@ function build_menu($current_module, $arr_menu, $submenu = false)
 					<a ' . $class_a . ' href="' . $url . '"' . $onClick . '>' .
 			'<span class="menu-item">' .
 			$menu_icon .
-			'<span class="text">' . $val['nama_menu'] . '</span>' .
+			'<span class="text">' . $val['nama_menu'] . $menu_indicator . '</span>' .
 			'</span>' .
 			$arrow .
 			'</a>' . $new;
@@ -1064,6 +1071,51 @@ function build_menu($current_module, $arr_menu, $submenu = false)
 	}
 	$menu .= "</ul>\n";
 	return $menu;
+}
+
+/**
+ * Ambil status sinkronisasi schema untuk indicator menu.
+ *
+ * Status dibaca dari cache singkat lebih dulu supaya render sidebar tetap
+ * ringan. Bila cache kosong, model DB Synchronisation akan menghitung ulang.
+ */
+function db_sync_menu_indicator_status()
+{
+	try {
+		$cachedSummary = cache()->get('db_sync_summary_latest');
+		if (!is_array($cachedSummary) && class_exists('\App\Modules\DbSynchronisation\Models\DbSynchronisationModel')) {
+			$model = new \App\Modules\DbSynchronisation\Models\DbSynchronisationModel();
+			$cachedSummary = $model->getSyncSummary(false);
+		}
+
+		if (!is_array($cachedSummary)) {
+			return ['is_synced' => true, 'pending' => 0];
+		}
+
+		$pending = count($cachedSummary['diff']['items'] ?? []);
+		return [
+			'is_synced' => !empty($cachedSummary['is_synced']),
+			'pending' => $pending
+		];
+	} catch (\Throwable $e) {
+		// Indicator tidak boleh merusak render menu bila pengecekan schema gagal.
+		return ['is_synced' => true, 'pending' => 0];
+	}
+}
+
+/**
+ * Render HTML indicator sinkronisasi pada menu sidebar.
+ */
+function db_sync_menu_indicator_html()
+{
+	$status = db_sync_menu_indicator_status();
+	$class = $status['is_synced'] ? 'is-synced' : 'is-danger';
+	$title = $status['is_synced']
+		? 'Schema sinkron'
+		: 'Schema belum sinkron (' . $status['pending'] . ' perbedaan)';
+	$escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+
+	return '<span class="menu-state-indicator ' . $class . '" title="' . $escapedTitle . '" aria-label="' . $escapedTitle . '"></span>';
 }
 
 function email_content($content)

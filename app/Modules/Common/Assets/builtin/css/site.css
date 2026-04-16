@@ -708,6 +708,25 @@ header .nav-account .dropdown-menu.show {
 .sidebar nav li a .menu-item {
 	display: flex;
 	align-items: baseline;
+	gap: .5rem;
+}
+.menu-state-indicator {
+	display: inline-flex;
+	width: .6rem;
+	height: .6rem;
+	border-radius: 999px;
+	flex: 0 0 .6rem;
+	align-self: center;
+	background: rgba(15, 23, 42, .24);
+	box-shadow: 0 0 0 .24rem rgba(15, 23, 42, .08);
+}
+.menu-state-indicator.is-synced {
+	background: rgba(24, 169, 87, .88);
+	box-shadow: 0 0 0 .24rem rgba(24, 169, 87, .14);
+}
+.menu-state-indicator.is-danger {
+	background: rgba(220, 53, 69, .92);
+	box-shadow: 0 0 0 .24rem rgba(220, 53, 69, .16);
 }
 .sidebar nav .submenu {
 	position: relative;
