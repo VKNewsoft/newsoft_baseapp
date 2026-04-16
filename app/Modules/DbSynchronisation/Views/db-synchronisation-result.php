@@ -10,6 +10,8 @@ $syncSummary = $sync_summary ?? [];
 $summary = $syncSummary['summary'] ?? [];
 $diffItems = $syncSummary['diff']['items'] ?? [];
 $isSynced = !empty($syncSummary['is_synced']);
+$isRegistered = !empty($syncSummary['is_registered']);
+$registration = $syncSummary['registration'] ?? [];
 $generatedAt = $syncSummary['generated_at'] ?? '-';
 $formToken = $auth->generateFormToken('form_db_synchronisation');
 ?>
@@ -35,16 +37,24 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 	<?php endif; ?>
 
 	<div class="db-sync-overview-grid">
-		<div class="card page-card db-sync-status-card <?=$isSynced ? 'is-synced' : 'is-outdated'?>">
+		<div class="card page-card db-sync-status-card <?=($isSynced && $isRegistered) ? 'is-synced' : 'is-outdated'?>">
 			<div class="card-body">
 				<div class="db-sync-status-head">
 					<span class="db-sync-status-dot"></span>
 					<div>
-						<h5 class="mb-1"><?=$isSynced ? 'Schema Sinkron' : 'Schema Belum Sinkron'?></h5>
-						<p class="mb-0 text-muted">Status menu dan halaman ini mengikuti hasil pengecekan schema terakhir.</p>
+						<h5 class="mb-1"><?=($isSynced && $isRegistered) ? 'Module & Schema Sinkron' : 'Module Belum Lengkap / Schema Belum Sinkron'?></h5>
+						<p class="mb-0 text-muted">Fallback static registration tetap menjaga module bisa dipakai walau seed menu/module belum masuk ke database.</p>
 					</div>
 				</div>
 				<div class="db-sync-status-meta">
+					<div>
+						<small>Module DB</small>
+						<strong><?=!empty($registration['module_exists']) ? 'Ada' : 'Fallback'?></strong>
+					</div>
+					<div>
+						<small>Menu DB</small>
+						<strong><?=!empty($registration['menu_exists']) ? 'Ada' : 'Fallback'?></strong>
+					</div>
 					<div>
 						<small>Perubahan Aman</small>
 						<strong><?=esc((string) ($summary['safe_changes'] ?? 0))?></strong>

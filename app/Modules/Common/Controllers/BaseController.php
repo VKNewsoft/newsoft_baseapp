@@ -192,6 +192,20 @@ class BaseController extends Controller
 	
 	private function getModulePermission()
 	{
+		// Module fallback yang belum terdaftar di database diberi permission
+		// minimum untuk Administrator agar halaman sinkronisasi tetap usable.
+		if (!empty($this->currentModule['is_fallback_module'])) {
+			$this->modulePermission = [
+				1 => [
+					'read_all' => 'read_all',
+					'create' => 'create',
+					'update_all' => 'update_all',
+					'delete_all' => 'delete_all'
+				]
+			];
+			return;
+		}
+
 		$query = $this->model->getModulePermission($this->currentModule['id_module']);
 		
 		$this->modulePermission = [];
@@ -218,6 +232,17 @@ class BaseController extends Controller
 	{ 
 		// echo '<pre>'; print_r($this->modulePermission); die;
 		$user_role = $this->session->get('user')['role'];
+
+		if (!empty($this->currentModule['is_fallback_module']) && !$this->modulePermission) {
+			$this->modulePermission = [
+				1 => [
+					'read_all' => 'read_all',
+					'create' => 'create',
+					'update_all' => 'update_all',
+					'delete_all' => 'delete_all'
+				]
+			];
+		}
 		
 		if ($this->isLoggedIn && $this->currentModule['nama_module'] != 'login') {
 			if ($this->modulePermission) 

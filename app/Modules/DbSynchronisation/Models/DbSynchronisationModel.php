@@ -119,6 +119,7 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 		$targetTables = $this->loadDumpSchema();
 		$currentTables = $this->loadCurrentSchema();
 		$diff = $this->buildDiff($currentTables, $targetTables);
+		$registration = $this->getRegistrationStatus();
 
 		$summary = [
 			'missing_tables' => 0,
@@ -147,10 +148,43 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 
 		return [
 			'is_synced' => count($diff['items']) === 0,
+			'is_registered' => $registration['is_registered'],
+			'registration' => $registration,
 			'generated_at' => date('Y-m-d H:i:s'),
 			'dump_path' => $this->dumpPath,
 			'summary' => $summary,
 			'diff' => $diff
+		];
+	}
+
+	/**
+	 * Cek apakah module dan menu DB Synchronisation sudah terdaftar di DB.
+	 */
+	public function getRegistrationStatus(): array
+	{
+		try {
+			$moduleExists = (bool) $this->db->table('core_module')
+				->select('id_module')
+				->where('nama_module', 'db-synchronisation')
+				->get()
+				->getRowArray();
+
+			$menuExists = (bool) $this->db->table('core_menu')
+				->select('id_menu')
+				->where('url', 'db-synchronisation')
+				->get()
+				->getRowArray();
+		} catch (\Throwable $e) {
+			// Bila seed menu/module belum siap atau query gagal, status tetap
+			// diperlakukan belum terdaftar agar indicator first setup tetap merah.
+			$moduleExists = false;
+			$menuExists = false;
+		}
+
+		return [
+			'module_exists' => $moduleExists,
+			'menu_exists' => $menuExists,
+			'is_registered' => $moduleExists && $menuExists
 		];
 	}
 

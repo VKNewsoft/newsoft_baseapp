@@ -310,7 +310,178 @@ class BaseModel extends \CodeIgniter\Model
 	public function getModule($nama_module) {
 		$result = $this->db->query('SELECT * FROM core_module LEFT JOIN core_module_status USING(id_module_status) WHERE nama_module = ?', [$nama_module])
 						->getRowArray();
-		// print_r($this->db->getLastQuery());die;
+		// Fallback registry dipakai agar module tertentu tetap bisa diakses
+		// walau seed core_module/core_menu belum dijalankan setelah pull source.
+		if (!$result) {
+			$result = $this->getFallbackModuleDefinition($nama_module);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Registry fallback module statis untuk first setup.
+	 *
+	 * Data ini hanya dipakai jika module belum terdaftar di database agar
+	 * controller tetap bisa berjalan dan menu tetap dapat muncul.
+	 */
+	public function getFallbackModules(): array
+	{
+		return [
+			'db-synchronisation' => [
+				'id_module' => 124,
+				'nama_module' => 'db-synchronisation',
+				'judul_module' => 'CORE - DB Synchronisation',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk membandingkan schema database aktif dengan dump installer',
+				'is_fallback_module' => true
+			]
+		];
+	}
+
+	/**
+	 * Ambil definisi module fallback berdasarkan nama module.
+	 */
+	public function getFallbackModuleDefinition(string $namaModule)
+	{
+		$fallbackModules = $this->getFallbackModules();
+		return $fallbackModules[$namaModule] ?? [];
+	}
+
+	/**
+	 * Cek apakah module sudah benar-benar terdaftar di database.
+	 */
+	public function isModuleRegisteredInDatabase(string $namaModule): bool
+	{
+		return (bool) $this->db->table('core_module')
+			->select('id_module')
+			->where('nama_module', $namaModule)
+			->get()
+			->getRowArray();
+	}
+
+	/**
+	 * Cek apakah menu module sudah terdaftar di database.
+	 */
+	public function isMenuRegisteredInDatabase(string $menuUrl): bool
+	{
+		return (bool) $this->db->table('core_menu')
+			->select('id_menu')
+			->where('url', $menuUrl)
+			->get()
+			->getRowArray();
+	}
+
+	/**
+	 * Ambil fallback menu statis untuk module yang harus tetap usable saat
+	 * record core_menu/core_module belum tersedia.
+	 */
+	public function getFallbackMenuRows(): array
+	{
+		return [
+			'db-synchronisation' => [
+				'menu' => [
+					'id_menu' => 172,
+					'nama_menu' => 'DB Synchronisation',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'db-synchronisation',
+					'id_module' => 124,
+					'nama_module' => 'db-synchronisation',
+					'judul_module' => 'CORE - DB Synchronisation',
+					'id_parent' => 13,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 5,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 13,
+					'nama_menu' => 'Administrator',
+					'id_menu_kategori' => 1,
+					'class' => 'far fa-sun',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			]
+		];
+	}
+
+	/**
+	 * Tambah menu fallback ke hasil query menu database tanpa mengubah menu yang
+	 * sudah ada. Fallback hanya muncul untuk role Administrator.
+	 */
+	protected function mergeFallbackMenu(array $result, string $current_module = ''): array
+	{
+		$roleIds = $this->normalizeIntegerList(array_keys($this->session->get('user')['role'] ?? []));
+		if (!in_array(1, $roleIds, true)) {
+			return $result;
+		}
+
+		$fallbackRows = $this->getFallbackMenuRows();
+		foreach ($fallbackRows as $namaModule => $fallback) {
+			$moduleRegistered = $this->isModuleRegisteredInDatabase($namaModule);
+			$menuRegistered = $this->isMenuRegisteredInDatabase($fallback['menu']['url']);
+			$menuExists = false;
+			foreach ($result as $kategoriData) {
+				foreach ($kategoriData['menu'] as $menuRow) {
+					if (($menuRow['nama_module'] ?? '') === $namaModule || ($menuRow['url'] ?? '') === $fallback['menu']['url']) {
+						$menuExists = true;
+						break 2;
+					}
+				}
+			}
+
+			if (($moduleRegistered && $menuRegistered) || $menuExists) {
+				continue;
+			}
+
+			$categoryId = $fallback['category']['id_menu_kategori'];
+			if (!isset($result[$categoryId])) {
+				$result[$categoryId] = [
+					'kategori' => $fallback['category'],
+					'menu' => []
+				];
+			}
+
+			$menuRows = &$result[$categoryId]['menu'];
+			if (!isset($menuRows[$fallback['parent']['id_menu']])) {
+				$menuRows[$fallback['parent']['id_menu']] = $fallback['parent'];
+			}
+
+			if ($current_module === $namaModule) {
+				$menuRows[$fallback['parent']['id_menu']]['highlight'] = 1;
+				$menuRows[$fallback['menu']['id_menu']]['highlight'] = 1;
+			}
+
+			$menuRows[$fallback['menu']['id_menu']] = array_merge(
+				$fallback['menu'],
+				['highlight' => $current_module === $namaModule ? 1 : 0]
+			);
+		}
+
 		return $result;
 	}
 	
@@ -365,7 +536,12 @@ class BaseModel extends \CodeIgniter\Model
 			if (key_exists($val['id_menu_kategori'], $menu_kategori)) {
 				$result[$val['id_menu_kategori']] = [ 'kategori' => $val, 'menu' => $menu_kategori[$val['id_menu_kategori']] ];
 			}
-		}		
+		}
+
+		// Hybrid loader: menu database tetap jadi sumber utama, lalu fallback
+		// statis ditambahkan hanya bila module baru belum sempat diregistrasikan.
+		$result = $this->mergeFallbackMenu($result, $current_module);
+
 		// echo '<pre>'; print_r($result); die;
 		return $result;
 	}

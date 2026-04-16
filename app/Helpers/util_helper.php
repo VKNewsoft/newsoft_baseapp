@@ -1089,17 +1089,18 @@ function db_sync_menu_indicator_status()
 		}
 
 		if (!is_array($cachedSummary)) {
-			return ['is_synced' => true, 'pending' => 0];
+			return ['is_synced' => true, 'pending' => 0, 'is_registered' => true];
 		}
 
 		$pending = count($cachedSummary['diff']['items'] ?? []);
 		return [
 			'is_synced' => !empty($cachedSummary['is_synced']),
-			'pending' => $pending
+			'pending' => $pending,
+			'is_registered' => !empty($cachedSummary['is_registered'])
 		];
 	} catch (\Throwable $e) {
 		// Indicator tidak boleh merusak render menu bila pengecekan schema gagal.
-		return ['is_synced' => true, 'pending' => 0];
+		return ['is_synced' => true, 'pending' => 0, 'is_registered' => true];
 	}
 }
 
@@ -1109,10 +1110,11 @@ function db_sync_menu_indicator_status()
 function db_sync_menu_indicator_html()
 {
 	$status = db_sync_menu_indicator_status();
-	$class = $status['is_synced'] ? 'is-synced' : 'is-danger';
-	$title = $status['is_synced']
-		? 'Schema sinkron'
-		: 'Schema belum sinkron (' . $status['pending'] . ' perbedaan)';
+	$isHealthy = !empty($status['is_synced']) && !empty($status['is_registered']);
+	$class = $isHealthy ? 'is-synced' : 'is-danger';
+	$title = $isHealthy
+		? 'Module dan schema sinkron'
+		: 'Module belum terdaftar atau schema belum sinkron (' . $status['pending'] . ' perbedaan)';
 	$escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
 
 	return '<span class="menu-state-indicator ' . $class . '" title="' . $escapedTitle . '" aria-label="' . $escapedTitle . '"></span>';
