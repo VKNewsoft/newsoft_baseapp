@@ -28,6 +28,31 @@ $fontPreloadMap = [
 	'poppins' => 'poppins_400.woff2'
 ];
 $fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
+$faviconVersion = @filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon']);
+$fontawesomeVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
+$bootstrapVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
+$bootstrapIconsVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap-icons/bootstrap-icons.css');
+$sweetalertVersion = @filemtime(ROOTPATH . 'public/vendors/sweetalert2/sweetalert2.min.css');
+$overlayCssVersion = @filemtime(ROOTPATH . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css');
+$siteCssVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/site.css');
+$datatablesCssVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css');
+$bootswatchVersion = @filemtime(ROOTPATH . 'public/vendors/bootswatch/'. ( empty($_COOKIE['nsd_adm_theme']) || @$_COOKIE['nsd_adm_theme'] == 'light' ? esc($app_layout['bootswatch_theme']) : 'default' ) .'/bootstrap.min.css');
+$colorSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css');
+$sidebarSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css');
+$logoSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css');
+$bootstrapCustomVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/bootstrap-custom.css');
+$jqueryVersion = @filemtime(ROOTPATH . 'public/vendors/jquery/jquery.min.js');
+$bootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js');
+$bootboxVersion = @filemtime(ROOTPATH . 'public/vendors/bootbox/bootbox.min.js');
+$sweetalertJsVersion = @filemtime(ROOTPATH . 'public/vendors/sweetalert2/sweetalert2.min.js');
+$overlayJsVersion = @filemtime(ROOTPATH . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js');
+$cookieJsVersion = @filemtime(ROOTPATH . 'public/vendors/js.cookie/js.cookie.min.js');
+$functionsJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/functions.js');
+$siteJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/site.js');
+$sidebarJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/sidebar.js');
+$popperJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/popper.min.js');
+$datatablesJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js');
+$datatablesBootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,33 +67,33 @@ $fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 		window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 		document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
 	</script>
-	<link rel="shortcut icon" href="<?= $config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time() ?>" />
+	<link rel="shortcut icon" href="<?= $config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?v='.$faviconVersion ?>" />
 
 	<!-- Styles: vendors / theme / dynamic -->
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/fontawesome/css/all.css' ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootstrap-icons/bootstrap-icons.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/site.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css?r='.time() ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/fontawesome/css/all.css?v='.$fontawesomeVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?v='.$bootstrapVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootstrap-icons/bootstrap-icons.css?v='.$bootstrapIconsVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.css?v='.$sweetalertVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css?v='.$overlayCssVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/site.css?v='.$siteCssVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css?v='.$datatablesCssVersion ?>" />
 
-	<link id="style-switch-bootswatch" rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootswatch/'. ( empty($_COOKIE['nsd_adm_theme']) || @$_COOKIE['nsd_adm_theme'] == 'light' ? esc($app_layout['bootswatch_theme']) : 'default' ) .'/bootstrap.min.css?r='.time() ?>" />
-	<link id="style-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time() ?>" />
-	<link id="style-switch-sidebar" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?r='.time() ?>" />
+	<link id="style-switch-bootswatch" rel="stylesheet" href="<?= $config->baseURL . 'public/vendors/bootswatch/'. ( empty($_COOKIE['nsd_adm_theme']) || @$_COOKIE['nsd_adm_theme'] == 'light' ? esc($app_layout['bootswatch_theme']) : 'default' ) .'/bootstrap.min.css?v='.$bootswatchVersion ?>" />
+	<link id="style-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?v='.$colorSchemeVersion ?>" />
+	<link id="style-switch-sidebar" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?v='.$sidebarSchemeVersion ?>" />
 	<?php if ($fontPreloadFile): ?>
 	<link rel="preload" as="font" type="font/woff2" crossorigin href="<?= $config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile ?>" />
 	<?php endif; ?>
 	<link rel="preload" as="style" href="<?= $config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion ?>" />
 	<link id="font-switch" rel="stylesheet" data-font-key="<?=esc($currentFontKey, 'attr')?>" href="<?= $config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion ?>" />
 	<link id="font-size-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion ?>" />
-	<link id="logo-background-color-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?r='.time() ?>" />
-	<link rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?r=' . time() ?>" />
+	<link id="logo-background-color-switch" rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?v='.$logoSchemeVersion ?>" />
+	<link rel="stylesheet" href="<?= $config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?v=' . $bootstrapCustomVersion ?>" />
 
 	<?php if (@$styles): ?>
 		<!-- Dynamic styles -->
 		<?php foreach ($styles as $file): ?>
-			<link rel="stylesheet" data-type="dynamic-resource-head" href="<?= $file . '?r=' . time() ?>" />
+			<link rel="stylesheet" data-type="dynamic-resource-head" href="<?= $file . '?v=' . time() ?>" />
 		<?php endforeach; ?>
 	<?php endif; ?>
 
@@ -96,21 +121,21 @@ $fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 		let current_bootswatch_theme = "<?= $app_layout['bootswatch_theme'] ?>";
 	</script>
 
-	<script src="<?= $config->baseURL . 'public/vendors/jquery/jquery.min.js' ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js' ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/bootbox/bootbox.min.js' ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.js' ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js' ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/js.cookie/js.cookie.min.js' ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/jquery/jquery.min.js?v='.$jqueryVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js?v='.$bootstrapJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/bootbox/bootbox.min.js?v='.$bootboxVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.js?v='.$sweetalertJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js?v='.$overlayJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/js.cookie/js.cookie.min.js?v='.$cookieJsVersion ?>"></script>
 
-	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/functions.js?r='.time() ?>"></script>
-	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/site.js?r='.time() ?>"></script>
-	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/sidebar.js?r='.time() ?>"></script>
-	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/popper.min.js' ?>"></script>
+	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/functions.js?v='.$functionsJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/site.js?v='.$siteJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/sidebar.js?v='.$sidebarJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'module-assets/Common/builtin/js/popper.min.js?v='.$popperJsVersion ?>"></script>
 
 	<!-- DataTables -->
-	<script src="<?= $config->baseURL . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js?r='.time() ?>"></script>
-	<script src="<?= $config->baseURL . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js?r='.time() ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js?v='.$datatablesJsVersion ?>"></script>
+	<script src="<?= $config->baseURL . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js?v='.$datatablesBootstrapJsVersion ?>"></script>
 
 	<?php if (@$scripts): ?>
 		<!-- Dynamic scripts -->
@@ -118,7 +143,7 @@ $fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
 			<?php if (is_array($file) && !empty($file['print'])): ?>
 				<script data-type="dynamic-resource-head"><?= $file['script'] ?></script>
 			<?php elseif (!is_array($file)): ?>
-				<script data-type="dynamic-resource-head" src="<?= $file . '?r=' . time() ?>"></script>
+				<script data-type="dynamic-resource-head" src="<?= $file . '?v=' . time() ?>"></script>
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>

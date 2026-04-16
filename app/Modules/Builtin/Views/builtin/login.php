@@ -3,28 +3,24 @@
 <div class="login-glass-container">
 	<div class="login-header">
 		<div class="logo-wrapper">
-			<img src="<?php echo $config->baseURL . '/public/images/' . $setting_aplikasi['logo_login']?>" alt="Logo" class="login-logo">
+			<img src="<?php echo $config->baseURL . '/public/images/' . $setting_aplikasi['logo_login']?>" alt="Logo" class="login-logo" fetchpriority="high" decoding="async">
 		</div>
 		<?php if (!empty($desc)) {
 			echo '<p class="login-subtitle">' . $desc . '</p>';
 		}?>
 	</div>
 	<div class="login-body">
-		<?php
-		
-		if (!empty($message)) {?>
-			<div class="alert alert-danger modern-alert">
-				<i class="fa fa-exclamation-circle"></i> <?=$message?>
-			</div>
-		<?php }
-		?>
+		<div class="alert alert-danger modern-alert<?= empty($message) ? ' d-none' : '' ?>" id="login-alert-message" role="alert" aria-live="polite">
+			<i class="fa fa-exclamation-circle"></i>
+			<span><?=!empty($message) ? $message : ''?></span>
+		</div>
 		<div class="login-form-wrapper">
 			<form method="post" action="" class="modern-login-form" novalidate>
 				<div class="form-field">
 					<label for="username-field" class="field-label">
-						<i class="fa fa-user"></i> Username
+						<i class="fa fa-user"></i> Username / Email
 					</label>
-					<input type="text" id="username-field" name="username" value="<?= esc(old('username', '')) ?>" class="modern-input" placeholder="Masukkan username" aria-label="Username" required>
+					<input type="text" id="username-field" name="username" value="<?= esc(old('username', '')) ?>" class="modern-input" placeholder="Masukkan username atau email" aria-label="Username atau Email" required>
 				</div>
 				<div class="form-field">
 					<label for="password-field" class="field-label">
@@ -40,7 +36,7 @@
 
 				<div class="form-actions">
 					<button id="btn-submit-login" type="submit" class="btn-login-primary" name="submit">
-						<span>Login</span>
+						<span class="btn-login-label">Login</span>
 						<i class="fa fa-arrow-right"></i>
 					</button>
 					<?php
@@ -128,6 +124,10 @@
 
 .modern-alert i {
 	margin-right: 8px;
+}
+
+.modern-alert.d-none {
+	display: none !important;
 }
 
 .login-form-wrapper {
@@ -230,6 +230,11 @@
 
 .btn-login-primary:active {
 	transform: translateY(0);
+}
+
+.btn-login-primary.is-loading {
+	opacity: .9;
+	cursor: wait;
 }
 
 .login-links {

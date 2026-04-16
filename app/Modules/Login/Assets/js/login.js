@@ -16,7 +16,36 @@
 	document.addEventListener('DOMContentLoaded', function(){
 		var toggle = document.querySelector('.password-toggle-btn');
 		var pwd = document.getElementById('password-field');
+		var form = document.querySelector('.modern-login-form');
+		var username = document.getElementById('username-field');
+		var alertBox = document.getElementById('login-alert-message');
+		var submitButton = document.getElementById('btn-submit-login');
+		var submitLabel = submitButton ? submitButton.querySelector('.btn-login-label') : null;
 		if (!toggle || !pwd) return;
+
+		function showLoginError(message) {
+			if (!alertBox) return;
+			var text = alertBox.querySelector('span');
+			if (text) {
+				text.textContent = message;
+			}
+			alertBox.classList.remove('d-none');
+		}
+
+		function hideLoginError() {
+			if (!alertBox) return;
+			alertBox.classList.add('d-none');
+		}
+
+		function setLoadingState(isLoading) {
+			if (!submitButton) return;
+			submitButton.disabled = isLoading;
+			submitButton.classList.toggle('is-loading', isLoading);
+			if (submitLabel) {
+				submitLabel.textContent = isLoading ? 'Memproses...' : 'Login';
+			}
+		}
+
 		toggle.addEventListener('click', function(e){
 			e.preventDefault();
 			var isPwd = pwd.type === 'password';
@@ -29,21 +58,70 @@
 				icon.classList.toggle('fa-eye-slash');
 			}
 		});
+
+		[username, pwd].forEach(function(field){
+			if (!field) return;
+			field.addEventListener('input', hideLoginError);
+		});
+
+		if (form) {
+			form.addEventListener('submit', function(e){
+				var userValue = username ? username.value.trim() : '';
+				var passwordValue = pwd ? pwd.value.trim() : '';
+				if (!userValue && !passwordValue) {
+					e.preventDefault();
+					showLoginError('Masukkan Username/Email & Password Dulu');
+					setLoadingState(false);
+					if (username) username.focus();
+					return;
+				}
+				if (!userValue) {
+					e.preventDefault();
+					showLoginError('Masukkan Username/Email Dulu');
+					setLoadingState(false);
+					if (username) username.focus();
+					return;
+				}
+				if (!passwordValue) {
+					e.preventDefault();
+					showLoginError('Masukkan Password Dulu');
+					setLoadingState(false);
+					pwd.focus();
+					return;
+				}
+
+				hideLoginError();
+				setLoadingState(true);
+			});
+		}
 	});
 })();
 
 jQuery(document).ready(function () {	
-	bootbox.setDefaults({
-		animate: false,
-		centerVertical: true
-	});
-	
-	$('form').submit(function(e) {
+	$('form.modern-login-form').submit(function(e) {
+		const username = $.trim($('#username-field').val() || '');
+		const password = $.trim($('#password-field').val() || '');
+		const $alert = $('#login-alert-message');
+		const $alertText = $alert.find('span');
+		const $button = $('#btn-submit-login');
+		const $label = $button.find('.btn-login-label');
+
+		if (!username && !password) {
+			e.preventDefault();
+			$alert.removeClass('d-none');
+			$alertText.text('Masukkan Username/Email & Password Dulu');
+			$button.prop('disabled', false).removeClass('is-loading');
+			$label.text('Login');
+			return;
+		}
+
 		e.preventDefault();
-		let $button = $(this).find('button');
 		$button.prop('disabled', true);
+		$button.addClass('is-loading');
+		$label.text('Memproses...');
 		let $form = $(this);
 
+		window.requestAnimationFrame(function() {
 		$.ajax({
 			url: base_url + 'login',
 			type: 'POST',
@@ -53,7 +131,8 @@ jQuery(document).ready(function () {
 				try {
 					data_value = JSON.parse(data);
 				} catch (err) {
-					$button.prop('disabled', false);
+					$button.prop('disabled', false).removeClass('is-loading');
+					$label.text('Login');
 					Swal.fire({
 						icon: 'error',
 						title: 'Kesalahan',
@@ -72,7 +151,8 @@ jQuery(document).ready(function () {
 						text: data_value.message || 'Terjadi kesalahan terkait jadwal. Silakan hubungi administrator jika diperlukan.',
 						confirmButtonText: 'Tutup'
 					});
-					$button.prop('disabled', false);
+					$button.prop('disabled', false).removeClass('is-loading');
+					$label.text('Login');
 				} else if (data_value.status === 'error') {
 					Swal.fire({
 						icon: 'error',
@@ -80,14 +160,17 @@ jQuery(document).ready(function () {
 						text: data_value.message || 'Terjadi kesalahan. Silakan coba lagi.',
 						confirmButtonText: 'Tutup'
 					});
-					$button.prop('disabled', false);
+					$button.prop('disabled', false).removeClass('is-loading');
+					$label.text('Login');
 				} else {
-					$button.prop('disabled', false);
+					$button.prop('disabled', false).removeClass('is-loading');
+					$label.text('Login');
 					window.location = base_url;
 				}
 			},
 			error: function(xhr) {
-				$button.prop('disabled', false);
+				$button.prop('disabled', false).removeClass('is-loading');
+				$label.text('Login');
 				Swal.fire({
 					icon: 'error',
 					title: 'Kesalahan Jaringan',
@@ -96,6 +179,7 @@ jQuery(document).ready(function () {
 				});
 				console.error(xhr);
 			}
+		});
 		});
 	});
 });

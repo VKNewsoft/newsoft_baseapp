@@ -53,9 +53,35 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 		$this->mustNotLoggedIn();
 		
 		$this->data['status'] = '';
+		$this->data['message'] = '';
+
+		if (strtolower($this->request->getMethod()) === 'post') {
+			$username = trim((string) $this->request->getPost('username'));
+			$password = trim((string) $this->request->getPost('password'));
+			$emptyMessage = '';
+			if ($username === '' && $password === '') {
+				$emptyMessage = 'Masukkan Username/Email & Password Dulu';
+			} elseif ($username === '') {
+				$emptyMessage = 'Masukkan Username/Email Dulu';
+			} elseif ($password === '') {
+				$emptyMessage = 'Masukkan Password Dulu';
+			}
+
+			if ($emptyMessage !== '') {
+				$this->data['status'] = 'error';
+				$this->data['message'] = $emptyMessage;
+				if ($this->request->getPost('ajax') == 'true') {
+					echo json_encode([
+						'status' => 'error',
+						'message' => $emptyMessage
+					]);
+					exit;
+				}
+			}
+		}
 
 		// Proses login jika ada POST password
-		if ($this->request->getPost('password')) {
+		if ($this->request->getPost('password') && empty($this->data['message'])) {
 			// Cek apakah device sudah terlalu banyak failed attempt
 			$cekFalse = $this->model->cekFalseAttemptDevice();
 			
