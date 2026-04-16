@@ -99,6 +99,20 @@ Setelah instalasi selesai, login dengan:
 
 ## **Pengembangan Selanjutnya**
 
+### **v1.1.1 (16-04-2026)**
+
+- Optimasi performa initial render pada module `dashboard`, `securitymonitor`, `company`, `builtin/menu`, `builtin/module`, `builtin/permission`, `builtin/user`, `builtin/menu-role`, `builtin/role`, `builtin/role-permission`, `builtin/user-role`, `builtin/setting-app`, dan `builtin/setting-layout`.
+- Prioritas above-the-fold diperkuat dengan skeleton/loading ringan, defer section non-kritis, dan pengurangan DOM/reflow pada halaman list utama.
+- Standardisasi helper performa di asset `Common` untuk defer inisialisasi non-kritis, lazy `select2`, dan kontrol skeleton tabel lintas module.
+- DataTable list utama dipastikan hanya memuat data sesuai pagination aktif dengan pendekatan server-side processing yang lebih ringan saat initial load.
+- Query list dioptimasi dengan `select` field seperlunya, pembatasan lookup relasi ke row halaman aktif, dan pengurangan pola N+1 pada role, menu-role, user-role, user, company, module, dan permission.
+- Asset berat non-kritis seperti `Chart.js` dan `select2` dipindahkan ke lazy/deferred load agar hero, toolbar, dan tabel utama tampil lebih cepat.
+- Duplikasi asset lintas module dikurangi dengan memanfaatkan asset shared `Common` dan menghapus preload yang tidak dibutuhkan saat render awal.
+- Stabilitas render font diperbaiki dengan preload font kritikal multi-weight, inline `@font-face` kritikal, versi asset yang stabil, dan penguatan cache asset agar tidak terjadi blink saat reload atau pindah halaman.
+- Cache dynamic asset diperbaiki dengan menghapus cache-buster berbasis `time()` pada layout utama sehingga browser dapat memanfaatkan cache CSS/JS/font secara optimal.
+- Perbaikan bug `Undefined index: id_module` pada aksi data user tanpa mengubah logic bisnis utama.
+- Seluruh perubahan difokuskan pada percepatan render awal dan stabilitas UI tanpa mengubah alur bisnis utama.
+
 ### **v1.1.0 (15-04-2026)**
 
 - Refactor arsitektur menjadi **full HMVC modular** (controller, model, view, asset dalam satu module).
