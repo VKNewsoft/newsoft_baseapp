@@ -7,6 +7,9 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <?php
 helper('setting_layout');
+$faviconUrl = public_image_url($setting_aplikasi['favicon'] ?? '', 'logo_only.png');
+$faviconVersion = public_image_version($setting_aplikasi['favicon'] ?? '', 'logo_only.png');
+$loginLogoUrl = public_image_url($setting_aplikasi['logo_login'] ?? '', 'logo_only.png');
 $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sans');
 $currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
 $currentFontFamily = $currentFont['family'];
@@ -15,7 +18,6 @@ $fontPreloadFiles = setting_layout_font_preload_files($app_layout['font_family']
 $criticalFontCss = setting_layout_font_critical_css($app_layout['font_family'] ?? 'open-sans');
 $fontAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/' . $currentFontCssPath);
 $fontSizeAssetVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/fonts/font-size-' . ($app_layout['font_size'] ?? '14') . '.css');
-$faviconVersion = @filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon']);
 $fontawesomeVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
 $bootstrapVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
 $bootstrapCustomPosVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/bootstrap-custom-pos-kasir.css');
@@ -73,7 +75,7 @@ window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
 </script>
 <link rel="manifest" href="manifest.json"/>
-<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?v='.$faviconVersion?>" />
+<link rel="shortcut icon" href="<?=$faviconUrl . '?v=' . $faviconVersion?>" />
 <?php foreach ($fontPreloadFiles as $fontFile): ?>
 <link rel="preload" as="font" type="font/woff2" crossorigin fetchpriority="high" href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontFile['file'].'?v='.@filemtime(APPPATH . 'Modules/Common/Assets/builtin/fonts/'.$fontFile['file'])?>"/>
 <?php endforeach; ?>
@@ -168,9 +170,9 @@ if (@$scripts) {
 <link rel="manifest" href="<?=$config->baseURL . 'manifest.json'?>"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f45">
-<link rel="shortcut icon" href="<?=$config->baseURL?>/public/images/<?=$setting_aplikasi['favicon']?>" type="image/png">
-<link rel="apple-touch-icon" href="<?=$config->baseURL?>/public/images/<?=$setting_aplikasi['favicon']?>" type="image/png">
-<head>
+<link rel="shortcut icon" href="<?=$faviconUrl?>" type="image/png">
+<link rel="apple-touch-icon" href="<?=$faviconUrl?>" type="image/png">
+</head>
 <body style="font-family: <?=esc($currentFontFamily, 'attr')?>;">
 	
 	<div class="page-container" id="page-container">
@@ -217,7 +219,7 @@ if (@$scripts) {
 		
 	<div class="sidebar-mobile offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" style="width:280px" aria-labelledby="offcanvasExampleLabel">
 		<div class="offcanvas-header">
-			<h5 class="offcanvas-title" id="offcanvasExampleLabel"> <img src="<?=base_url() . '/public/images/' . $setting_aplikasi['logo_login']?>"/></h5>
+			<h5 class="offcanvas-title" id="offcanvasExampleLabel"> <img src="<?=$loginLogoUrl?>" alt="Logo Login"/></h5>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 		</div>
 		<div class="offcanvas-body sidebar-body">

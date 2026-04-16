@@ -8,6 +8,8 @@
 <meta name="googlebot" content="noindex, nofollow">
 <?php
 helper('setting_layout');
+$faviconUrl = public_image_url($setting_aplikasi['favicon'] ?? '', 'logo_only.png');
+$faviconVersion = public_image_version($setting_aplikasi['favicon'] ?? '', 'logo_only.png');
 $currentFontKey = setting_layout_font_key($app_layout['font_family'] ?? 'open-sans');
 $currentFont = setting_layout_font_entry($app_layout['font_family'] ?? 'open-sans');
 $currentFontFamily = $currentFont['family'];
@@ -28,7 +30,7 @@ window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
 </script>
 <link rel="manifest" href="manifest.json"/>
-<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.@filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon'])?>" />
+<link rel="shortcut icon" href="<?=$faviconUrl . '?v=' . $faviconVersion?>" />
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?v='.$bootstrapCssVersion?>"/>
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom.css?v=' . $bootstrapCustomCssVersion?>"/>
 <link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css?v='.$fontawesomeCssVersion?>"/>

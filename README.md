@@ -99,7 +99,7 @@ Setelah instalasi selesai, login dengan:
 
 ## **Pengembangan Selanjutnya**
 
-### **v1.1.1 (16-04-2026)**
+### **v1.1.2 (16-04-2026)**
 
 - Optimasi performa initial render pada module `dashboard`, `securitymonitor`, `company`, `builtin/menu`, `builtin/module`, `builtin/permission`, `builtin/user`, `builtin/menu-role`, `builtin/role`, `builtin/role-permission`, `builtin/user-role`, `builtin/setting-app`, dan `builtin/setting-layout`.
 - Prioritas above-the-fold diperkuat dengan skeleton/loading ringan, defer section non-kritis, dan pengurangan DOM/reflow pada halaman list utama.
@@ -111,6 +111,11 @@ Setelah instalasi selesai, login dengan:
 - Stabilitas render font diperbaiki dengan preload font kritikal multi-weight, inline `@font-face` kritikal, versi asset yang stabil, dan penguatan cache asset agar tidak terjadi blink saat reload atau pindah halaman.
 - Cache dynamic asset diperbaiki dengan menghapus cache-buster berbasis `time()` pada layout utama sehingga browser dapat memanfaatkan cache CSS/JS/font secara optimal.
 - Perbaikan bug `Undefined index: id_module` pada aksi data user tanpa mengubah logic bisnis utama.
+- Perbaikan konsistensi asset HMVC dengan eliminasi file CSS/JS duplikat dan konsolidasi source asset ke `Common`/module aktif.
+- Perbaikan loader asset dan fallback path gambar agar request ke `/public/images` tidak lagi memicu `403/404` saat file setting kosong atau belum tersedia.
+- Perbaikan stabilitas `select2` melalui lazy loader shared, validasi urutan load jQuery → Select2, dan guard init pada form yang dimuat dinamis.
+- Penambahan null check pada helper JS shared untuk mencegah error `Cannot read properties of null (parentNode)` dan kasus DOM belum siap.
+- Pembaruan file installer database `app/Database/newsoft_base.sql` sesuai struktur dan data terbaru agar siap dipakai untuk instalasi baru.
 - Seluruh perubahan difokuskan pada percepatan render awal dan stabilitas UI tanpa mengubah alur bisnis utama.
 
 ### **v1.1.0 (15-04-2026)**

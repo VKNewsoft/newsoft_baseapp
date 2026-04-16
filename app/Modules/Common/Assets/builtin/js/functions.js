@@ -241,7 +241,7 @@ window.NSModulePerformance = window.NSModulePerformance || (function() {
 	}
 
 	function appendStylesheetOnce(href) {
-		if (!href || document.querySelector('link[href^="' + href + '"]')) {
+		if (!href || !document.head || document.querySelector('link[href^="' + href + '"]')) {
 			return;
 		}
 
@@ -253,6 +253,11 @@ window.NSModulePerformance = window.NSModulePerformance || (function() {
 
 	function appendScriptOnce(src) {
 		return new Promise(function(resolve, reject) {
+			if (!src) {
+				resolve();
+				return;
+			}
+
 			const existing = document.querySelector('script[src^="' + src + '"]');
 			if (existing) {
 				if (typeof window.jQuery !== 'undefined' && typeof jQuery.fn.select2 === 'function') {
@@ -270,7 +275,14 @@ window.NSModulePerformance = window.NSModulePerformance || (function() {
 			script.defer = true;
 			script.onload = resolve;
 			script.onerror = reject;
-			document.body.appendChild(script);
+
+			const mountTarget = document.body || document.head || document.documentElement;
+			if (!mountTarget) {
+				resolve();
+				return;
+			}
+
+			mountTarget.appendChild(script);
 		});
 	}
 

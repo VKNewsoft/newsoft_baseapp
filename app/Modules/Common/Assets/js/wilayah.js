@@ -34,7 +34,7 @@ $(document).ready(function() {
 			url_wilayah = 'wilayah/ajaxgetkelurahanbyidkecamatan?id=' + value
 		}
 		
-		if (!$next_option || ! $wilayah) {
+		if (!$next_option.length || !$wilayah.length) {
 			return false;
 		}
 		

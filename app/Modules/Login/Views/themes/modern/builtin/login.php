@@ -1,9 +1,10 @@
 <?= $this->extend('App\Modules\Login\Views\register\layout') ?>
 <?= $this->section('content') ?>
+<?php $loginLogoUrl = public_image_url($setting_aplikasi['logo_login'] ?? '', 'logo_only.png'); ?>
 <div class="login-glass-container">
 	<div class="login-header">
 		<div class="logo-wrapper">
-			<img src="<?php echo $config->baseURL . '/public/images/' . $setting_aplikasi['logo_login']?>" alt="Logo" class="login-logo" fetchpriority="high" decoding="async">
+			<img src="<?=$loginLogoUrl?>" alt="Logo" class="login-logo" fetchpriority="high" decoding="async">
 		</div>
 		<?php if (!empty($desc)) {
 			echo '<p class="login-subtitle">' . $desc . '</p>';

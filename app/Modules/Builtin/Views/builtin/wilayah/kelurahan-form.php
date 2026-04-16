@@ -117,10 +117,14 @@
 <script>
 // Initialize Select2
 $(document).ready(function() {
-	$('.select2').select2({
-		theme: 'bootstrap-5',
-		width: '100%'
-	});
+	if (window.NSModulePerformance && typeof window.NSModulePerformance.initSelect2 === 'function') {
+		window.NSModulePerformance.initSelect2($(document));
+	} else if ($.fn.select2) {
+		$('.select2').select2({
+			theme: 'bootstrap-5',
+			width: '100%'
+		});
+	}
 	
 	// Cascading dropdown: Provinsi -> Kabupaten
 	$('#id_wilayah_propinsi').on('change', function() {

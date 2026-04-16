@@ -17,6 +17,63 @@ Jenis Izin :
 Format NIK =  [KODE PT] + [YY] + [MM] + [XXX]
 */
 
+if (!function_exists('public_image_path')) {
+	function public_image_path($fileName = '', $fallback = 'noimage.png', $subDir = '')
+	{
+		$fileName = trim((string) $fileName);
+		$fallback = trim((string) $fallback);
+		$subDir = trim(str_replace('\\', '/', (string) $subDir), '/');
+		$basePath = ROOTPATH . 'public/images/';
+		$relativePath = $subDir !== '' ? $subDir . '/' : '';
+
+		if ($fileName !== '' && is_file($basePath . $relativePath . $fileName)) {
+			return $basePath . $relativePath . $fileName;
+		}
+
+		if ($fallback !== '' && is_file($basePath . $relativePath . $fallback)) {
+			return $basePath . $relativePath . $fallback;
+		}
+
+		if ($fallback !== '' && is_file($basePath . $fallback)) {
+			return $basePath . $fallback;
+		}
+
+		return $basePath . ltrim($relativePath . $fileName, '/');
+	}
+}
+
+if (!function_exists('public_image_url')) {
+	function public_image_url($fileName = '', $fallback = 'noimage.png', $subDir = '')
+	{
+		$fileName = trim((string) $fileName);
+		$fallback = trim((string) $fallback);
+		$subDir = trim(str_replace('\\', '/', (string) $subDir), '/');
+		$baseUrl = rtrim(base_url(), '/') . '/public/images/';
+		$relativePath = $subDir !== '' ? $subDir . '/' : '';
+
+		if ($fileName !== '' && is_file(ROOTPATH . 'public/images/' . $relativePath . $fileName)) {
+			return $baseUrl . $relativePath . rawurlencode($fileName);
+		}
+
+		if ($fallback !== '' && is_file(ROOTPATH . 'public/images/' . $relativePath . $fallback)) {
+			return $baseUrl . $relativePath . rawurlencode($fallback);
+		}
+
+		if ($fallback !== '' && is_file(ROOTPATH . 'public/images/' . $fallback)) {
+			return $baseUrl . rawurlencode($fallback);
+		}
+
+		return $baseUrl . $relativePath;
+	}
+}
+
+if (!function_exists('public_image_version')) {
+	function public_image_version($fileName = '', $fallback = 'noimage.png', $subDir = '')
+	{
+		return @filemtime(public_image_path($fileName, $fallback, $subDir));
+	}
+}
+
 
 // Fungsi Tambahan Baru Awal
 function HelpGetDataMesinNoFilter($start, $end, $CI)

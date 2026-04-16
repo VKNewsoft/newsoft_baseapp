@@ -1,5 +1,6 @@
 <?= $this->extend('App\Modules\Recovery\Views\register\layout') ?>
 <?= $this->section('content') ?>
+<?php $loginLogoUrl = public_image_url($setting_aplikasi['logo_login'] ?? '', 'logo_only.png'); ?>
 <style>
 	.card-header img {
 		width: 100%;
@@ -8,7 +9,7 @@
 </style>
 <div class="card-header">
 	<div class="logo">
-		<img src="<?php echo $config->baseURL . 'public/images/' . $setting_aplikasi['logo_login'] ?>?r=<?=time()?>">
+		<img src="<?=$loginLogoUrl?>" alt="Logo Login">
 	</div>
 </div>
 <div class="card-body">

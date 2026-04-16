@@ -4,6 +4,7 @@ $this->section('content');
 
 $type = $message['status'] == 'error' ? 'danger' : 'success';
 $title = $message['status'] == 'error' ? 'Error...' : 'Sukses...';
+$loginLogoUrl = public_image_url($setting_aplikasi['logo_login'] ?? '', 'logo_only.png');
 ?>
 <style>
 	.card-header img {
@@ -13,7 +14,7 @@ $title = $message['status'] == 'error' ? 'Error...' : 'Sukses...';
 </style>
 <div class="card-header pb-3">
 	<div class="logo">
-		<img src="<?php echo $config->baseURL . 'public/images/' . $setting_aplikasi['logo_login'] ?>?r=<?=time()?>">
+		<img src="<?=$loginLogoUrl?>" alt="Logo Login">
 	</div>
 </div>
 <div class="card-body">

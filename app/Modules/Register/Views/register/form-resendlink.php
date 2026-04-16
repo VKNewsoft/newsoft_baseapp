@@ -1,8 +1,9 @@
 <?= $this->extend('App\Modules\Register\Views\register\layout') ?>
 <?= $this->section('content') ?>
+<?php $registerLogoUrl = public_image_url($setting_aplikasi['logo_register'] ?? '', 'logo_only.png'); ?>
 <div class="card-header">
 	<div class="logo">
-		<img src="<?php echo $config->baseURL . 'public/images/' . $setting_aplikasi['logo_register'] ?>?r=<?=time()?>">
+		<img src="<?=$registerLogoUrl?>" alt="Logo Register">
 	</div>
 </div>
 <div class="card-body">
