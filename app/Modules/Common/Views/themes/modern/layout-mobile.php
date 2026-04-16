@@ -20,6 +20,29 @@ $fontPreloadMap = [
 	'poppins' => 'poppins_400.woff2'
 ];
 $fontPreloadFile = $fontPreloadMap[$currentFontKey] ?? '';
+$faviconVersion = @filemtime(ROOTPATH . 'public/images/'.$setting_aplikasi['favicon']);
+$fontawesomeVersion = @filemtime(ROOTPATH . 'public/vendors/fontawesome/css/all.css');
+$bootstrapVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap.min.css');
+$bootstrapCustomPosVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/bootstrap-custom-pos-kasir.css');
+$sweetalertVersion = @filemtime(ROOTPATH . 'public/vendors/sweetalert2/sweetalert2.min.css');
+$overlayCssVersion = @filemtime(ROOTPATH . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css');
+$paceCssVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace-theme-default.css');
+$layoutMobileVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/layout-mobile.css');
+$layoutMobilePanelVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/layout-mobile-panel.css');
+$datatablesCssVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css');
+$colorSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css');
+$sidebarSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css');
+$logoSchemeVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css');
+$jqueryVersion = @filemtime(ROOTPATH . 'public/vendors/jquery/jquery.min.js');
+$bootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js');
+$bootboxVersion = @filemtime(ROOTPATH . 'public/vendors/bootbox/bootbox.min.js');
+$sweetalertJsVersion = @filemtime(ROOTPATH . 'public/vendors/sweetalert2/sweetalert2.min.js');
+$functionsJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/builtin/js/functions.js');
+$overlayJsVersion = @filemtime(ROOTPATH . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js');
+$paceJsVersion = @filemtime(ROOTPATH . 'public/vendors/pace/pace.min.js');
+$mainMobileJsVersion = @filemtime(APPPATH . 'Modules/Common/Assets/js/main-mobile.js');
+$datatablesJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js');
+$datatablesBootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js');
 ?>
 <style>:root{--app-font-family: <?=$currentFontFamily?>;}</style>
 <script>
@@ -27,30 +50,30 @@ window.__APP_FONT_FAMILY__ = <?=json_encode($currentFontFamily)?>;
 document.documentElement.style.setProperty('--app-font-family', window.__APP_FONT_FAMILY__);
 </script>
 <link rel="manifest" href="manifest.json"/>
-<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?r='.time()?>" />
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css'?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap-custom.min.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom-pos-kasir.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/pace/pace-theme-default.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/layout-mobile.css?r='.time()?>"/>
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/layout-mobile-panel.css?r='.time()?>"/>
+<link rel="shortcut icon" href="<?=$config->baseURL . 'public/images/'.$setting_aplikasi['favicon'].'?v='.$faviconVersion?>" />
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/fontawesome/css/all.css?v='.$fontawesomeVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap.min.css?v='.$bootstrapVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/bootstrap/css/bootstrap-custom.min.css?v='.@filemtime(ROOTPATH . 'public/vendors/bootstrap/css/bootstrap-custom.min.css')?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.css?v='.$sweetalertVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/bootstrap-custom-pos-kasir.css?v='.$bootstrapCustomPosVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/overlayscrollbars/OverlayScrollbars.min.css?v='.$overlayCssVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/pace/pace-theme-default.css?v='.$paceCssVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/layout-mobile.css?v='.$layoutMobileVersion?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/layout-mobile-panel.css?v='.$layoutMobilePanelVersion?>"/>
 
 <!-- Data Tables -->
-<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css?r='.time()?>"/>
+<link rel="stylesheet" type="text/css" href="<?=$config->baseURL . 'public/vendors/datatables/dist/css/dataTables.bootstrap5.min.css?v='.$datatablesCssVersion?>"/>
 <!-- // Data Tables -->
 
-<link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?r='.time()?>"/>
-<link rel="stylesheet" id="style-switch-sidebar" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?r='.time()?>"/>
+<link rel="stylesheet" id="style-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['color_scheme'].'.css?v='.$colorSchemeVersion?>"/>
+<link rel="stylesheet" id="style-switch-sidebar" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['sidebar_color'].'-sidebar.css?v='.$sidebarSchemeVersion?>"/>
 <?php if ($fontPreloadFile): ?>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="<?=$config->baseURL . 'module-assets/Common/builtin/fonts/'.$fontPreloadFile?>"/>
 <?php endif; ?>
 <link rel="preload" as="style" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 <link rel="stylesheet" id="font-switch" data-font-key="<?=esc($currentFontKey, 'attr')?>" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/'.$currentFontCssPath.'?v='.$fontAssetVersion?>"/>
 <link rel="stylesheet" id="font-size-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/fonts/font-size-'.$app_layout['font_size'].'.css?v='.$fontSizeAssetVersion?>"/>
-<link rel="stylesheet" id="logo-background-color-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?r='.time()?>"/>
+<link rel="stylesheet" id="logo-background-color-switch" type="text/css" href="<?=$config->baseURL . 'module-assets/Common/builtin/css/color-schemes/'.$app_layout['logo_background_color'].'-logo-background.css?v='.$logoSchemeVersion?>"/>
 
 <?php
 if (@$styles) {
@@ -64,9 +87,9 @@ if (@$styles) {
 				}					
 			}
 				
-			echo '<link rel="stylesheet" data-type="dynamic-resource-head" ' . $attr . ' type="text/css" href="'.$file['file'].'?r='.time().'"/>' . "\n";
+			echo '<link rel="stylesheet" data-type="dynamic-resource-head" ' . $attr . ' type="text/css" href="'.$file['file'].'?v='.time().'"/>' . "\n";
 		} else {
-			echo '<link rel="stylesheet" data-type="dynamic-resource-head" type="text/css" href="'.$file.'?r='.time().'"/>' . "\n";
+			echo '<link rel="stylesheet" data-type="dynamic-resource-head" type="text/css" href="'.$file.'?v='.time().'"/>' . "\n";
 		}
 	}
 }
@@ -80,18 +103,18 @@ if (@$styles) {
 	var theme_url = "<?=$config->baseURL . 'module-assets/Common/builtin/'?>";
 </script>
 
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js'?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js'?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootbox/bootbox.min.js'?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.js'?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'module-assets/Common/builtin/js/functions.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/pace/pace.min.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'module-assets/Common/js/main-mobile.js?r='.time()?>"></script>
+<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/jquery/jquery.min.js?v='.$jqueryVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootstrap/js/bootstrap.bundle.min.js?v='.$bootstrapJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/bootbox/bootbox.min.js?v='.$bootboxVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/sweetalert2/sweetalert2.min.js?v='.$sweetalertJsVersion?>"></script>
+<script type="text/javascript" src="<?=$config->baseURL . 'module-assets/Common/builtin/js/functions.js?v='.$functionsJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/overlayscrollbars/jquery.overlayScrollbars.min.js?v='.$overlayJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/pace/pace.min.js?v='.$paceJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'module-assets/Common/js/main-mobile.js?v='.$mainMobileJsVersion?>"></script>
 
 <!-- Data Tables -->
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js?r='.time()?>"></script>
-<script type="text/javascript" src="<?=$config->baseURL . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js?r='.time()?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/datatables/dist/js/jquery.dataTables.min.js?v='.$datatablesJsVersion?>"></script>
+<script defer type="text/javascript" src="<?=$config->baseURL . 'public/vendors/datatables/dist/js/dataTables.bootstrap5.min.js?v='.$datatablesBootstrapJsVersion?>"></script>
 <!-- // Data Tables -->
 
 <!-- Dynamic scripts -->
@@ -110,10 +133,10 @@ if (@$scripts) {
 			if (@$file['print']) {
 				echo '<script type="text/javascript" data-type="dynamic-resource-head" ' . $attr . '>' . $file['script'] . '</script>' . "\n";
 			} else {
-				echo '<script type="text/javascript" data-type="dynamic-resource-head" ' . $attr . ' src="'.$file['script'].'?r='.time().'"></script>' . "\n";
+				echo '<script defer type="text/javascript" data-type="dynamic-resource-head" ' . $attr . ' src="'.$file['script'].'?v='.time().'"></script>' . "\n";
 			}
 		} else {
-			echo '<script type="text/javascript" data-type="dynamic-resource-head" src="'.$file.'?r='.time().'"></script>' . "\n";
+			echo '<script defer type="text/javascript" data-type="dynamic-resource-head" src="'.$file.'?v='.time().'"></script>' . "\n";
 		}
 	}
 }
@@ -229,83 +252,41 @@ if (@$scripts) {
 			</nav>
 		</div>
 	</div>
-<script type='text/javascript'>
-window.addEventListener('beforeinstallprompt', function(event){
-    // console.log('before add to home screen');
-    event.preventDefault();
-    promptInstall = event;
-    return false;
-});
-// file feed.js
-// dalam block function openCreatePostModal()
-
-function openCreatePostModal() {
-  createPostArea.style.display = 'block';
-
-  // tambahkan kode ini untuk menampilkan banner add to home screen
-  if(promptInstall){
-    promptInstall.prompt()
-    promptInstall.userChoice.then(function(choiceResult){
-    //   console.log(choiceResult.outcome);
-
-      if(choiceResult.outcome==='dismissed'){
-        // console.log('user cancelled installation');
-      }else{
-        // console.log('user add to home screen');
-      }
-    });
-    promptInstall = null;
-  }
-  // end of code
-
-}
-</script>
-<script type='text/javascript'>
-window.addEventListener('beforeinstallprompt', function(event){
-    // console.log('before add to home screen');
-    event.preventDefault();
-    promptInstall = event;
-    return false;
-});
-// file feed.js
-// dalam block function openCreatePostModal()
-
-function openCreatePostModal() {
-  createPostArea.style.display = 'block';
-
-  // tambahkan kode ini untuk menampilkan banner add to home screen
-  if(promptInstall){
-    promptInstall.prompt()
-    promptInstall.userChoice.then(function(choiceResult){
-    //   console.log(choiceResult.outcome);
-
-      if(choiceResult.outcome==='dismissed'){
-        // console.log('user cancelled installation');
-      }else{
-        // console.log('user add to home screen');
-      }
-    });
-    promptInstall = null;
-  }
-  // end of code
-
-}
-</script>
 <script>
-    var BASE_URL = '<?= base_url() ?>';
-    document.addEventListener('DOMContentLoaded', init, false);
+	var BASE_URL = '<?= base_url() ?>';
+	var promptInstall = null;
+	window.addEventListener('beforeinstallprompt', function(event){
+		event.preventDefault();
+		promptInstall = event;
+		return false;
+	});
 
-    function init() {
-        if ('serviceWorker' in navigator && navigator.onLine) {
-            navigator.serviceWorker.register( BASE_URL + '/service-worker.js')
-            .then((reg) => {
-                // console.log(BASE_URL);
-                // console.log('Registrasi service worker Berhasil', reg);
-            }, (err) => {
-                // console.error('Registrasi service worker Gagal', err);
-            });
-        }
-    }
+	function openCreatePostModal() {
+		if (typeof createPostArea !== 'undefined' && createPostArea) {
+			createPostArea.style.display = 'block';
+		}
+
+		if (promptInstall) {
+			promptInstall.prompt();
+			promptInstall.userChoice.then(function() {
+				promptInstall = null;
+			});
+		}
+	}
+
+	function initMobileNonCritical() {
+		if ('serviceWorker' in navigator && navigator.onLine) {
+			navigator.serviceWorker.register(BASE_URL + '/service-worker.js');
+		}
+	}
+
+	window.addEventListener('load', function() {
+		if ('requestIdleCallback' in window) {
+			requestIdleCallback(initMobileNonCritical, { timeout: 1500 });
+		} else {
+			setTimeout(initMobileNonCritical, 300);
+		}
+	}, false);
 </script>
 </body>
 </html>

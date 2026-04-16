@@ -6,16 +6,25 @@ $(document).ready(function() {
 
 	let dataTables = '';
 
-	if ($('#table-result').length) {
+	function initRoleTable() {
+		if (!$('#table-result').length) {
+			return;
+		}
+
 		const column = $.parseJSON($('#dataTables-column').html());
 		const url = $('#dataTables-url').text();
 		const scrolls = $('#dataTables-scrolls').text();
+		const tableScrollY = window.WDIResultTable && typeof window.WDIResultTable.getScrollY === 'function'
+			? window.WDIResultTable.getScrollY('#table-result')
+			: scrolls;
 
 		const settings = {
 			processing: true,
 			serverSide: true,
 			scrollX: true,
-			scrollY: scrolls,
+			scrollY: tableScrollY,
+			searchDelay: 350,
+			autoWidth: false,
 			ajax: {
 				url: url,
 				type: 'POST'
@@ -32,6 +41,21 @@ $(document).ready(function() {
 		}
 
 		dataTables = $('#table-result').DataTable(settings);
+		if (window.WDIResultTable && typeof window.WDIResultTable.bindResize === 'function') {
+			window.WDIResultTable.bindResize(dataTables, '#table-result');
+		}
+	}
+
+	if ($('#table-result').length) {
+		if ('requestAnimationFrame' in window) {
+			requestAnimationFrame(function() {
+				initRoleTable();
+			});
+		} else {
+			setTimeout(function() {
+				initRoleTable();
+			}, 16);
+		}
 	}
 
 	function showSuccessToast(message) {

@@ -259,10 +259,10 @@ class Role extends \App\Modules\Common\Controllers\BaseController
 			if ($module) {
 				if (key_exists($val['id_role'], $modulesRole)) {
 					if (!key_exists($val['id_module'], $modulesRole[$val['id_role']])) {
-						$keteranganModule = '<p class="text-danger text-wrap"><small class="text-wrap">Role <strong>' . $val['nama_role'] . '</strong> tidak memiliki permission pada module <strong>' . $module . '</strong>, silakan <a href="' . base_url() . '/builtin/role-permission/edit?id=' . $val['id_role'] . '">assign</a> permission terlebih dahulu</small></p>';
+						$keteranganModule = '<div class="table-inline-note table-inline-note-warning" title="Role ' . esc($val['nama_role']) . ' tidak memiliki permission pada module ' . esc($module) . '"><span class="text-danger">Perlu assign permission</span> <a href="' . base_url() . '/builtin/role-permission/edit?id=' . $val['id_role'] . '">Assign</a></div>';
 					}
 				} else {
-					$keteranganModule = '<p class="text-danger text-wrap"><small class="text-wrap">Role <strong>' . $val['nama_role'] . '</strong> tidak memiliki permission pada module apapun, silakan <a href="' . base_url() . '/builtin/role-permission/edit?id=' . $val['id_role'] . '">assign</a> permission terlebih dahulu</small></p>';
+					$keteranganModule = '<div class="table-inline-note table-inline-note-warning" title="Role ' . esc($val['nama_role']) . ' tidak memiliki permission pada module apapun"><span class="text-danger">Belum ada permission</span> <a href="' . base_url() . '/builtin/role-permission/edit?id=' . $val['id_role'] . '">Assign</a></div>';
 				}
 			} else {
 				$module = '-';

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initSidebarSearch() {
 	const search = document.getElementById('sidebarSearch');
 	const clear = document.getElementById('sidebarSearchClear');
 	const groups = Array.from(document.querySelectorAll('.sidebar-group'));
@@ -149,5 +149,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	markActiveLinks();
-	initSearch();
-});
+	if ('requestIdleCallback' in window) {
+		requestIdleCallback(initSearch, { timeout: 900 });
+	} else {
+		setTimeout(initSearch, 120);
+	}
+}
+
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initSidebarSearch, { once: true });
+} else {
+	initSidebarSearch();
+}

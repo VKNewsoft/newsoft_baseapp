@@ -112,6 +112,31 @@
 	flex-wrap: wrap;
 }
 
+.card-table-wrap .table-inline-note {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	flex-wrap: wrap;
+	margin-top: 0.45rem;
+	padding: 0.3rem 0.6rem;
+	border-radius: 999px;
+	font-size: 0.76rem;
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.card-table-wrap .table-inline-note-warning {
+	color: #b42318;
+	background: #fff1f0;
+	border: 1px solid #ffd7d2;
+}
+
+.card-table-wrap .table-inline-note a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.12rem;
+}
+
 @media (max-width: 767px) {
 	.card-table-wrap .dataTables_wrapper > .row:first-child {
 		align-items: stretch;

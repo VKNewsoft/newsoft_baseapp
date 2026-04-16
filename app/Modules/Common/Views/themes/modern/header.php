@@ -100,9 +100,27 @@ $datatablesBootstrapJsVersion = @filemtime(ROOTPATH . 'public/vendors/datatables
 	<!-- Small page styles kept in head -->
 	<style>
 		.sidebar-menu a.active,
-		.sidebar-menu .active {
+		.sidebar-menu .active,
+		.sidebar nav li.highlight > a,
+		.sidebar nav > ul > li.highlight > a {
 			background-color: var(--sidebar-item-active-bg, var(--primary)) !important;
 			color: var(--sidebar-item-active-color, #ffffff) !important;
+		}
+		.sidebar-menu a.active:hover,
+		.sidebar-menu .active:hover,
+		.sidebar nav li.highlight > a:hover,
+		.sidebar nav > ul > li.highlight > a:hover {
+			background-color: var(--sidebar-item-active-hover-bg, var(--sidebar-item-active-bg, var(--primary))) !important;
+			color: var(--sidebar-item-active-hover-color, var(--sidebar-item-active-color, #ffffff)) !important;
+		}
+		.sidebar nav li.tree-open > a {
+			background-color: var(--sidebar-tree-open-bg, rgba(var(--primary-rgb), 0.12)) !important;
+			color: var(--sidebar-tree-open-color, var(--primary)) !important;
+		}
+		.sidebar nav li.tree-open.highlight > a,
+		.sidebar nav li.tree-open.highlight > a:hover {
+			background-color: var(--sidebar-item-active-hover-bg, var(--sidebar-item-active-bg, var(--primary))) !important;
+			color: var(--sidebar-item-active-hover-color, var(--sidebar-item-active-color, #ffffff)) !important;
 		}
 		.sidebar-group-header.active-group {
 			background-color: var(--sidebar-group-active-bg, rgba(var(--primary-rgb), 0.08));
