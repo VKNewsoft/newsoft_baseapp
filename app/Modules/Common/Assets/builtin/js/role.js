@@ -84,8 +84,33 @@ $(document).ready(function() {
 	}
 
 	function hideTableSkeleton() {
+		// DataTable role memakai scroll header clone, jadi class loaded juga
+		// perlu diterapkan ke tabel clone agar judul kolom tetap terlihat.
+		const $table = $('#table-result');
+		const $tableWrapper = $table.closest('.dataTables_wrapper');
+
 		$('#role-table-skeleton').addClass('role-table-skeleton--hidden');
-		$('#table-result').addClass('role-table-ready--loaded');
+		$table.addClass('role-table-ready--loaded');
+		$tableWrapper.find('.dataTables_scrollHead table, .dataTables_scrollBody table').addClass('role-table-ready--loaded');
+
+		// Penyesuaian ulang kolom memastikan header dan body tetap sejajar
+		// setelah area skeleton dilepas dari layout awal.
+		if ($table.length && $.fn.dataTable && $.fn.dataTable.isDataTable($table.get(0))) {
+			const dataTable = $table.DataTable();
+			if (window.requestAnimationFrame) {
+				window.requestAnimationFrame(function() {
+					dataTable.columns.adjust();
+				});
+			} else {
+				window.setTimeout(function() {
+					dataTable.columns.adjust();
+				}, 16);
+			}
+
+			window.setTimeout(function() {
+				dataTable.columns.adjust();
+			}, 120);
+		}
 	}
 
 	function initRoleTable() {

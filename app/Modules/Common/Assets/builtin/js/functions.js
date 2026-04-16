@@ -323,8 +323,37 @@ window.NSModulePerformance = window.NSModulePerformance || (function() {
 			return;
 		}
 
+		// Header DataTable dengan scroll akan dibuat sebagai clone terpisah.
+		// Class loaded perlu diterapkan ke clone tersebut agar teks header
+		// tidak tetap transparan setelah data awal selesai dimuat.
+		const $table = $(tableSelector);
+		const $tableWrapper = $table.closest('.dataTables_wrapper');
+		const $relatedTables = $tableWrapper.length
+			? $tableWrapper.find('.dataTables_scrollHead table, .dataTables_scrollBody table')
+			: $();
+
 		$('#' + tableId + '-skeleton').addClass('result-table-skeleton--hidden');
-		$(tableSelector).addClass('result-table-ready--loaded');
+		$table.addClass('result-table-ready--loaded');
+		$relatedTables.addClass('result-table-ready--loaded');
+
+		// Re-sync lebar kolom setelah skeleton hilang agar header clone dan
+		// baris data DataTable tetap simetris pada mode scroll.
+		if ($table.length && $.fn.dataTable && $.fn.dataTable.isDataTable($table.get(0))) {
+			const dataTable = $table.DataTable();
+			if (window.requestAnimationFrame) {
+				window.requestAnimationFrame(function() {
+					dataTable.columns.adjust();
+				});
+			} else {
+				window.setTimeout(function() {
+					dataTable.columns.adjust();
+				}, 16);
+			}
+
+			window.setTimeout(function() {
+				dataTable.columns.adjust();
+			}, 120);
+		}
 	}
 
 	return {
