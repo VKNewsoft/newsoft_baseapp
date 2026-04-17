@@ -83,4 +83,24 @@ phpunit
 #-------------------------
 # Composer
 #-------------------------
-# vendor/
+vendor/
+
+#-------------------------
+# Node & Frontend
+#-------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+#-------------------------
+# IDE & Editor
+#-------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+#-------------------------
+# OS Files
+#-------------------------
+.DS_Store
