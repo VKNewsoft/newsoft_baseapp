@@ -719,6 +719,7 @@ header .nav-account .dropdown-menu.show {
 	align-self: center;
 	background: rgba(15, 23, 42, .24);
 	box-shadow: 0 0 0 .24rem rgba(15, 23, 42, .08);
+	margin-left: 10px;
 }
 .menu-state-indicator.is-synced {
 	background: rgba(24, 169, 87, .88);
