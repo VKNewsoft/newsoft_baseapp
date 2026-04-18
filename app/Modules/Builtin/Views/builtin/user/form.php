@@ -143,7 +143,7 @@ if ($request->getGet('mobile') == 'true') {
 									}
 								}
 
-								echo options(['name' => 'id_role[]', 'multiple' => 'multiple', 'class' => 'form-select'], $options, set_value('id_role', @$id_role_selected));
+								echo options(['name' => 'id_role[]', 'class' => 'select2', 'multiple' => 'multiple'], $options, set_value('id_role', @$id_role_selected));
 								?>
 							</div>
 
@@ -162,7 +162,7 @@ if ($request->getGet('mobile') == 'true') {
 									}
 								}
 
-								echo options(['name' => 'access_company[]', 'multiple' => 'multiple', 'class' => 'form-select'], $options_tenant, set_value('access_company', @$id_access_selected));
+								echo options(['name' => 'access_company[]', 'class' => 'select2', 'multiple' => 'multiple'], $options_tenant, set_value('access_company', @$id_access_selected));
 								?>
 							</div>
 
