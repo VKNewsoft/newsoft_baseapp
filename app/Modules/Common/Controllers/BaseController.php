@@ -70,27 +70,21 @@ class BaseController extends Controller
 		$this->model->checkRememberme();
 		$this->isLoggedIn = $this->session->get('logged_in');
 		$this->data['current_module'] = $this->currentModule;
-		$this->data['scripts'] = array($this->config->baseURL . '/public/assets/vendors/jquery/jquery.min.js'
-										, $this->config->baseURL . '/public/assets/vendors/flatpickr/flatpickr.js'
-										, $this->config->baseURL . '/public/themes/modern/assets/js/site.js?r='.time()
-										, $this->config->baseURL . '/public/assets/vendors/bootstrap/js/bootstrap.js'
-								);
-		$this->data['styles'] = array(
-									$this->config->baseURL . '/public/assets/vendors/bootstrap/css/bootstrap.css'
-									, $this->config->baseURL . '/public/themes/modern/assets/css/site.css?r='.time()
-								);
+		// Inisialisasi asset dibuat kosong karena vendor dan asset Common
+		// dimuat terpusat dari layout, sehingga path default lama tidak perlu
+		// disimpan di BaseController dan tidak membingungkan saat maintenance.
+		$this->data['scripts'] = [];
+		$this->data['styles'] = [];
 		
 		$this->data['config'] = $this->config;
 		$this->data['request'] = $this->request;
 		$this->data['isloggedin'] = $this->isLoggedIn;
 		$this->data['session'] = $this->session;
-		$this->data['site_title'] = 'PayDay HRMS Project';
-		$this->data['site_desc'] = 'PayDay HRMS Project lengkap dengan berbagai fitur untuk memudahkan pengembangan aplikasi';
+		$this->data['site_title'] = "";
+		$this->data['site_desc'] = "";
 		$this->data['setting_aplikasi'] = $this->model->getSettingAplikasi();
 		$this->data['user'] = [];
 		$this->data['auth'] = $this->auth;
-		$this->data['scripts'] = [];
-		$this->data['styles'] = [];
 		$this->data['module_url'] = $this->moduleURL;
 
 		if ($this->isLoggedIn) {

@@ -27,7 +27,7 @@
 				
 				$column =[
 						 'ignore_btn_action' => 'Aksi'
-						, 'nama_company' => 'Tenant'
+						, 'nama_company' => 'Company'
 						, 'nama' => 'Nama'
 						, 'username' => 'Username'
 						, 'ignore_access_company' => 'Data Akses'
