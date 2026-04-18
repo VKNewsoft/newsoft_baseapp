@@ -329,6 +329,34 @@ if (!function_exists('append_dynamic_asset_version')) {
 			</nav>
 		</div>
 
+		<div class="mobile-bottom-nav d-lg-none" id="mobileBottomNav" aria-label="Mobile Navigation">
+			<div class="mobile-bottom-nav-track" id="mobileBottomNavTrack"></div>
+		</div>
+
+		<div class="mobile-radial-menu d-lg-none" id="mobileRadialMenu" aria-hidden="true">
+			<div class="mobile-radial-backdrop" data-radial-close="1"></div>
+			<div class="mobile-radial-sheet">
+				<div class="mobile-radial-header">
+					<button type="button" class="mobile-radial-back" id="mobileRadialBack" aria-label="Kembali">
+						<i class="bi bi-arrow-left"></i>
+					</button>
+					<div class="mobile-radial-title" id="mobileRadialTitle">Menu</div>
+					<button type="button" class="mobile-radial-close" data-radial-close="1" aria-label="Tutup">
+						<i class="bi bi-x-lg"></i>
+					</button>
+				</div>
+				<div class="mobile-radial-viewport" id="mobileRadialViewport">
+					<div class="mobile-radial-wheel" id="mobileRadialWheel"></div>
+					<div class="mobile-radial-center">
+						<button type="button" class="mobile-radial-center-btn" id="mobileRadialCenterBtn">
+							<i class="bi bi-grid"></i>
+						</button>
+					</div>
+				</div>
+				<div class="mobile-radial-hint">Geser untuk melihat item lain</div>
+			</div>
+		</div>
+
 		<div class="content">
 			<!-- <?= !empty($breadcrumb) ? breadcrumb($breadcrumb) : '' ?> -->
 			<div class="content-wrapper">
