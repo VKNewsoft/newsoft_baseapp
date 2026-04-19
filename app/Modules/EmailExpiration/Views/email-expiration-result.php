@@ -23,8 +23,8 @@
 		<div class="card-body p-0">
 			<div class="page-toolbar">
 				<div>
-					<h5 class="mb-1">Daftar Akun Email</h5>
-					<p class="mb-0 text-muted">Status aktif, mendekati expired, dan expired ditampilkan langsung agar aksi renew lebih cepat dan akurat.</p>
+					<h5 class="mb-1">Daftar Akun Subscription</h5>
+					<p class="mb-0 text-muted">Daftar akun subscription yang dicatat untuk kontrol masa aktif atau masa berakhirnya.</p>
 				</div>
 				<div class="email-expiration-filter-bar">
 					<div class="email-expiration-filter-item">
@@ -65,9 +65,28 @@
 				$index = 0;
 				$th = '';
 				foreach ($column as $key => $val) {
-					$th .= '<th>' . $val . '</th>';
+					/**
+					 * Atur properti kolom:
+					 * - Subscription, Expiration, Tanggal Mulai/Berakhir dibuat selebar isi (width: 1%, nowrap)
+					 * - Kolom Email / Akun dibiarkan default jadi bisa lebih lebar menyesuaikan sisa ruang
+					 */
+					$thAttr = '';
+					$colDef = ['targets' => $index];
+
+					if (in_array($key, ['ignore_search_urut', 'ignore_search_action', 'subscription', 'expiration_hari', 'tgl_start', 'tgl_end'])) {
+						$thAttr = ' style="width: 1%;"';
+						$colDef['className'] = 'text-nowrap';
+						$colDef['width'] = '1%';
+					}
+
+					$th .= '<th' . $thAttr . '>' . $val . '</th>';
+
 					if (strpos($key, 'ignore_search') !== false) {
-						$settings['columnDefs'][] = ['targets' => $index, 'orderable' => false];
+						$colDef['orderable'] = false;
+					}
+
+					if (count($colDef) > 1) {
+						$settings['columnDefs'][] = $colDef;
 					}
 					$index++;
 				}
@@ -104,8 +123,8 @@
 			<div class="email-expiration-mobile" id="email-expiration-mobile">
 				<div class="email-expiration-mobile__header">
 					<div>
-						<h5 class="mb-1">Daftar Mobile</h5>
-						<p class="mb-0 text-muted">Tampilan ringkas untuk cek status email dan renew langsung dari layar mobile.</p>
+						<h5 class="mb-1">Daftar Akun Subscription</h5>
+						<p class="mb-0 text-muted">Daftar akun subscription yang dicatat untuk kontrol masa aktif atau masa berakhirnya.</p>
 					</div>
 					<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#mobile-filter-sheet" aria-controls="mobile-filter-sheet">
 						<i class="fas fa-sliders-h me-1"></i>Filter
