@@ -2,8 +2,8 @@
 /**
  * Model sinkronisasi schema database terhadap file installer.
  *
- * Fokus model ini hanya membaca schema target, membandingkan dengan schema
- * database aktif, lalu menyiapkan ALTER aman yang bersifat non-destructive.
+ * Model ini membaca schema target, membandingkan dengan schema database aktif,
+ * lalu menyiapkan statement SQL untuk mode sinkronisasi aman maupun penuh.
  */
 
 namespace App\Modules\DbSynchronisation\Models;
@@ -63,15 +63,30 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 	/**
 	 * Eksekusi hanya statement aman yang sudah dipreview.
 	 *
-	 * Statement yang dijalankan hanya:
-	 * - CREATE TABLE untuk tabel yang belum ada
-	 * - ADD COLUMN untuk kolom yang belum ada
-	 * - ADD INDEX untuk index yang belum ada
-	 *
-	 * Perubahan type kolom/index yang berbeda hanya ditandai review manual
-	 * supaya tidak berisiko merusak data existing.
+	 * Method ini dipertahankan untuk kompatibilitas flow lama agar tombol
+	 * sinkronisasi aman tetap bekerja seperti sebelumnya.
 	 */
 	public function applySafeSync(): array
+	{
+		return $this->applySync(false);
+	}
+
+	/**
+	 * Eksekusi seluruh diff yang sudah memiliki SQL, termasuk perubahan yang
+	 * sebelumnya hanya tampil sebagai review manual.
+	 */
+	public function applyFullSync(): array
+	{
+		return $this->applySync(true);
+	}
+
+	/**
+	 * Jalankan sinkronisasi schema berdasarkan mode eksekusi yang dipilih.
+	 *
+	 * Mode penuh dipakai saat operator memang ingin menyamakan schema aktif
+	 * dengan dump installer, termasuk operasi drop/modify yang bersifat review.
+	 */
+	protected function applySync(bool $includeReviewItems = false): array
 	{
 		$summary = $this->getSyncSummary(true);
 		$executed = [];
@@ -79,7 +94,11 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 		$errors = [];
 
 		foreach ($summary['diff']['items'] as $item) {
-			if (empty($item['is_safe']) || empty($item['sql'])) {
+			if (empty($item['sql'])) {
+				continue;
+			}
+
+			if (!$includeReviewItems && empty($item['is_safe'])) {
 				continue;
 			}
 
@@ -91,7 +110,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 			}
 
 			try {
-				$this->db->query($item['sql']);
+				foreach ($this->normalizeExecutableSql($item['sql']) as $sql) {
+					$this->db->query($sql);
+				}
 				$executed[] = $item['label'];
 			} catch (\Throwable $e) {
 				$errors[] = $item['label'] . ': ' . $e->getMessage();
@@ -102,7 +123,7 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 		$updated = $this->getSyncSummary(true);
 
 		$status = $errors ? 'warning' : 'ok';
-		$message = 'Sinkronisasi aman selesai. Berhasil: ' . count($executed) . ', dilewati: ' . count($skipped) . ', error: ' . count($errors);
+		$message = ($includeReviewItems ? 'Sinkronisasi penuh' : 'Sinkronisasi aman') . ' selesai. Berhasil: ' . count($executed) . ', dilewati: ' . count($skipped) . ', error: ' . count($errors);
 
 		return [
 			'status' => $status,
@@ -239,6 +260,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 						'label' => 'Definisi kolom ' . $tableName . '.' . $columnName . ' berbeda',
 						'current' => $currentColumn['definition'],
 						'target' => $targetColumn['definition'],
+						// Statement modify tetap ditampilkan sebagai review karena
+						// berpotensi memengaruhi data, tetapi sekarang bisa dieksekusi
+						// melalui mode sinkronisasi penuh.
 						'sql' => 'ALTER TABLE `' . $tableName . '` MODIFY COLUMN ' . $targetColumn['definition'],
 						'is_safe' => false,
 						'counter' => 'different_columns'
@@ -256,7 +280,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 						'label' => 'Kolom ' . $tableName . '.' . $columnName . ' hanya ada di database aktif',
 						'current' => $currentColumn['definition'],
 						'target' => '-',
-						'sql' => '',
+						// Kolom ekstra diberi SQL drop agar operator bisa benar-benar
+						// menyamakan schema aktif dengan target installer saat full sync.
+						'sql' => 'ALTER TABLE `' . $tableName . '` DROP COLUMN `' . $columnName . '`',
 						'is_safe' => false,
 						'counter' => 'extra_columns'
 					]);
@@ -290,7 +316,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 						'label' => 'Definisi index ' . $tableName . '.' . $indexName . ' berbeda',
 						'current' => $currentIndex['definition'],
 						'target' => $targetIndex['definition'],
-						'sql' => '',
+						// Index berbeda dieksekusi dengan pola drop lalu add agar
+						// definisinya mengikuti dump tanpa perlu edit manual.
+						'sql' => $this->buildReplaceIndexSql($tableName, $indexName, $targetIndex['definition']),
 						'is_safe' => false,
 						'counter' => 'different_indexes'
 					]);
@@ -307,7 +335,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 						'label' => 'Index ' . $tableName . '.' . $indexName . ' hanya ada di database aktif',
 						'current' => $currentIndex['definition'],
 						'target' => '-',
-						'sql' => '',
+						// Index ekstra bisa dibersihkan saat full sync agar struktur
+						// index database aktif sama persis dengan dump installer.
+						'sql' => $this->buildDropIndexSql($tableName, $indexName),
 						'is_safe' => false,
 						'counter' => 'extra_indexes'
 					]);
@@ -325,7 +355,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 					'label' => 'Tabel ' . $tableName . ' hanya ada di database aktif',
 					'current' => 'Tabel tersedia di database aktif',
 					'target' => '-',
-					'sql' => '',
+					// Tabel ekstra ikut diberi SQL drop agar mode penuh benar-benar
+					// mengeksekusi seluruh perbedaan schema yang terdeteksi.
+					'sql' => 'DROP TABLE `' . $tableName . '`',
 					'is_safe' => false,
 					'counter' => 'extra_tables'
 				]);
@@ -507,6 +539,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 
 	protected function createDiffItem(array $item): array
 	{
+		// Preview SQL disiapkan terpisah agar view bisa menampilkan array statement
+		// multi-langkah dengan format yang tetap mudah dibaca operator.
+		$item['sql_preview'] = $this->buildSqlPreview($item['sql'] ?? '');
 		$item['item_key'] = sha1(
 			$item['scope'] . '|' .
 			$item['status'] . '|' .
@@ -581,10 +616,12 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 
 	protected function parseCreateStatement(string $createStatement): array
 	{
+		$tableDefaults = $this->extractTableDefaults($createStatement);
 		$result = [
 			'create_statement' => trim($createStatement),
 			'columns' => [],
-			'indexes' => []
+			'indexes' => [],
+			'defaults' => $tableDefaults
 		];
 
 		$lines = preg_split('/\r\n|\r|\n/', $createStatement);
@@ -601,7 +638,9 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 				$definition = '`' . $columnName . '` ' . trim($matches[2]);
 				$result['columns'][$columnName] = [
 					'definition' => $definition,
-					'normalized' => $this->normalizeSqlFragment($definition)
+					// Normalisasi kolom memperhitungkan default charset/collation
+					// tabel agar beda representasi yang semantik sama tidak dianggap diff.
+					'normalized' => $this->normalizeColumnFragment($definition, $tableDefaults)
 				];
 				continue;
 			}
@@ -631,5 +670,94 @@ class DbSynchronisationModel extends \App\Modules\Common\Models\BaseModel
 		$fragment = strtolower(trim($fragment));
 		$fragment = preg_replace('/\s+/', ' ', $fragment);
 		return trim((string) $fragment);
+	}
+
+	/**
+	 * Ambil default charset dan collation tabel dari CREATE TABLE agar
+	 * komparasi kolom bisa mengabaikan deklarasi yang setara secara semantik.
+	 */
+	protected function extractTableDefaults(string $createStatement): array
+	{
+		$defaults = [
+			'charset' => '',
+			'collation' => ''
+		];
+
+		if (preg_match('/default\s+charset\s*=\s*([a-zA-Z0-9_]+)/i', $createStatement, $matches)) {
+			$defaults['charset'] = strtolower($matches[1]);
+		}
+
+		if (preg_match('/collate\s*=\s*([a-zA-Z0-9_]+)/i', $createStatement, $matches)) {
+			$defaults['collation'] = strtolower($matches[1]);
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Normalisasi definisi kolom dengan menghapus charset/collation eksplisit
+	 * yang nilainya sama persis dengan default tabel.
+	 */
+	protected function normalizeColumnFragment(string $fragment, array $tableDefaults = []): string
+	{
+		$normalized = $this->normalizeSqlFragment($fragment);
+		$tableCharset = strtolower((string) ($tableDefaults['charset'] ?? ''));
+		$tableCollation = strtolower((string) ($tableDefaults['collation'] ?? ''));
+
+		if ($tableCharset !== '') {
+			$normalized = preg_replace('/\s+character set\s+' . preg_quote($tableCharset, '/') . '\b/i', '', $normalized);
+		}
+
+		if ($tableCollation !== '') {
+			$normalized = preg_replace('/\s+collate\s+' . preg_quote($tableCollation, '/') . '\b/i', '', $normalized);
+		}
+
+		$normalized = preg_replace('/\s+/', ' ', (string) $normalized);
+		return trim((string) $normalized);
+	}
+
+	/**
+	 * Ubah definisi SQL item menjadi daftar statement yang siap dieksekusi.
+	 */
+	protected function normalizeExecutableSql($sql): array
+	{
+		if (is_array($sql)) {
+			return array_values(array_filter(array_map('trim', $sql)));
+		}
+
+		$sql = trim((string) $sql);
+		return $sql === '' ? [] : [$sql];
+	}
+
+	/**
+	 * Bangun preview SQL yang konsisten untuk kebutuhan tampilan diff.
+	 */
+	protected function buildSqlPreview($sql): string
+	{
+		$statements = $this->normalizeExecutableSql($sql);
+		return implode(";\n", $statements);
+	}
+
+	/**
+	 * Susun statement penggantian index agar definisi index berbeda bisa
+	 * disinkronkan penuh tanpa perlu intervensi SQL manual.
+	 */
+	protected function buildReplaceIndexSql(string $tableName, string $indexName, string $targetDefinition): string
+	{
+		$dropClause = strtoupper($indexName) === 'PRIMARY' ? 'DROP PRIMARY KEY' : 'DROP INDEX `' . $indexName . '`';
+		return 'ALTER TABLE `' . $tableName . '` ' . $dropClause . ', ADD ' . $targetDefinition;
+	}
+
+	/**
+	 * Bentuk statement drop index sesuai tipe index agar PRIMARY KEY juga
+	 * dapat ditangani dengan syntax MySQL yang benar.
+	 */
+	protected function buildDropIndexSql(string $tableName, string $indexName): string
+	{
+		if (strtoupper($indexName) === 'PRIMARY') {
+			return 'ALTER TABLE `' . $tableName . '` DROP PRIMARY KEY';
+		}
+
+		return 'ALTER TABLE `' . $tableName . '` DROP INDEX `' . $indexName . '`';
 	}
 }

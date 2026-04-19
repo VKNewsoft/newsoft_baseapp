@@ -14,6 +14,19 @@ $isRegistered = !empty($syncSummary['is_registered']);
 $registration = $syncSummary['registration'] ?? [];
 $generatedAt = $syncSummary['generated_at'] ?? '-';
 $formToken = $auth->generateFormToken('form_db_synchronisation');
+$executableReviewChanges = 0;
+$executableChanges = 0;
+
+// Hitung item yang punya SQL eksekusi agar tombol sinkronisasi penuh hanya
+// muncul saat memang ada diff review yang sudah bisa dieksekusi otomatis.
+foreach ($diffItems as $diffItem) {
+	if (!empty($diffItem['sql'])) {
+		$executableChanges++;
+		if (empty($diffItem['is_safe'])) {
+			$executableReviewChanges++;
+		}
+	}
+}
 ?>
 
 <div class="page-shell">
@@ -21,7 +34,7 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 		<div>
 			<div class="page-kicker">Administrator / DB Synchronisation</div>
 			<h3 class="page-heading"><?=$current_module['judul_module']?></h3>
-			<p class="page-copy mb-0">Bandingkan schema database aktif dengan dump installer, review perubahannya, lalu jalankan sinkronisasi aman tanpa menghapus data existing.</p>
+			<p class="page-copy mb-0">Bandingkan schema database aktif dengan dump installer, review perubahannya, lalu jalankan sinkronisasi aman atau penuh sesuai kebutuhan penyesuaian schema.</p>
 		</div>
 		<div class="page-actions">
 			<a href="<?=current_url()?>?refresh=1" class="btn btn-outline-secondary btn-sm">
@@ -112,7 +125,7 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 			<div class="page-toolbar">
 				<div>
 					<h5 class="mb-1">Preview Diff Schema</h5>
-					<p class="mb-0 text-muted">Kolom before vs after memperlihatkan kondisi database aktif dibanding target dump installer. Hanya perubahan aman yang mendapat SQL eksekusi otomatis.</p>
+					<p class="mb-0 text-muted">Kolom before vs after memperlihatkan kondisi database aktif dibanding target dump installer. Diff aman bisa dijalankan langsung, sedangkan diff review juga sudah disiapkan SQL untuk mode sinkronisasi penuh.</p>
 				</div>
 			</div>
 
@@ -157,7 +170,7 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 										<?php if (!empty($item['sql'])) : ?>
 											<details class="db-sync-sql-preview">
 												<summary>Lihat SQL</summary>
-												<pre class="db-sync-code mt-2 mb-0"><?=esc($item['sql'])?></pre>
+												<pre class="db-sync-code mt-2 mb-0"><?=esc($item['sql_preview'] ?? '')?></pre>
 											</details>
 										<?php else : ?>
 											<span class="text-muted small">Tidak dieksekusi otomatis</span>
@@ -176,20 +189,35 @@ $formToken = $auth->generateFormToken('form_db_synchronisation');
 		<div class="card-body">
 			<div class="db-sync-action-panel">
 				<div>
-					<h5 class="mb-1">Eksekusi Sinkronisasi Aman</h5>
-					<p class="mb-0 text-muted">Proses hanya membuat tabel, menambah kolom, dan menambah index yang belum ada. Perubahan type/index yang berpotensi merusak tetap ditahan untuk review manual.</p>
+					<h5 class="mb-1">Eksekusi Sinkronisasi Schema</h5>
+					<p class="mb-0 text-muted">Sinkronisasi aman mempertahankan perilaku lama untuk create/add. Sinkronisasi penuh mengeksekusi seluruh diff yang sudah memiliki SQL, termasuk modify dan drop agar schema aktif sama dengan dump installer.</p>
 				</div>
-				<?php if ($can_apply_sync && ($summary['safe_changes'] ?? 0) > 0) : ?>
-					<form action="<?=base_url('db-synchronisation/apply')?>" method="post" class="db-sync-action-form">
-						<input type="hidden" name="form_token" value="<?=$formToken?>">
-						<button type="submit" name="submit" value="1" class="btn btn-success">
-							<i class="fa fa-bolt pe-1"></i> Jalankan Sinkronisasi Aman
-						</button>
-					</form>
+				<?php if ($can_apply_sync && (($summary['safe_changes'] ?? 0) > 0 || $executableReviewChanges > 0)) : ?>
+					<div class="db-sync-action-form d-flex flex-wrap gap-2">
+						<?php if (($summary['safe_changes'] ?? 0) > 0) : ?>
+							<form action="<?=base_url('db-synchronisation/apply')?>" method="post">
+								<input type="hidden" name="form_token" value="<?=$formToken?>">
+								<input type="hidden" name="sync_mode" value="safe">
+								<button type="submit" name="submit" value="1" class="btn btn-success">
+									<i class="fa fa-bolt pe-1"></i> Jalankan Sinkronisasi Aman
+								</button>
+							</form>
+						<?php endif; ?>
+
+						<?php if ($executableReviewChanges > 0) : ?>
+							<form action="<?=base_url('db-synchronisation/apply')?>" method="post">
+								<input type="hidden" name="form_token" value="<?=$formToken?>">
+								<input type="hidden" name="sync_mode" value="full">
+								<button type="submit" name="submit" value="1" class="btn btn-primary">
+									<i class="fa fa-database pe-1"></i> Jalankan Sinkronisasi Penuh (<?=$executableChanges?>)
+								</button>
+							</form>
+						<?php endif; ?>
+					</div>
 				<?php elseif (!$can_apply_sync) : ?>
 					<div class="text-muted small">Role Anda hanya dapat melihat preview diff.</div>
 				<?php else : ?>
-					<div class="text-muted small">Tidak ada perubahan aman yang perlu dieksekusi.</div>
+					<div class="text-muted small">Tidak ada diff yang perlu dieksekusi.</div>
 				<?php endif; ?>
 			</div>
 		</div>
