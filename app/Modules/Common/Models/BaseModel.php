@@ -14,6 +14,7 @@ class BaseModel extends \CodeIgniter\Model
 {
 	protected $request;
 	protected $session;
+	protected $cache;
 	protected $special_akses;
 	protected $special_approver;
 	private $auth;
@@ -24,6 +25,7 @@ class BaseModel extends \CodeIgniter\Model
 		
 		$this->request = \Config\Services::request();
 		$this->session = \Config\Services::session();
+		$this->cache = \Config\Services::cache();
 		$user = $this->session->get('user');
 		$this->user = $user; // Assign user ke property
 		
@@ -45,6 +47,34 @@ class BaseModel extends \CodeIgniter\Model
 		// DECLARE SPECIAL ACCESS BY USER LOGIN END
 		
 		$this->auth = new \App\Libraries\Auth;
+	}
+
+	protected function buildCacheKey(string $scope, array $parts = []): string
+	{
+		return 'baseapp_' . $scope . '_' . md5(json_encode($parts));
+	}
+
+	protected function rememberCacheValue(string $key, callable $resolver, int $ttl = 180)
+	{
+		static $requestCache = [];
+
+		if (array_key_exists($key, $requestCache)) {
+			return $requestCache[$key];
+		}
+
+		$cached = $this->cache ? $this->cache->get($key) : null;
+		if (is_array($cached) && array_key_exists('data', $cached)) {
+			$requestCache[$key] = $cached['data'];
+			return $requestCache[$key];
+		}
+
+		$value = $resolver();
+		if ($this->cache) {
+			$this->cache->save($key, ['data' => $value], $ttl);
+		}
+
+		$requestCache[$key] = $value;
+		return $value;
 	}
 
 	protected function normalizeIntegerList(array $values): array
@@ -258,28 +288,41 @@ class BaseModel extends \CodeIgniter\Model
 		if ($userId <= 0) {
 			return null;
 		}
-		
-		$result = $this->db->query('SELECT * FROM core_setting_user WHERE id_user = ? AND type = "layout"', [$userId])
-						->getRow();
-		
-		if (!$result) {
-			$query = $this->db->query('SELECT * FROM core_setting WHERE type="layout"')
-						->getResultArray();
-			
-			$data = [];
-			foreach ($query as $val) {
-				$data[$val['param']] = $val['value'];
-			}
-			
-			$result = new \StdClass;
-			$result->param = json_encode($data);
-		}
-		return $result;
+
+		// Setting layout user di-cache singkat karena dipakai di hampir semua
+		// halaman login, layout, dan controller dasar.
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('user_layout', [$userId]),
+			function() use ($userId) {
+				$result = $this->db->query('SELECT * FROM core_setting_user WHERE id_user = ? AND type = "layout"', [$userId])
+							->getRow();
+				
+				if (!$result) {
+					$query = $this->getAppLayoutSetting();
+					$data = [];
+					foreach ($query as $val) {
+						$data[$val['param']] = $val['value'];
+					}
+					
+					$result = new \StdClass;
+					$result->param = json_encode($data);
+				}
+
+				return $result;
+			},
+			180
+		);
 	}
 	
 	public function getAppLayoutSetting() {
-		$result = $this->db->query('SELECT * FROM core_setting WHERE type="layout"')->getResultArray();
-		return $result;
+		// Layout default dipakai lintas halaman sehingga aman di-cache global.
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('app_layout_setting'),
+			function() {
+				return $this->db->query('SELECT * FROM core_setting WHERE type="layout"')->getResultArray();
+			},
+			300
+		);
 	}
 
 	public function getKaryawanID() {
@@ -298,25 +341,34 @@ class BaseModel extends \CodeIgniter\Model
 			return null;
 		}
 
-		$sql = 'SELECT * 
-				FROM core_role 
-				LEFT JOIN core_module USING(id_module)
-				WHERE ' . $this->buildWhereInClause('id_role', $roleIds);
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('default_user_module', $roleIds),
+			function() use ($roleIds) {
+				$sql = 'SELECT * 
+						FROM core_role 
+						LEFT JOIN core_module USING(id_module)
+						WHERE ' . $this->buildWhereInClause('id_role', $roleIds);
 
-		$query = $this->db->query($sql)->getRow();
-		return $query;
+				return $this->db->query($sql)->getRow();
+			},
+			300
+		);
 	}
 	
 	public function getModule($nama_module) {
-		$result = $this->db->query('SELECT * FROM core_module LEFT JOIN core_module_status USING(id_module_status) WHERE nama_module = ?', [$nama_module])
-						->getRowArray();
-		// Fallback registry dipakai agar module tertentu tetap bisa diakses
-		// walau seed core_module/core_menu belum dijalankan setelah pull source.
-		if (!$result) {
-			$result = $this->getFallbackModuleDefinition($nama_module);
-		}
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('module_by_name', [$nama_module]),
+			function() use ($nama_module) {
+				$result = $this->db->query('SELECT * FROM core_module LEFT JOIN core_module_status USING(id_module_status) WHERE nama_module = ?', [$nama_module])
+							->getRowArray();
+				if (!$result) {
+					$result = $this->getFallbackModuleDefinition($nama_module);
+				}
 
-		return $result;
+				return $result;
+			},
+			300
+		);
 	}
 
 	/**
@@ -336,6 +388,16 @@ class BaseModel extends \CodeIgniter\Model
 				'nama_status' => 'Aktif',
 				'login' => 'Y',
 				'deskripsi' => 'Module untuk membandingkan schema database aktif dengan dump installer',
+				'is_fallback_module' => true
+			],
+			'email-expiration' => [
+				'id_module' => 125,
+				'nama_module' => 'email-expiration',
+				'judul_module' => 'Email Expiration',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk memantau subscription masa aktif akun email dan proses renew periodenya',
 				'is_fallback_module' => true
 			]
 		];
@@ -391,10 +453,10 @@ class BaseModel extends \CodeIgniter\Model
 					'id_module' => 124,
 					'nama_module' => 'db-synchronisation',
 					'judul_module' => 'CORE - DB Synchronisation',
-					'id_parent' => 13,
+					'id_parent' => null,
 					'aktif' => 1,
 					'new' => 0,
-					'urut' => 5,
+					'urut' => 4,
 					'highlight' => 0,
 					'depth' => 0,
 					'is_fallback_menu' => true
@@ -408,6 +470,51 @@ class BaseModel extends \CodeIgniter\Model
 					'id_module' => null,
 					'nama_module' => null,
 					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'email-expiration' => [
+				'menu' => [
+					'id_menu' => 173,
+					'nama_menu' => 'Email Expiration',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'email-expiration',
+					'id_module' => 125,
+					'nama_module' => 'email-expiration',
+					'judul_module' => 'Email Expiration',
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 18,
+					'nama_menu' => 'Security Monitor',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-shield-halved',
+					'url' => 'securitymonitor',
+					'id_module' => 121,
+					'nama_module' => 'securitymonitor',
+					'judul_module' => 'Security Monitor',
 					'id_parent' => null,
 					'aktif' => 1,
 					'new' => 0,
@@ -491,59 +598,59 @@ class BaseModel extends \CodeIgniter\Model
 			return [];
 		}
 
-		// Menu
-		$sql = 'SELECT * FROM core_menu 
-					LEFT JOIN core_menu_role USING (id_menu) 
-					LEFT JOIN core_module USING (id_module)
-					LEFT JOIN core_menu_kategori USING(id_menu_kategori)
-				WHERE core_menu_kategori.aktif = "Y" AND core_menu.aktif = 1 AND ( ' . $this->buildWhereInClause('id_role', $roleIds) . ' )
-				ORDER BY core_menu_kategori.urut, core_menu.urut';				
-		$query_result = $this->db->query($sql)->getResultArray();
-		
-		$current_id = '';
-		$menu = [];
-		foreach ($query_result as $val) 
-		{
-			$menu[$val['id_menu']] = $val;
-			$menu[$val['id_menu']]['highlight'] = 0;
-			$menu[$val['id_menu']]['depth'] = 0;
+		// Struktur menu user di-cache berdasarkan role + module aktif karena
+		// tree menu dan highlight-nya dipakai di seluruh halaman admin.
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('menu_tree', [$roleIds, $current_module]),
+			function() use ($roleIds, $current_module) {
+				$sql = 'SELECT * FROM core_menu 
+							LEFT JOIN core_menu_role USING (id_menu) 
+							LEFT JOIN core_module USING (id_module)
+							LEFT JOIN core_menu_kategori USING(id_menu_kategori)
+						WHERE core_menu_kategori.aktif = "Y" AND core_menu.aktif = 1 AND ( ' . $this->buildWhereInClause('id_role', $roleIds) . ' )
+						ORDER BY core_menu_kategori.urut, core_menu.urut';				
+				$query_result = $this->db->query($sql)->getResultArray();
+				
+				$current_id = '';
+				$menu = [];
+				foreach ($query_result as $val) 
+				{
+					$menu[$val['id_menu']] = $val;
+					$menu[$val['id_menu']]['highlight'] = 0;
+					$menu[$val['id_menu']]['depth'] = 0;
 
-			if ($current_module == $val['nama_module']) {				
-				$current_id = $val['id_menu'];
-				$menu[$val['id_menu']]['highlight'] = 1;
-			}
+					if ($current_module == $val['nama_module']) {				
+						$current_id = $val['id_menu'];
+						$menu[$val['id_menu']]['highlight'] = 1;
+					}
+				}
 			
-		}
-	
-		// dd($query_result, $menu, $current_module, $current_id);
-		if ($current_id) {
-			$this->menuCurrent($menu, $current_id);
-		}
-		
-		$menu_kategori = [];
-		foreach ($menu as $id_menu => $val) {
-			if (!$id_menu)
-				continue;
-			
-			$menu_kategori[$val['id_menu_kategori']][$val['id_menu']] = $val;
-		}
+				if ($current_id) {
+					$this->menuCurrent($menu, $current_id);
+				}
+				
+				$menu_kategori = [];
+				foreach ($menu as $id_menu => $val) {
+					if (!$id_menu) {
+						continue;
+					}
+					
+					$menu_kategori[$val['id_menu_kategori']][$val['id_menu']] = $val;
+				}
 
-		// Kategori
-		$sql = 'SELECT * FROM core_menu_kategori WHERE aktif = "Y" ORDER BY urut';
-		$query_result = $this->db->query($sql)->getResultArray();
-		$result = [];
-		foreach ($query_result as $val) {
-			if (key_exists($val['id_menu_kategori'], $menu_kategori)) {
-				$result[$val['id_menu_kategori']] = [ 'kategori' => $val, 'menu' => $menu_kategori[$val['id_menu_kategori']] ];
-			}
-		}
+				$sql = 'SELECT * FROM core_menu_kategori WHERE aktif = "Y" ORDER BY urut';
+				$query_result = $this->db->query($sql)->getResultArray();
+				$result = [];
+				foreach ($query_result as $val) {
+					if (key_exists($val['id_menu_kategori'], $menu_kategori)) {
+						$result[$val['id_menu_kategori']] = [ 'kategori' => $val, 'menu' => $menu_kategori[$val['id_menu_kategori']] ];
+					}
+				}
 
-		// Hybrid loader: menu database tetap jadi sumber utama, lalu fallback
-		// statis ditambahkan hanya bila module baru belum sempat diregistrasikan.
-		$result = $this->mergeFallbackMenu($result, $current_module);
-
-		// echo '<pre>'; print_r($result); die;
-		return $result;
+				return $this->mergeFallbackMenu($result, $current_module);
+			},
+			300
+		);
 	}
 	
 	// Highlight child and parent
@@ -577,21 +684,60 @@ class BaseModel extends \CodeIgniter\Model
 	}
 	
 	public function getModulePermission($id_module) {
-		$sql = 'SELECT * FROM core_module_permission LEFT JOIN core_role_module_permission USING (id_module_permission) WHERE id_module = ?';
-		
-		$result = $this->db->query($sql, [$id_module])->getResultArray();
-		return $result;
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('module_permission_rows', [(int) $id_module]),
+			function() use ($id_module) {
+				$sql = 'SELECT * FROM core_module_permission LEFT JOIN core_role_module_permission USING (id_module_permission) WHERE id_module = ?';
+				return $this->db->query($sql, [$id_module])->getResultArray();
+			},
+			180
+		);
 	}
 	
 	public function getAllModulePermission($id_user) {
-		$sql = 'SELECT * FROM core_role_module_permission
-				LEFT JOIN core_module_permission USING(id_module_permission)
-				LEFT JOIN core_module USING(id_module)
-				LEFT JOIN core_user_role USING(id_role)
-				WHERE id_user = ?';
-						
-		$result = $this->db->query($sql, $id_user)->getResultArray();
-		return $result;
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('all_permission_rows', [(int) $id_user]),
+			function() use ($id_user) {
+				$sql = 'SELECT * FROM core_role_module_permission
+						LEFT JOIN core_module_permission USING(id_module_permission)
+						LEFT JOIN core_module USING(id_module)
+						LEFT JOIN core_user_role USING(id_role)
+						WHERE id_user = ?';
+				return $this->db->query($sql, $id_user)->getResultArray();
+			},
+			180
+		);
+	}
+
+	public function getModulePermissionMap(int $idModule): array
+	{
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('module_permission_map', [$idModule]),
+			function() use ($idModule) {
+				$map = [];
+				foreach ($this->getModulePermission($idModule) as $val) {
+					$namaPermission = $val['nama_permission'] ?: 'null';
+					$map[$val['id_role']][$namaPermission] = $namaPermission;
+				}
+				return $map;
+			},
+			180
+		);
+	}
+
+	public function getAllModulePermissionMap(int $idUser): array
+	{
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('all_permission_map', [$idUser]),
+			function() use ($idUser) {
+				$map = [];
+				foreach ($this->getAllModulePermission($idUser) as $val) {
+					$map[$val['id_module']][$val['nama_permission']] = $val;
+				}
+				return $map;
+			},
+			180
+		);
 	}
 	
 	/* public function getModuleRole($id_module) {
@@ -679,41 +825,59 @@ class BaseModel extends \CodeIgniter\Model
 	}
 	
 	public function getSettingAplikasi() {
-		$sql = 'SELECT * FROM core_setting WHERE type="app" OR type="config" OR type="pajak"';
-		$query = $this->db->query($sql)->getResultArray();
-		$settingAplikasi = [];
-		
-		foreach($query as $val) {
-			$settingAplikasi[$val['param']] = $val['value'];
-		}
-		return $settingAplikasi;
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('setting_aplikasi'),
+			function() {
+				$sql = 'SELECT * FROM core_setting WHERE type="app" OR type="config" OR type="pajak"';
+				$query = $this->db->query($sql)->getResultArray();
+				$settingAplikasi = [];
+				
+				foreach($query as $val) {
+					$settingAplikasi[$val['param']] = $val['value'];
+				}
+				return $settingAplikasi;
+			},
+			300
+		);
 	}
 	
 	public function getSettingRegistrasi() {
-		$sql = 'SELECT * FROM core_setting WHERE type="register"';
-		$query = $this->db->query($sql)->getResultArray();
-		$setting_register = [];
-		foreach($query as $val) {
-			$setting_register[$val['param']] = $val['value'];
-		}
-		return $setting_register;
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('setting_registrasi'),
+			function() {
+				$sql = 'SELECT * FROM core_setting WHERE type="register"';
+				$query = $this->db->query($sql)->getResultArray();
+				$setting_register = [];
+				foreach($query as $val) {
+					$setting_register[$val['param']] = $val['value'];
+				}
+				return $setting_register;
+			},
+			300
+		);
 	}
 	
 	public function getIdentitas() {
-		// $sql = 'SELECT * FROM core_identitas 
-		// 		LEFT JOIN core_wilayah_kelurahan USING(id_wilayah_kelurahan)
-		// 		LEFT JOIN core_wilayah_kecamatan USING(id_wilayah_kecamatan)
-		// 		LEFT JOIN core_wilayah_kabupaten USING(id_wilayah_kabupaten)
-		// 		LEFT JOIN core_wilayah_propinsi USING(id_wilayah_propinsi)';
-		// return $this->db->query($sql)->getRowArray();
-		$sql = 'SELECT * FROM core_identitas WHERE id_company = ?';
-		$result = $this->db->query($sql, [(int) ($this->session->get('user')['id_company'] ?? 0)])->getRowArray();
-		return $result;
+		$companyId = (int) ($this->session->get('user')['id_company'] ?? 0);
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('identitas', [$companyId]),
+			function() use ($companyId) {
+				$sql = 'SELECT * FROM core_identitas WHERE id_company = ?';
+				return $this->db->query($sql, [$companyId])->getRowArray();
+			},
+			300
+		);
 	}
 	
 	public function getSetting($type) {
-		$sql = 'SELECT * FROM core_setting WHERE type = ?'; 
-		return $this->db->query($sql, $type)->getResultArray();
+		return $this->rememberCacheValue(
+			$this->buildCacheKey('setting_type', [(string) $type]),
+			function() use ($type) {
+				$sql = 'SELECT * FROM core_setting WHERE type = ?'; 
+				return $this->db->query($sql, $type)->getResultArray();
+			},
+			300
+		);
 	}
 
 	public function deleteAuthCookiePeriode($id_user) 

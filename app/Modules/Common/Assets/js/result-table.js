@@ -43,9 +43,15 @@ window.WDIResultTable = {
 	bindResize: function(dataTable, tableSelector, namespace) {
 		var self = this;
 		var eventName = 'resize' + (namespace ? '.' + namespace : '');
+		var resizeTimer = null;
 
 		$(window).off(eventName).on(eventName, function() {
-			self.applyScrollBodyHeight(dataTable, tableSelector);
+			// Resize dibatasi singkat agar perhitungan tinggi tabel dan adjust
+			// kolom tidak terpanggil terlalu sering saat user mengubah viewport.
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(function() {
+				self.applyScrollBodyHeight(dataTable, tableSelector);
+			}, 120);
 		});
 	}
 };
