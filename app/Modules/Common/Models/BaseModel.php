@@ -337,6 +337,16 @@ class BaseModel extends \CodeIgniter\Model
 				'login' => 'Y',
 				'deskripsi' => 'Module untuk membandingkan schema database aktif dengan dump installer',
 				'is_fallback_module' => true
+			],
+			'email-expiration' => [
+				'id_module' => 125,
+				'nama_module' => 'email-expiration',
+				'judul_module' => 'Email Expiration',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk memantau subscription masa aktif akun email dan proses renew periodenya',
+				'is_fallback_module' => true
 			]
 		];
 	}
@@ -391,10 +401,10 @@ class BaseModel extends \CodeIgniter\Model
 					'id_module' => 124,
 					'nama_module' => 'db-synchronisation',
 					'judul_module' => 'CORE - DB Synchronisation',
-					'id_parent' => 13,
+					'id_parent' => null,
 					'aktif' => 1,
 					'new' => 0,
-					'urut' => 5,
+					'urut' => 4,
 					'highlight' => 0,
 					'depth' => 0,
 					'is_fallback_menu' => true
@@ -408,6 +418,51 @@ class BaseModel extends \CodeIgniter\Model
 					'id_module' => null,
 					'nama_module' => null,
 					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'email-expiration' => [
+				'menu' => [
+					'id_menu' => 173,
+					'nama_menu' => 'Email Expiration',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'email-expiration',
+					'id_module' => 125,
+					'nama_module' => 'email-expiration',
+					'judul_module' => 'Email Expiration',
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 18,
+					'nama_menu' => 'Security Monitor',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-shield-halved',
+					'url' => 'securitymonitor',
+					'id_module' => 121,
+					'nama_module' => 'securitymonitor',
+					'judul_module' => 'Security Monitor',
 					'id_parent' => null,
 					'aktif' => 1,
 					'new' => 0,
