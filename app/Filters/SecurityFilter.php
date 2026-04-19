@@ -44,8 +44,8 @@ class SecurityFilter implements FilterInterface
 			throw new HTTPException('Access Denied', 403);
 		}
 
-		if ($attackType = detect_attack($request)) {
-			$security->logAttack($attackType);
+		if ($attack = detect_attack($request)) {
+			$security->logAttack($attack);
 			throw new HTTPException('Access Denied', 403);
 		}
 

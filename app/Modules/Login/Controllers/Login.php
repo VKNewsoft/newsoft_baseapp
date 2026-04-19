@@ -18,6 +18,7 @@ use App\Modules\Login\Models\LoginModel;
 use Config\App;
 use App\Libraries\Auth;
 use CodeIgniter\HTTP\Exceptions\HTTPException;
+use App\Services\SecurityService;
 
 class Login extends \App\Modules\Common\Controllers\BaseController
 {
@@ -88,6 +89,9 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 			if ($cekFalse['status'] == 0) {
 				// Proses login
 				$this->login();
+				if ($this->data['status'] == 'error') {
+					$this->logBruteForceAttempt($username, $this->data['message']);
+				}
 				
 				// Jika request via AJAX
 				if ($this->request->getPost('ajax') == 'true') {
@@ -117,6 +121,7 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 				// Terlalu banyak failed attempt
 				$this->data['status'] = 'error';
 				$this->data['message'] = $cekFalse['message'];
+				$this->logBruteForceAttempt((string) $this->request->getPost('username'), $cekFalse['message']);
 				
 				echo json_encode($this->data);
 				exit;
@@ -210,6 +215,16 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 		// Set session user
 		$this->session->set('user', $user);
 		$this->session->set('logged_in', true);
+	}
+
+	private function logBruteForceAttempt(string $username, string $reason): void
+	{
+		try {
+			$security = new SecurityService();
+			$security->logBruteForceAttempt($username, $reason);
+		} catch (\Throwable $e) {
+			log_message('error', 'Failed to write brute-force security log: {message}', ['message' => $e->getMessage()]);
+		}
 	}
 	
 	/**
