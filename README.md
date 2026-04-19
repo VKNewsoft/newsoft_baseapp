@@ -99,6 +99,19 @@ Setelah instalasi selesai, login dengan:
 
 ## **Pengembangan Selanjutnya**
 
+### **v1.1.3 (19-04-2026)**
+
+- Optimasi performa global request dengan cache runtime pada setting, layout, module, menu, permission map, dan identitas agar query berulang di layer dasar berkurang.
+- Perbaikan filter/bootstrap agar tidak membuka koneksi database berulang pada setiap request dan asset `module-assets` tidak lagi tertahan filter/session global.
+- Aktivasi kompresi response `gzip`, penyesuaian cache header asset, dan penghapusan header no-cache yang menghambat reuse cache browser.
+- Perbaikan `public/index.php` agar bootstrap aplikasi kembali stabil dan route HTTP tidak gagal pada proses inisialisasi framework.
+- Optimasi `result-table.js` dengan debounce resize agar render ulang DataTable tidak terlalu agresif saat perubahan ukuran layar.
+- Penyempurnaan module `Db Synchronisation` dengan mode `Sinkronisasi Aman` dan `Sinkronisasi Penuh` untuk mengeksekusi seluruh diff yang sudah memiliki SQL.
+- Penambahan generator SQL untuk diff review seperti `MODIFY COLUMN`, `DROP COLUMN`, `DROP INDEX`, `DROP TABLE`, dan `replace index` agar sinkronisasi schema tidak berhenti di preview saja.
+- Perbaikan normalisasi schema `Db Synchronisation` agar perbedaan `CHARACTER SET` atau `COLLATE` yang semantik sama dengan default tabel tidak lagi dianggap diff.
+- Pembersihan cache summary sinkronisasi database agar hasil preview selalu mengikuti struktur database dan logika komparasi terbaru.
+- Perubahan difokuskan pada stabilitas bootstrap, percepatan request, efisiensi cache, dan akurasi sinkronisasi schema tanpa mengubah tujuan bisnis utama aplikasi.
+
 ### **v1.1.2 (16-04-2026)**
 
 - Optimasi performa initial render pada module `dashboard`, `securitymonitor`, `company`, `builtin/menu`, `builtin/module`, `builtin/permission`, `builtin/user`, `builtin/menu-role`, `builtin/role`, `builtin/role-permission`, `builtin/user-role`, `builtin/setting-app`, dan `builtin/setting-layout`.
