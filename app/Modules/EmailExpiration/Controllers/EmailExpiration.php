@@ -21,6 +21,7 @@ class EmailExpiration extends \App\Modules\Common\Controllers\BaseController
 		$resultPageVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/result-page.css');
 		$resultTableVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/result-table.js');
 		$emailExpirationJsVersion = '?v=' . @filemtime(APPPATH . 'Modules/EmailExpiration/Assets/js/email-expiration.js');
+		$emailExpirationCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/EmailExpiration/Assets/css/email-expiration.css');
 
 		$this->model = new EmailExpirationModel();
 		$this->data['site_title'] = 'Email Expiration';
@@ -30,11 +31,17 @@ class EmailExpiration extends \App\Modules\Common\Controllers\BaseController
 		$this->addJs($this->commonAsset('js/result-table.js') . $resultTableVersion);
 		$this->addJs($this->moduleAsset('js/email-expiration.js') . $emailExpirationJsVersion);
 		$this->addStyle($this->commonAsset('css/result-page.css') . $resultPageVersion);
+		$this->addStyle($this->moduleAsset('css/email-expiration.css') . $emailExpirationCssVersion);
 	}
 
 	public function index()
 	{
 		$this->hasPermission('read_all');
+		/**
+		 * Filter default dikirim ke view agar web dan mobile memakai nilai awal
+		 * yang sama saat pertama kali halaman module dibuka.
+		 */
+		$this->data['email_expiration_filters'] = $this->model->getFilterPayload();
 		$this->view('email-expiration-result.php', $this->data);
 	}
 
@@ -111,7 +118,7 @@ class EmailExpiration extends \App\Modules\Common\Controllers\BaseController
 			$statusMeta = $this->model->buildStatusMeta($val['tgl_end']);
 
 			if ($statusMeta['days_remaining'] <= 0) {
-				$remainingText = 'Sudah bisa di renew ulang';
+				$remainingText = 'Siap di renew ulang';
 				$statusTextClass = 'text-success fw-semibold';
 			} else {
 				$remainingText = $statusMeta['days_remaining'] . ' hari lagi';
@@ -160,6 +167,52 @@ class EmailExpiration extends \App\Modules\Common\Controllers\BaseController
 
 		$result['data'] = $query['data'];
 		echo json_encode($result);
+		exit();
+	}
+
+	public function getMobileList()
+	{
+		$this->hasPermissionPrefix('read');
+		helper('html');
+
+		$query = $this->model->getMobileListData();
+		$items = [];
+
+		foreach ($query['data'] as $val) {
+			$statusMeta = $this->model->buildStatusMeta($val['tgl_end']);
+			$isRenewReady = $statusMeta['days_remaining'] <= 0;
+			$remainingLabel = $isRenewReady
+				? abs((int) $statusMeta['days_remaining']) . ' hari overdue'
+				: (int) $statusMeta['days_remaining'] . ' hari lagi';
+
+			/**
+			 * Payload mobile dijaga ringkas agar proses append card load more
+			 * tetap cepat walau jumlah data terus bertambah.
+			 */
+			$items[] = [
+				'id_email_expiration' => (int) $val['id_email_expiration'],
+				'subscription' => esc($val['subscription']),
+				'email_akun' => esc($val['email_akun']),
+				'status_code' => $statusMeta['code'],
+				'status_label' => $statusMeta['label'],
+				'status_badge_class' => $statusMeta['badge_class'],
+				'days_remaining' => (int) $statusMeta['days_remaining'],
+				'remaining_label' => $remainingLabel,
+				'is_renew_ready' => $isRenewReady,
+				'tgl_end_label' => format_tanggal($val['tgl_end']),
+				'renew_attr_email' => esc($val['email_akun'])
+			];
+		}
+
+		echo json_encode([
+			'status' => 'ok',
+			'data' => $items,
+			'total_filtered' => (int) $query['total_filtered'],
+			'offset' => (int) $query['offset'],
+			'limit' => (int) $query['limit'],
+			'next_offset' => (int) $query['offset'] + count($items),
+			'has_more' => ((int) $query['offset'] + count($items)) < (int) $query['total_filtered']
+		]);
 		exit();
 	}
 }

@@ -12,102 +12,194 @@ use App\Modules\SecurityMonitor\Models\BlockedIpModel;
 
 class Securitymonitor extends \App\Modules\Common\Controllers\BaseController
 {
-    public function __construct() {
-		
+	protected $logModel;
+	protected $blockModel;
+
+	public function __construct()
+	{
 		parent::__construct();
-		
+
 		$this->logModel = new SecurityLogModel();
-        $this->blockModel = new BlockedIpModel();
-        $this->data['title'] = 'Security Aplikasi';
-		$this->addJs($this->commonAsset('js/wilayah.js'));
-		$this->addJs($this->commonAsset('js/identitas.js'));
-		
+		$this->blockModel = new BlockedIpModel();
+		$this->data['title'] = 'Security Aplikasi';
 		helper(['cookie', 'form']);
 	}
 
-    public function index()
-    {
-        $cache = \Config\Services::cache();
-        
-        // Cache stats untuk 2 menit (mengurangi query berulang)
-        $stats = $cache->get('security_stats');
-        if (!$stats) {
-            $stats = [
-                'total_attacks' => $this->logModel->getTotalAttacks(),
-                'today_attacks' => $this->logModel->getAttacksToday(),
-                'blocked_count' => $this->blockModel->countAllResults()
-            ];
-            $cache->save('security_stats', $stats, 120); // 2 menit
-        }
-        
-        $this->data = array_merge($this->data, $stats);
-        
-        // Pagination untuk recent logs
-        $page = $this->request->getGet('page') ?? 1;
-        $perPage = 15;
-        
-        $this->data['recent_logs'] = $this->logModel
-            ->orderBy('created_at', 'DESC')
-            ->paginate($perPage, 'default', $page);
-        
-        $this->data['pager'] = $this->logModel->pager;
-        
-        $this->view('security_monitor/index.php', $this->data);
-    }
-    
-    // AJAX endpoint untuk chart data (lazy loading)
-    public function chartData()
-    {
-        $cache = \Config\Services::cache();
-        
-        $chartData = $cache->get('security_charts');
-        if (!$chartData) {
-            $attacksLast7Days = $this->logModel->getAttacksByDay(6);
-            $attackTypes = $this->logModel->getLogsWithCount(5); // Limit to top 5
-            
-            $chartData = [
-                'timeline' => [
-                    'labels' => array_keys($attacksLast7Days),
-                    'data' => array_values($attacksLast7Days)
-                ],
-                'types' => [
-                    'labels' => array_column($attackTypes, 'attack_type'),
-                    'data' => array_column($attackTypes, 'total')
-                ]
-            ];
-            
-            $cache->save('security_charts', $chartData, 300); // 5 menit
-        }
-        
-        return $this->response->setJSON($chartData);
-    }
+	public function index()
+	{
+		$filters = $this->getLogFilters();
+		$summary = $this->logModel->getSummary($filters);
+		$statusCounts = $this->logModel->getStatusCounts($filters);
 
-    public function blocked()
-    {
-        $search = $this->request->getGet('search');
-        $model = $this->blockModel;
+		$this->data = array_merge($this->data, $summary, [
+			'blocked_count' => $this->blockModel->countAllResults(),
+			'blocked_events' => $statusCounts['blocked'] ?? 0,
+			'allowed_events' => $statusCounts['allowed'] ?? 0,
+			'alerts' => $this->logModel->getAlerts(6, $filters),
+			'top_attackers' => $this->logModel->getTopAttackers(6, $filters),
+			'attack_breakdown' => $this->logModel->getAttackTypeBreakdown($filters),
+			'attack_types' => $this->logModel->getDistinctAttackTypes(),
+			'filters' => $filters,
+			'filter_active' => $this->hasActiveFilter($filters),
+			'loaded_rows' => min(15, (int) ($summary['total_attacks'] ?? 0)),
+		]);
 
-        if ($search) {
-            $model = $model->like('ip_address', $search);
-        }
+		$this->view('security_monitor/index.php', $this->data);
+	}
 
-        $this->data += [
-            'blocked_ips' => $model->orderBy('blocked_at', 'DESC')->paginate(15),
-            'pager' => $model->pager,
-            'search' => $search ?? ''
-        ];
+	public function logsData()
+	{
+		$filters = $this->getLogFilters();
+		$result = $this->logModel->getDataTableResult($filters, $this->request->getPost());
+		$data = [];
+		foreach ($result['rows'] as $log) {
+			$data[] = [
+				'id' => (int) $log['id'],
+				'created_at' => date('d M Y, H:i:s', strtotime($log['created_at'])),
+				'ip_address' => $log['ip_address'],
+				'attack_type' => $log['attack_type'],
+				'severity' => $log['severity'],
+				'event_status' => $log['event_status'],
+				'request_method' => $log['request_method'],
+				'endpoint' => $log['endpoint'],
+				'payload_summary' => $log['payload_summary'],
+				'user_label' => $log['user_label'],
+				'request_source' => $log['request_source'] !== '' ? $log['request_source'] : 'web_request',
+			];
+		}
 
-        // return view('security_monitor/blocked', $data);
-         $this->view('security_monitor/blocked.php', $this->data);
-    }
+		return $this->response->setJSON([
+			'draw' => (int) ($this->request->getPost('draw') ?? 1),
+			'recordsTotal' => $result['total'],
+			'recordsFiltered' => $result['filtered'],
+			'data' => $data,
+			'loaded_count' => $result['loaded'],
+		]);
+	}
 
-    public function unblock()
-    {
-        $ip = $this->request->getPost('ip');
-        if ($ip && filter_var($ip, FILTER_VALIDATE_IP)) {
-            $this->blockModel->unblockIp($ip);
-            return $this->response->setJSON(['success' => true, 'message' => "IP $ip berhasil dibuka."]);
-        }
-        return $this->response->setJSON(['success' => false, 'message' => 'IP tidak valid.']);
-    }
+	public function chartData()
+	{
+		$filters = $this->getLogFilters();
+		$attacksLast7Days = $this->logModel->getAttacksByDay(6, $filters);
+		$attackTypes = $this->logModel->getLogsWithCount(6, $filters);
+		$hourly = $this->logModel->getHourlyHeatmap($filters);
+		$topAttackers = $this->logModel->getTopAttackers(5, $filters);
+
+		return $this->response->setJSON([
+			'timeline' => [
+				'labels' => array_keys($attacksLast7Days),
+				'data' => array_values($attacksLast7Days),
+			],
+			'types' => [
+				'labels' => array_column($attackTypes, 'attack_type'),
+				'data' => array_map('intval', array_column($attackTypes, 'total')),
+			],
+			'hourly' => [
+				'labels' => array_map(static fn ($hour) => str_pad((string) $hour, 2, '0', STR_PAD_LEFT) . ':00', array_keys($hourly)),
+				'data' => array_values($hourly),
+			],
+			'attackers' => [
+				'labels' => array_column($topAttackers, 'ip_address'),
+				'data' => array_map('intval', array_column($topAttackers, 'total')),
+			],
+		]);
+	}
+
+	public function eventDetail($id = null)
+	{
+		$id = (int) $id;
+		if ($id <= 0) {
+			return $this->response->setStatusCode(404)->setJSON(['success' => false, 'message' => 'Event tidak ditemukan.']);
+		}
+
+		$event = $this->logModel->findEvent($id);
+		if (!$event) {
+			return $this->response->setStatusCode(404)->setJSON(['success' => false, 'message' => 'Event tidak ditemukan.']);
+		}
+
+		return $this->response->setJSON([
+			'success' => true,
+			'data' => $event,
+		]);
+	}
+
+	public function blocked()
+	{
+		$filters = [
+			'search' => trim((string) $this->request->getGet('search')),
+			'date_from' => trim((string) $this->request->getGet('date_from')),
+			'date_to' => trim((string) $this->request->getGet('date_to')),
+		];
+		$summary = $this->blockModel->getSummary($filters);
+
+		$this->data += [
+			'search' => $filters['search'],
+			'filters' => $filters,
+			'blocked_summary' => $summary,
+			'loaded_rows' => min(15, (int) ($summary['total_blocked'] ?? 0)),
+		];
+
+		$this->view('security_monitor/blocked.php', $this->data);
+	}
+
+	public function blockedData()
+	{
+		$filters = [
+			'search' => trim((string) $this->request->getGet('search')),
+			'date_from' => trim((string) $this->request->getGet('date_from')),
+			'date_to' => trim((string) $this->request->getGet('date_to')),
+		];
+		$result = $this->blockModel->getDataTableResult($filters, $this->request->getPost());
+		$start = max(0, (int) ($this->request->getPost('start') ?? 0));
+		$data = [];
+		foreach ($result['rows'] as $index => $row) {
+			$data[] = [
+				'rownum' => $start + $index + 1,
+				'ip_address' => $row['ip_address'],
+				'blocked_date' => date('d M Y', strtotime($row['blocked_at'])),
+				'blocked_time' => date('H:i:s', strtotime($row['blocked_at'])),
+			];
+		}
+
+		return $this->response->setJSON([
+			'draw' => (int) ($this->request->getPost('draw') ?? 1),
+			'recordsTotal' => $result['total'],
+			'recordsFiltered' => $result['filtered'],
+			'data' => $data,
+			'loaded_count' => $result['loaded'],
+		]);
+	}
+
+	public function unblock()
+	{
+		$ip = $this->request->getPost('ip');
+		if ($ip && filter_var($ip, FILTER_VALIDATE_IP)) {
+			$this->blockModel->unblockIp($ip);
+			cache()->delete('blocked_ip_' . md5($ip));
+			return $this->response->setJSON(['success' => true, 'message' => "IP $ip berhasil dibuka."]);
+		}
+		return $this->response->setJSON(['success' => false, 'message' => 'IP tidak valid.']);
+	}
+
+	protected function getLogFilters(): array
+	{
+		return [
+			'ip' => trim((string) $this->request->getGet('ip')),
+			'attack_type' => trim((string) $this->request->getGet('attack_type')),
+			'status' => trim((string) $this->request->getGet('status')),
+			'date_from' => trim((string) $this->request->getGet('date_from')),
+			'date_to' => trim((string) $this->request->getGet('date_to')),
+		];
+	}
+
+	protected function hasActiveFilter(array $filters): bool
+	{
+		foreach ($filters as $value) {
+			if ($value !== '') {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

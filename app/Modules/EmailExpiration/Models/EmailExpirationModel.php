@@ -258,37 +258,88 @@ class EmailExpirationModel extends \App\Modules\Common\Models\BaseModel
 	}
 
 	/**
+	 * Menyatukan input filter agar web DataTable dan mobile list memakai
+	 * aturan server-side yang sama tanpa menduplikasi logika query.
+	 */
+	public function getFilterPayload(): array
+	{
+		return [
+			'search' => trim((string) (($this->request->getPost('search')['value'] ?? $this->request->getGet('search') ?? ''))),
+			'renew_status' => trim((string) ($this->request->getPost('renew_status') ?? $this->request->getGet('renew_status') ?? 'all')),
+			'sort_expiration' => trim((string) ($this->request->getPost('sort_expiration') ?? $this->request->getGet('sort_expiration') ?? 'nearest'))
+		];
+	}
+
+	/**
+	 * Query dasar dijaga terpusat agar filter renew dan urutan expired selalu
+	 * konsisten di DataTable web maupun list mobile.
+	 */
+	protected function buildFilteredListQuery(array $filters = [])
+	{
+		$searchValue = trim((string) ($filters['search'] ?? ''));
+		$renewStatus = trim((string) ($filters['renew_status'] ?? 'all'));
+		$sortExpiration = trim((string) ($filters['sort_expiration'] ?? 'nearest'));
+
+		$builder = $this->db->table($this->table)
+			->select('id_email_expiration, subscription, email_akun, expiration_hari, tgl_start, tgl_end')
+			->select('DATEDIFF(tgl_end, CURDATE()) AS days_remaining', false)
+			->where('isDeleted', 0);
+
+		if ($searchValue !== '') {
+			$builder->groupStart()
+				->like('subscription', $searchValue)
+				->orLike('email_akun', $searchValue)
+				->orLike('tgl_start', $searchValue)
+				->orLike('tgl_end', $searchValue)
+				->groupEnd();
+		}
+
+		/**
+		 * Status renew mengikuti kebutuhan monitoring agar akun yang sudah
+		 * jatuh tempo hari ini atau sebelumnya langsung masuk kategori perlu renew.
+		 */
+		if ($renewStatus === 'ready') {
+			$builder->where('DATE(tgl_end) <= CURDATE()', null, false);
+		} elseif ($renewStatus === 'not_ready') {
+			$builder->where('DATE(tgl_end) > CURDATE()', null, false);
+		}
+
+		/**
+		 * Urutan memakai jarak absolut dari hari ini agar data paling dekat
+		 * atau paling jauh dari current date tampil sesuai kebutuhan filter.
+		 */
+		if ($sortExpiration === 'longest') {
+			$builder->orderBy('ABS(DATEDIFF(tgl_end, CURDATE()))', 'DESC', false);
+		} else {
+			$builder->orderBy('ABS(DATEDIFF(tgl_end, CURDATE()))', 'ASC', false);
+		}
+
+		return $builder;
+	}
+
+	/**
 	 * Data list DataTables dengan pencarian dan sorting yang aman.
 	 */
 	public function getListData(): array
 	{
 		$columns = $this->request->getPost('columns') ?? [];
 		$allowedColumns = ['subscription','email_akun', 'expiration_hari', 'tgl_start', 'tgl_end'];
-
-		$builder = $this->db->table($this->table)
-			->select('id_email_expiration, subscription, email_akun, expiration_hari, tgl_start, tgl_end')
-			->where('isDeleted', 0);
-
-		$searchValue = trim((string) ($this->request->getPost('search')['value'] ?? ''));
-		if ($searchValue !== '') {
-			$builder->groupStart()
-				->like('email_akun', $searchValue)
-				->orLike('tgl_start', $searchValue)
-				->orLike('tgl_end', $searchValue)
-				->groupEnd();
-		}
+		$filters = $this->getFilterPayload();
+		$builder = $this->buildFilteredListQuery($filters);
 
 		$totalFiltered = $builder->countAllResults(false);
 
+		/**
+		 * DataTables tetap boleh mengirim order bawaan, namun filter urutan
+		 * module diprioritaskan untuk kolom tgl_end agar hasilnya konsisten.
+		 */
 		$orderData = $this->request->getPost('order');
 		if ($orderData && isset($columns[$orderData[0]['column']])) {
 			$orderColumn = $columns[$orderData[0]['column']]['data'] ?? '';
 			$orderDir = strtoupper($orderData[0]['dir'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
-			if (in_array($orderColumn, $allowedColumns, true)) {
+			if (in_array($orderColumn, $allowedColumns, true) && $orderColumn !== 'tgl_end') {
 				$builder->orderBy($orderColumn, $orderDir);
 			}
-		} else {
-			$builder->orderBy('tgl_end', 'ASC');
 		}
 
 		$start = (int) ($this->request->getPost('start') ?? 0);
@@ -298,6 +349,28 @@ class EmailExpirationModel extends \App\Modules\Common\Models\BaseModel
 		return [
 			'data' => $builder->get()->getResultArray(),
 			'total_filtered' => $totalFiltered
+		];
+	}
+
+	/**
+	 * Data mobile dipisah dari DataTable agar render card bisa memakai pola
+	 * incremental load more tanpa mengubah query utama module.
+	 */
+	public function getMobileListData(): array
+	{
+		$filters = $this->getFilterPayload();
+		$builder = $this->buildFilteredListQuery($filters);
+		$totalFiltered = $builder->countAllResults(false);
+
+		$offset = max(0, (int) ($this->request->getGet('offset') ?? 0));
+		$limit = max(1, min(20, (int) ($this->request->getGet('limit') ?? 10)));
+		$builder->limit($limit, $offset);
+
+		return [
+			'data' => $builder->get()->getResultArray(),
+			'total_filtered' => $totalFiltered,
+			'offset' => $offset,
+			'limit' => $limit
 		];
 	}
 }

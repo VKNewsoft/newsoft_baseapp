@@ -3,6 +3,7 @@
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Services\SecurityService;
 
 class Bootstrap implements FilterInterface
 {
@@ -61,6 +62,15 @@ class Bootstrap implements FilterInterface
 			if ($config->csrf['auto_check']) {
 				$message = csrf_validation();
 				if ($message) {
+					try {
+						$security = new SecurityService();
+						$security->logCsrfAttempt([
+							'reason' => $message['message'] ?? 'CSRF validation failed',
+							'source' => 'bootstrap_csrf',
+						]);
+					} catch (\Throwable $e) {
+						log_message('error', 'Failed to log CSRF attempt: {message}', ['message' => $e->getMessage()]);
+					}
 					echo view('app_error.php', ['content' => $message['message']]);
 					exit;
 				}

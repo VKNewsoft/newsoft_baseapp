@@ -1,176 +1,232 @@
 <!-- Security Monitor Dashboard -->
 <?php helper('html'); ?>
+<?php
+$severityMeta = [
+	'critical' => ['badge' => 'bg-danger', 'icon' => 'bi-exclamation-octagon-fill'],
+	'high' => ['badge' => 'bg-warning text-dark', 'icon' => 'bi-exclamation-triangle-fill'],
+	'medium' => ['badge' => 'bg-orange text-dark', 'icon' => 'bi-shield-fill-exclamation'],
+	'low' => ['badge' => 'bg-info text-dark', 'icon' => 'bi-info-circle-fill'],
+];
+?>
 
 <style>
-.security-shell {
+.security-page {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
 }
-.security-overview {
-	background: linear-gradient(135deg, #f8fbff 0%, #ffffff 55%, #eef4ff 100%);
+.security-hero {
+	background: linear-gradient(135deg, #f8fbff 0%, #ffffff 58%, #eef4ff 100%);
 	border: 1px solid var(--border);
 	border-radius: calc(var(--radius) + 4px);
 	padding: 1.5rem;
 	box-shadow: var(--shadow-sm);
 }
-.security-overview-grid {
+.security-hero-grid {
 	display: grid;
-	grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+	grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.95fr);
 	gap: 1rem;
-	align-items: stretch;
 }
-.security-title {
+.security-hero-title {
 	display: flex;
 	align-items: flex-start;
 	gap: 1rem;
 }
-.security-title-icon,
-.panel-icon,
-.stat-icon {
+.security-hero-icon,
+.hero-panel-icon,
+.metric-icon {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 14px;
+	border-radius: 16px;
 }
-.security-title-icon {
-	width: 56px;
-	height: 56px;
-	font-size: 1.5rem;
-	background: rgba(220, 38, 38, 0.1);
+.security-hero-icon {
+	width: 58px;
+	height: 58px;
+	font-size: 1.6rem;
+	background: rgba(220, 38, 38, 0.12);
 	color: #dc2626;
 	flex-shrink: 0;
 }
-.security-headline {
-	font-size: 1.75rem;
+.security-page-title {
+	font-size: 1.8rem;
 	font-weight: 700;
 	line-height: 1.1;
 	margin-bottom: 0.35rem;
 }
-.security-points {
+.security-hero-points {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 0.75rem;
-	margin-top: 1.25rem;
+	margin-top: 1.2rem;
 }
-.security-point {
-	padding: 0.9rem 1rem;
-	border-radius: 14px;
+.hero-point {
+	background: rgba(255, 255, 255, 0.9);
 	border: 1px solid rgba(148, 163, 184, 0.18);
-	background: rgba(255, 255, 255, 0.85);
+	border-radius: 14px;
+	padding: 0.9rem 1rem;
 }
-.security-point-label {
+.hero-point small {
 	display: block;
-	font-size: 0.78rem;
-	color: var(--bs-secondary-color, #6b7280);
-	margin-bottom: 0.35rem;
 	text-transform: uppercase;
-	letter-spacing: 0.04em;
+	letter-spacing: 0.05em;
+	color: var(--bs-secondary-color, #64748b);
+	margin-bottom: 0.3rem;
 }
-.security-point-value {
+.hero-point strong {
 	font-size: 1rem;
-	font-weight: 700;
-	color: var(--bs-body-color, #111827);
 }
-.status-panel {
-	border-radius: 18px;
-	border: 1px solid rgba(37, 99, 235, 0.12);
+.hero-side {
 	background: #ffffff;
-	box-shadow: var(--shadow-sm);
+	border: 1px solid rgba(37, 99, 235, 0.12);
+	border-radius: 18px;
 	padding: 1.25rem;
-	height: 100%;
+	box-shadow: var(--shadow-sm);
 }
-.status-panel-top {
+.hero-side-top {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	gap: 1rem;
+	gap: 0.75rem;
 	margin-bottom: 1rem;
 }
-.panel-icon {
+.hero-panel-icon {
 	width: 48px;
 	height: 48px;
-	font-size: 1.2rem;
 	background: rgba(37, 99, 235, 0.12);
 	color: var(--primary);
+	font-size: 1.2rem;
 }
-.status-chip {
+.live-status {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.45rem;
-	padding: 0.45rem 0.8rem;
+	padding: 0.45rem 0.75rem;
 	border-radius: 999px;
 	background: rgba(34, 197, 94, 0.12);
 	color: #15803d;
-	font-size: 0.85rem;
+	font-size: 0.82rem;
 	font-weight: 600;
 }
-.status-chip::before {
+.live-status::before {
 	content: "";
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
 	background: currentColor;
 }
-.status-metrics {
+.hero-side-metrics {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 0.75rem;
+	margin-bottom: 1rem;
 }
-.status-metric {
-	padding: 0.85rem 0.95rem;
-	border-radius: 14px;
+.hero-side-metric {
 	background: #f8fafc;
-	border: 1px solid rgba(148, 163, 184, 0.16);
+	border: 1px solid rgba(148, 163, 184, 0.14);
+	border-radius: 14px;
+	padding: 0.85rem 0.95rem;
 }
-.status-metric strong {
+.hero-side-metric strong {
 	display: block;
-	font-size: 1.05rem;
+	font-size: 1.1rem;
 	line-height: 1.2;
-	margin-top: 0.15rem;
+	margin-top: 0.2rem;
 }
-.security-card {
+.monitor-card {
 	border-radius: calc(var(--radius) + 2px);
 	border: 1px solid var(--border);
-	transition: var(--transition);
-	animation: fadeIn 0.4s ease;
 	box-shadow: var(--shadow-sm);
+	animation: fadeIn 0.35s ease;
 }
-.security-card:hover {
+.monitor-card:hover {
 	box-shadow: var(--shadow-md);
 }
-.stat-card {
-	min-height: 148px;
+.metric-card {
+	min-height: 152px;
 }
-.stat-icon {
+.metric-icon {
 	width: 52px;
 	height: 52px;
 	font-size: 1.35rem;
 }
-.stat-trend {
+.metric-chip {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.35rem;
-	padding: 0.25rem 0.55rem;
+	padding: 0.3rem 0.6rem;
 	border-radius: 999px;
 	font-size: 0.75rem;
 	font-weight: 600;
 	background: var(--bg-secondary);
 	color: var(--bs-secondary-color, #64748b);
 }
-.chart-card {
-	min-height: 360px;
-}
-.card-section-header {
+.monitor-section-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
 	flex-wrap: wrap;
 }
-.chart-container {
+.filter-panel {
+	padding: 1rem 1.1rem;
+	background: #f8fafc;
+	border-radius: 16px;
+	border: 1px solid rgba(148, 163, 184, 0.16);
+}
+.alert-list {
+	display: grid;
+	gap: 0.75rem;
+}
+.alert-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.85rem;
+	padding: 0.9rem 1rem;
+	border: 1px solid rgba(148, 163, 184, 0.14);
+	border-radius: 14px;
+	background: #fff;
+}
+.alert-icon {
+	width: 42px;
+	height: 42px;
+	border-radius: 12px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+.mini-list {
+	display: grid;
+	gap: 0.7rem;
+}
+.mini-list-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.8rem 0.9rem;
+	border-radius: 12px;
+	background: #f8fafc;
+	border: 1px solid rgba(148, 163, 184, 0.12);
+}
+.mini-list-ip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.35rem 0.65rem;
+	border-radius: 10px;
+	background: #fff1f2;
+	color: #b91c1c;
+	font-family: "Courier New", monospace;
+	font-weight: 600;
+}
+.chart-box {
 	position: relative;
 	height: 300px;
+}
+.chart-box.chart-sm {
+	height: 260px;
 }
 .log-table {
 	font-size: 0.92rem;
@@ -188,7 +244,31 @@
 	padding-bottom: 0.95rem;
 	vertical-align: middle;
 }
-.attack-log-ip {
+.dataTables_wrapper .dataTables_processing {
+	background: #ffffff;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	box-shadow: var(--shadow-sm);
+	padding: 0.75rem 1rem;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	padding: 0 !important;
+	margin: 0 0.1rem !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button .page-link {
+	border-radius: 8px;
+}
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+	padding: 1rem !important;
+}
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+	display: none;
+}
+.event-ip {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.45rem;
@@ -199,169 +279,114 @@
 	font-family: "Courier New", monospace;
 	font-weight: 600;
 }
-.attack-uri {
-	max-width: 100%;
+.event-uri {
 	display: inline-block;
+	max-width: 100%;
 	padding: 0.45rem 0.65rem;
 	border-radius: 10px;
 	background: #f8fafc;
 	color: var(--bs-secondary-color, #64748b);
 	line-height: 1.35;
 }
-.legend-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
+.detail-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.9rem;
 }
-.badge-attack,
-.legend-badge {
-	padding: 0.38rem 0.72rem;
-	font-weight: 600;
-	font-size: 0.78rem;
-	border-radius: 999px;
+.detail-box {
+	padding: 0.9rem 1rem;
+	border-radius: 14px;
+	background: #f8fafc;
+	border: 1px solid rgba(148, 163, 184, 0.15);
+}
+.detail-box pre {
+	white-space: pre-wrap;
+	word-break: break-word;
+	margin-bottom: 0;
+	font-size: 0.85rem;
 }
 .bg-orange {
 	background-color: #fb923c !important;
 }
-.badge-attack i {
-	font-size: 0.75rem;
-}
-.badge.bg-danger {
-	background-color: #dc2626 !important;
-	color: white !important;
-}
-.badge.bg-warning {
-	background-color: #fbbf24 !important;
-	color: #1f2937 !important;
-}
-.badge.bg-info {
-	background-color: #3b82f6 !important;
-	color: white !important;
-}
-.badge.bg-secondary {
-	background-color: #6b7280 !important;
-	color: white !important;
-}
-.pagination {
-	margin-bottom: 0;
-	gap: 4px;
-}
-.pagination .page-link {
-	border-radius: 8px;
-	border: 1px solid var(--border);
-	color: var(--primary);
-	padding: 0.5rem 0.9rem;
-	font-weight: 500;
-	transition: all 0.2s ease;
-	min-width: 40px;
-	text-align: center;
-}
-.pagination .page-link:hover {
-	background-color: var(--bg-secondary);
-	border-color: var(--primary);
-	transform: translateY(-1px);
-	box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
-}
-.pagination .page-item.active .page-link {
-	background-color: var(--primary);
-	border-color: var(--primary);
-	color: white;
-	font-weight: 600;
-	box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-}
-.pagination .page-item.disabled .page-link {
-	color: var(--text-secondary);
-	background-color: var(--bg-tertiary);
-	border-color: var(--border);
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-.pagination .page-item:first-child .page-link,
-.pagination .page-item:last-child .page-link {
-	font-weight: 600;
-}
-.pagination .page-link i {
-	font-size: 0.85rem;
-}
 @media (max-width: 991.98px) {
-	.security-overview-grid {
-		grid-template-columns: 1fr;
-	}
-	.security-points {
+	.security-hero-grid,
+	.security-hero-points,
+	.hero-side-metrics,
+	.detail-grid {
 		grid-template-columns: 1fr;
 	}
 }
 @media (max-width: 767.98px) {
-	.security-overview {
+	.security-hero {
 		padding: 1.15rem;
 	}
-	.security-headline {
+	.security-page-title {
 		font-size: 1.45rem;
 	}
-	.status-metrics {
-		grid-template-columns: 1fr;
-	}
-	.chart-container {
-		height: 260px;
+	.chart-box {
+		height: 250px;
 	}
 	.log-table {
-		min-width: 720px;
+		min-width: 1100px;
 	}
 }
 </style>
 
 <div class="container-fluid">
-	<div class="security-shell">
-		<div class="security-overview">
-			<div class="security-overview-grid">
+	<div class="security-page">
+		<div class="security-hero">
+			<div class="security-hero-grid">
 				<div>
-					<div class="security-title">
-						<div class="security-title-icon">
+					<div class="security-hero-title">
+						<div class="security-hero-icon">
 							<i class="bi bi-shield-lock"></i>
 						</div>
 						<div>
 							<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
 								<span class="badge text-bg-light border text-primary">Security Center</span>
-								<span class="status-chip">Protection Active</span>
+								<span class="live-status">Protection Active</span>
+								<?php if ($filter_active): ?>
+								<span class="badge bg-info">Filtered View</span>
+								<?php endif; ?>
 							</div>
-							<h1 class="security-headline">Security Monitor</h1>
-							<p class="text-muted mb-0">Pantau ancaman, pola serangan, dan aktivitas pemblokiran dalam satu dashboard yang lebih rapi dan mudah dibaca.</p>
+							<h1 class="security-page-title">Security Monitor</h1>
+							<p class="text-muted mb-0">Deteksi, logging, alert, dan kontrol proteksi dalam satu dashboard monitoring yang lebih informatif untuk analisis cepat.</p>
 						</div>
 					</div>
-					<div class="security-points">
-						<div class="security-point">
-							<span class="security-point-label">Focus</span>
-							<div class="security-point-value">Threat visibility</div>
+					<div class="security-hero-points">
+						<div class="hero-point">
+							<small>Detection</small>
+							<strong>SQLi, XSS, CSRF, brute force, suspicious request</strong>
 						</div>
-						<div class="security-point">
-							<span class="security-point-label">Coverage</span>
-							<div class="security-point-value">Timeline & attack type</div>
+						<div class="hero-point">
+							<small>Logging</small>
+							<strong>IP, user, endpoint, payload ringkas, status event</strong>
 						</div>
-						<div class="security-point">
-							<span class="security-point-label">Action</span>
-							<div class="security-point-value">Blocked IP management</div>
+						<div class="hero-point">
+							<small>Action</small>
+							<strong>Alert triage, detail event, blocked IP management</strong>
 						</div>
 					</div>
 				</div>
-				<div class="status-panel">
-					<div class="status-panel-top">
+				<div class="hero-side">
+					<div class="hero-side-top">
 						<div>
-							<small class="text-muted d-block mb-1">Quick Action</small>
-							<h5 class="mb-1">Blocked IP Control</h5>
-							<p class="text-muted mb-0 small">Lanjut ke daftar IP yang diblok untuk review dan unblock manual.</p>
+							<small class="text-muted d-block mb-1">Quick Command Center</small>
+							<h5 class="mb-1">Realtime Security Posture</h5>
+							<p class="text-muted mb-0 small">Ringkasan status event dan akses cepat ke daftar IP yang sudah diblok.</p>
 						</div>
-						<div class="panel-icon">
-							<i class="bi bi-grid-1x2"></i>
+						<div class="hero-panel-icon">
+							<i class="bi bi-shield-check"></i>
 						</div>
 					</div>
-					<div class="status-metrics mb-3">
-						<div class="status-metric">
-							<small class="text-muted">Total Threats</small>
-							<strong><?= number_format($total_attacks) ?></strong>
+					<div class="hero-side-metrics">
+						<div class="hero-side-metric">
+							<small class="text-muted">Blocked Events</small>
+							<strong><?= number_format($blocked_events) ?></strong>
 						</div>
-						<div class="status-metric">
-							<small class="text-muted">Blocked IPs</small>
-							<strong><?= number_format($blocked_count) ?></strong>
+						<div class="hero-side-metric">
+							<small class="text-muted">Allowed Events</small>
+							<strong><?= number_format($allowed_events) ?></strong>
 						</div>
 					</div>
 					<a href="<?= base_url('securitymonitor/blocked') ?>" class="btn btn-primary w-100">
@@ -372,265 +397,374 @@
 		</div>
 
 		<div class="row g-3">
-		<!-- Total Attacks -->
-		<div class="col-lg-3 col-md-6">
-			<div class="card security-card stat-card border-0">
-				<div class="card-body d-flex flex-column">
-					<div class="d-flex justify-content-between align-items-start mb-3">
-						<div>
-							<p class="text-muted mb-1 small">Total Attacks</p>
-							<h2 class="mb-0 fw-bold text-danger" id="total-attacks"><?= number_format($total_attacks) ?></h2>
+			<div class="col-lg-3 col-md-6">
+				<div class="card monitor-card metric-card border-0">
+					<div class="card-body d-flex flex-column">
+						<div class="d-flex justify-content-between align-items-start mb-3">
+							<div>
+								<p class="text-muted mb-1 small">Total Attack Events</p>
+								<h2 class="mb-0 fw-bold text-danger"><?= number_format($total_attacks) ?></h2>
+							</div>
+							<div class="metric-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-exclamation-triangle"></i></div>
 						</div>
-						<div class="stat-icon bg-danger bg-opacity-10 text-danger">
-							<i class="bi bi-exclamation-triangle"></i>
-						</div>
+						<div class="mt-auto"><span class="metric-chip text-danger"><i class="bi bi-activity"></i>All recorded threats</span></div>
 					</div>
-					<div class="mt-auto d-flex justify-content-between align-items-center gap-2">
-						<small class="text-muted">All time detected threats</small>
-						<span class="stat-trend text-danger"><i class="bi bi-activity"></i>Monitor</span>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6">
+				<div class="card monitor-card metric-card border-0">
+					<div class="card-body d-flex flex-column">
+						<div class="d-flex justify-content-between align-items-start mb-3">
+							<div>
+								<p class="text-muted mb-1 small">Today</p>
+								<h2 class="mb-0 fw-bold text-warning"><?= number_format($today_attacks) ?></h2>
+							</div>
+							<div class="metric-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-calendar-week"></i></div>
+						</div>
+						<div class="mt-auto"><span class="metric-chip text-warning"><i class="bi bi-clock-history"></i>Events in current day</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6">
+				<div class="card monitor-card metric-card border-0">
+					<div class="card-body d-flex flex-column">
+						<div class="d-flex justify-content-between align-items-start mb-3">
+							<div>
+								<p class="text-muted mb-1 small">Blocked IPs</p>
+								<h2 class="mb-0 fw-bold text-primary"><?= number_format($blocked_count) ?></h2>
+							</div>
+							<div class="metric-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-shield-slash"></i></div>
+						</div>
+						<div class="mt-auto"><span class="metric-chip text-primary"><i class="bi bi-router"></i>Current protection list</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6">
+				<div class="card monitor-card metric-card border-0">
+					<div class="card-body d-flex flex-column">
+						<div class="d-flex justify-content-between align-items-start mb-3">
+							<div>
+								<p class="text-muted mb-1 small">Priority Indicators</p>
+								<h2 class="mb-0 fw-bold text-success"><?= number_format($brute_force_count + $csrf_count) ?></h2>
+							</div>
+							<div class="metric-icon bg-success bg-opacity-10 text-success"><i class="bi bi-shield-check"></i></div>
+						</div>
+						<div class="mt-auto"><span class="metric-chip text-success"><i class="bi bi-person-lock"></i>Brute force + CSRF tracked</span></div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- Today Attacks -->
-		<div class="col-lg-3 col-md-6">
-			<div class="card security-card stat-card border-0">
-				<div class="card-body d-flex flex-column">
-					<div class="d-flex justify-content-between align-items-start mb-3">
+		<div class="card monitor-card border-0">
+			<div class="card-body">
+				<form method="GET" action="<?= base_url('securitymonitor') ?>" class="filter-panel">
+					<div class="monitor-section-header mb-3">
 						<div>
-							<p class="text-muted mb-1 small">Today's Attacks</p>
-							<h2 class="mb-0 fw-bold text-warning" id="today-attacks"><?= number_format($today_attacks) ?></h2>
+							<h5 class="mb-1"><i class="bi bi-funnel text-primary me-2"></i>Filter Monitoring Event</h5>
+							<small class="text-muted">Gunakan filter untuk memperjelas timeline, chart, dan tabel event.</small>
 						</div>
-						<div class="stat-icon bg-warning bg-opacity-10 text-warning">
-							<i class="bi bi-calendar-check"></i>
+						<?php if ($filter_active): ?>
+						<a href="<?= base_url('securitymonitor') ?>" class="btn btn-outline-secondary btn-sm">
+							<i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filter
+						</a>
+						<?php endif; ?>
+					</div>
+					<div class="row g-3 align-items-end">
+						<div class="col-lg-3 col-md-6">
+							<label class="form-label small text-muted mb-1">IP Address</label>
+							<input type="text" name="ip" class="form-control" value="<?= esc($filters['ip']) ?>" placeholder="Search IP">
 						</div>
-					</div>
-					<div class="mt-auto d-flex justify-content-between align-items-center gap-2">
-						<small class="text-muted">Attacks detected today</small>
-						<span class="stat-trend text-warning"><i class="bi bi-calendar-event"></i>Today</span>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Blocked IPs -->
-		<div class="col-lg-3 col-md-6">
-			<div class="card security-card stat-card border-0">
-				<div class="card-body d-flex flex-column">
-					<div class="d-flex justify-content-between align-items-start mb-3">
-						<div>
-							<p class="text-muted mb-1 small">Blocked IPs</p>
-							<h2 class="mb-0 fw-bold text-primary" id="blocked-count"><?= number_format($blocked_count) ?></h2>
-						</div>
-						<div class="stat-icon bg-primary bg-opacity-10 text-primary">
-							<i class="bi bi-shield-slash"></i>
-						</div>
-					</div>
-					<div class="mt-auto d-flex justify-content-between align-items-center gap-2">
-						<small class="text-muted">Currently blocked addresses</small>
-						<span class="stat-trend text-primary"><i class="bi bi-shield"></i>Active list</span>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Security Status -->
-		<div class="col-lg-3 col-md-6">
-			<div class="card security-card stat-card border-0">
-				<div class="card-body d-flex flex-column">
-					<div class="d-flex justify-content-between align-items-start mb-3">
-						<div>
-							<p class="text-muted mb-1 small">Status</p>
-							<h5 class="mb-0 fw-bold text-success">
-								<i class="bi bi-check-circle-fill me-1"></i>Protected
-							</h5>
-						</div>
-						<div class="stat-icon bg-success bg-opacity-10 text-success">
-							<i class="bi bi-shield-check"></i>
-						</div>
-					</div>
-					<div class="mt-auto d-flex justify-content-between align-items-center gap-2">
-						<small class="text-muted">Security system active</small>
-						<span class="stat-trend text-success"><i class="bi bi-check2-circle"></i>Online</span>
-					</div>
-				</div>
-			</div>
-		</div>
-		</div>
-
-		<div class="row g-3">
-		<!-- Attack Timeline -->
-		<div class="col-lg-8">
-			<div class="card security-card chart-card border-0">
-				<div class="card-header bg-white border-bottom">
-					<div class="card-section-header">
-						<div>
-							<h5 class="mb-1"><i class="bi bi-graph-up text-danger me-2"></i>Attack Timeline</h5>
-							<small class="text-muted">Ringkasan tren serangan dalam 7 hari terakhir.</small>
-						</div>
-						<span class="badge text-bg-light border">Last 7 Days</span>
-					</div>
-				</div>
-				<div class="card-body">
-					<div class="chart-container">
-						<canvas id="attackChart"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Attack Types -->
-		<div class="col-lg-4">
-			<div class="card security-card chart-card border-0">
-				<div class="card-header bg-white border-bottom">
-					<div class="card-section-header">
-						<div>
-							<h5 class="mb-1"><i class="bi bi-pie-chart text-warning me-2"></i>Attack Types</h5>
-							<small class="text-muted">Distribusi kategori ancaman yang tercatat.</small>
-						</div>
-					</div>
-				</div>
-				<div class="card-body d-flex align-items-center justify-content-center">
-					<div class="chart-container" style="max-width: 250px; max-height: 250px;">
-						<canvas id="typeChart"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-		</div>
-
-		<div class="row g-3">
-		<div class="col-12">
-			<div class="card security-card border-0">
-				<div class="card-header bg-white border-bottom">
-					<div class="card-section-header">
-						<div>
-							<h5 class="mb-1"><i class="bi bi-list-ul text-primary me-2"></i>Recent Attack Logs</h5>
-							<small class="text-muted">Daftar aktivitas terbaru untuk inspeksi cepat dan triage awal.</small>
-						</div>
-						<div class="legend-list">
-							<span class="badge legend-badge bg-danger"><i class="bi bi-exclamation-octagon-fill me-1"></i>Critical</span>
-							<span class="badge legend-badge bg-warning text-dark"><i class="bi bi-exclamation-triangle-fill me-1"></i>High</span>
-							<span class="badge legend-badge bg-orange text-dark"><i class="bi bi-shield-fill-exclamation me-1"></i>Medium</span>
-							<span class="badge legend-badge bg-info"><i class="bi bi-info-circle-fill me-1"></i>Low</span>
-							<span class="badge legend-badge bg-secondary"><i class="bi bi-robot me-1"></i>Bot/Other</span>
-						</div>
-					</div>
-				</div>
-				<div class="card-body p-0">
-					<div class="table-responsive">
-						<table class="table table-hover log-table mb-0">
-							<thead class="table-light">
-								<tr>
-									<th style="width: 140px;">IP Address</th>
-									<th style="width: 150px;">Attack Type</th>
-									<th>Request URI</th>
-									<th style="width: 180px;">Timestamp</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php if (empty($recent_logs)): ?>
-								<tr>
-									<td colspan="4" class="text-center py-4 text-muted">
-										<i class="bi bi-inbox fs-3 d-block mb-2"></i>
-										No attack logs found
-									</td>
-								</tr>
-								<?php else: ?>
-								<?php foreach ($recent_logs as $log): 
-									// Determine severity based on attack type
-									$attackType = strtolower($log['attack_type']);
-									$badgeClass = 'bg-secondary';
-									$iconClass = 'bi-shield-exclamation';
-									
-									// Critical severity (SQL Injection, Command Injection, RCE)
-									if (strpos($attackType, 'sql') !== false || 
-										strpos($attackType, 'injection') !== false || 
-										strpos($attackType, 'rce') !== false ||
-										strpos($attackType, 'command') !== false) {
-										$badgeClass = 'bg-danger';
-										$iconClass = 'bi-exclamation-octagon-fill';
-									}
-									// High severity (XSS, Path Traversal, File Upload)
-									elseif (strpos($attackType, 'xss') !== false || 
-											strpos($attackType, 'script') !== false ||
-											strpos($attackType, 'traversal') !== false ||
-											strpos($attackType, 'upload') !== false ||
-											strpos($attackType, 'path') !== false) {
-										$badgeClass = 'bg-warning text-dark';
-										$iconClass = 'bi-exclamation-triangle-fill';
-									}
-									// Medium severity (CSRF, Auth issues)
-									elseif (strpos($attackType, 'csrf') !== false || 
-											strpos($attackType, 'auth') !== false ||
-											strpos($attackType, 'session') !== false) {
-										$badgeClass = 'bg-orange text-dark';
-										$iconClass = 'bi-shield-fill-exclamation';
-									}
-									// Low severity (Suspicious patterns, Probe)
-									elseif (strpos($attackType, 'suspicious') !== false || 
-											strpos($attackType, 'probe') !== false ||
-											strpos($attackType, 'scan') !== false) {
-										$badgeClass = 'bg-info text-dark';
-										$iconClass = 'bi-info-circle-fill';
-									}
-									// Bot/Spam
-									elseif (strpos($attackType, 'bot') !== false || 
-											strpos($attackType, 'spam') !== false) {
-										$badgeClass = 'bg-secondary';
-										$iconClass = 'bi-robot';
-									}
-								?>
-								<tr>
-									<td>
-										<span class="attack-log-ip">
-											<i class="bi bi-router"></i>
-											<?= esc($log['ip_address']) ?>
-										</span>
-									</td>
-									<td>
-										<span class="badge badge-attack <?= $badgeClass ?>">
-											<i class="<?= $iconClass ?> me-1"></i>
-											<?= esc($log['attack_type']) ?>
-										</span>
-									</td>
-									<td>
-										<small class="attack-uri text-break"><?= esc(strlen($log['request_uri']) > 80 ? substr($log['request_uri'], 0, 80) . '...' : $log['request_uri']) ?></small>
-									</td>
-									<td><small><?= date('d M Y, H:i:s', strtotime($log['created_at'])) ?></small></td>
-								</tr>
+						<div class="col-lg-2 col-md-6">
+							<label class="form-label small text-muted mb-1">Attack Type</label>
+							<select name="attack_type" class="form-select">
+								<option value="">All Types</option>
+								<?php foreach ($attack_types as $attackType): ?>
+								<option value="<?= esc($attackType) ?>" <?= $filters['attack_type'] === $attackType ? 'selected' : '' ?>><?= esc($attackType) ?></option>
 								<?php endforeach; ?>
-								<?php endif; ?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<?php if (isset($pager) && $pager->getPageCount() > 1): ?>
-				<div class="card-footer bg-white border-top py-3">
-					<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-						<div class="text-muted">
-							<i class="bi bi-file-text me-1"></i>
-							<small>Page <strong><?= $pager->getCurrentPage() ?></strong> of <strong><?= $pager->getPageCount() ?></strong></small>
-							<span class="mx-2">•</span>
-							<small>Total <strong><?= $pager->getTotal() ?></strong> entries</small>
+							</select>
 						</div>
-						<nav aria-label="Page navigation">
-							<?= $pager->links('default', 'default_full') ?>
-						</nav>
+						<div class="col-lg-2 col-md-6">
+							<label class="form-label small text-muted mb-1">Status</label>
+							<select name="status" class="form-select">
+								<option value="">All Status</option>
+								<option value="blocked" <?= $filters['status'] === 'blocked' ? 'selected' : '' ?>>Blocked</option>
+								<option value="allowed" <?= $filters['status'] === 'allowed' ? 'selected' : '' ?>>Allowed</option>
+							</select>
+						</div>
+						<div class="col-lg-2 col-md-6">
+							<label class="form-label small text-muted mb-1">Date From</label>
+							<input type="date" name="date_from" class="form-control" value="<?= esc($filters['date_from']) ?>">
+						</div>
+						<div class="col-lg-2 col-md-6">
+							<label class="form-label small text-muted mb-1">Date To</label>
+							<input type="date" name="date_to" class="form-control" value="<?= esc($filters['date_to']) ?>">
+						</div>
+						<div class="col-lg-1 col-md-6">
+							<button type="submit" class="btn btn-primary w-100">
+								<i class="bi bi-search"></i>
+							</button>
+						</div>
 					</div>
-				</div>
-				<?php endif; ?>
+				</form>
 			</div>
 		</div>
+
+		<div class="row g-3">
+			<div class="col-lg-7">
+				<div class="card monitor-card border-0 h-100">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-bell text-danger me-2"></i>Suspicious Activity Alert</h5>
+								<small class="text-muted">Highlight aktivitas dengan volume tinggi, severity tinggi, atau sudah masuk status blocked.</small>
+							</div>
+							<span class="badge text-bg-light border"><?= count($alerts) ?> alert</span>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="alert-list">
+							<?php if (!$alerts): ?>
+							<div class="text-center text-muted py-4">
+								<i class="bi bi-check2-circle fs-2 d-block mb-2"></i>
+								No alert matched current filter.
+							</div>
+							<?php else: ?>
+							<?php foreach ($alerts as $alert): ?>
+							<?php $meta = $severityMeta[$alert['severity']] ?? $severityMeta['low']; ?>
+							<div class="alert-item">
+								<div class="alert-icon <?= $meta['badge'] ?> bg-opacity-10">
+									<i class="bi <?= $meta['icon'] ?>"></i>
+								</div>
+								<div class="flex-grow-1">
+									<div class="d-flex justify-content-between gap-2 flex-wrap mb-1">
+										<strong><?= esc($alert['attack_type']) ?></strong>
+										<span class="badge <?= $meta['badge'] ?>"><?= strtoupper($alert['severity']) ?></span>
+									</div>
+									<p class="mb-1 small text-muted">IP <?= esc($alert['ip_address']) ?> memicu <?= (int) $alert['total'] ?> event. Last seen <?= date('d M Y H:i', strtotime($alert['last_seen'])) ?>.</p>
+									<small class="text-muted"><?= !empty($alert['blocked_until']) ? 'Proteksi otomatis aktif untuk IP ini.' : 'Perlu review lanjutan jika pola berlanjut.' ?></small>
+								</div>
+							</div>
+							<?php endforeach; ?>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="card monitor-card border-0 h-100">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-diagram-3 text-primary me-2"></i>Top IP Attacker</h5>
+								<small class="text-muted">IP dengan volume event tertinggi pada scope filter saat ini.</small>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="mini-list">
+							<?php if (!$top_attackers): ?>
+							<div class="text-center text-muted py-4">
+								<i class="bi bi-inbox fs-2 d-block mb-2"></i>
+								No attacker data.
+							</div>
+							<?php else: ?>
+							<?php foreach ($top_attackers as $attacker): ?>
+							<div class="mini-list-item">
+								<div>
+									<div class="mini-list-ip"><i class="bi bi-router"></i><?= esc($attacker['ip_address']) ?></div>
+									<small class="text-muted d-block mt-2">Last seen <?= date('d M Y H:i', strtotime($attacker['last_seen'])) ?></small>
+								</div>
+								<div class="text-end">
+									<div class="fw-bold"><?= number_format($attacker['total']) ?></div>
+									<small class="text-muted">events</small>
+								</div>
+							</div>
+							<?php endforeach; ?>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-3">
+			<div class="col-lg-8">
+				<div class="card monitor-card border-0">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-graph-up text-danger me-2"></i>Attack Timeline</h5>
+								<small class="text-muted">Trend event keamanan 7 hari terakhir mengikuti filter aktif.</small>
+							</div>
+							<span class="badge text-bg-light border">Last 7 Days</span>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="chart-box">
+							<canvas id="attackChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="card monitor-card border-0">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-pie-chart text-warning me-2"></i>Attack Types</h5>
+								<small class="text-muted">Distribusi jenis serangan terbanyak.</small>
+							</div>
+						</div>
+					</div>
+					<div class="card-body d-flex align-items-center justify-content-center">
+						<div class="chart-box chart-sm" style="max-width:260px; max-height:260px;">
+							<canvas id="typeChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-3">
+			<div class="col-lg-5">
+				<div class="card monitor-card border-0 h-100">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-bar-chart text-primary me-2"></i>Top Attacker Volume</h5>
+								<small class="text-muted">Perbandingan volume event antar IP attacker utama.</small>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="chart-box chart-sm">
+							<canvas id="attackerChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-7">
+				<div class="card monitor-card border-0 h-100">
+					<div class="card-header bg-white border-bottom">
+						<div class="monitor-section-header">
+							<div>
+								<h5 class="mb-1"><i class="bi bi-clock-history text-info me-2"></i>Last 24h Activity</h5>
+								<small class="text-muted">Distribusi event per jam untuk membaca spike aktivitas mencurigakan.</small>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="chart-box chart-sm">
+							<canvas id="hourlyChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card monitor-card border-0">
+			<div class="card-header bg-white border-bottom">
+				<div class="monitor-section-header">
+					<div>
+						<h5 class="mb-1"><i class="bi bi-list-ul text-primary me-2"></i>Event Log Detail</h5>
+						<small class="text-muted">Tabel event detail dengan user, endpoint, payload ringkas, status, dan akses detail per event.</small>
+					</div>
+					<div class="d-flex flex-wrap gap-2">
+						<span class="badge bg-danger">Blocked: <?= number_format($blocked_events) ?></span>
+						<span class="badge bg-success">Allowed: <?= number_format($allowed_events) ?></span>
+					</div>
+				</div>
+			</div>
+			<div class="card-body p-0">
+				<div class="table-responsive">
+					<table id="security-log-table" class="table table-hover log-table mb-0 w-100">
+						<thead>
+							<tr>
+								<th style="width:160px;">Timestamp</th>
+								<th style="width:145px;">IP</th>
+								<th style="width:150px;">Attack</th>
+								<th style="width:95px;">Status</th>
+								<th style="width:220px;">Endpoint</th>
+								<th style="width:220px;">Payload</th>
+								<th style="width:170px;">User</th>
+								<th style="width:90px;" class="text-center">Detail</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+			<div class="card-footer bg-white border-top py-0">
+				<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 px-3 py-2">
+					<div class="text-muted">
+						<small>Initial batch <strong id="security-loaded-count"><?= number_format($loaded_rows) ?></strong> rows</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header bg-white">
+				<h5 class="modal-title"><i class="bi bi-shield-exclamation me-2"></i>Security Event Detail</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="event-detail-loading" class="text-center py-5 text-muted">
+					<div class="spinner-border spinner-border-sm me-2"></div>Loading event detail...
+				</div>
+				<div id="event-detail-content" class="d-none">
+					<div class="detail-grid">
+						<div class="detail-box"><small class="text-muted d-block mb-1">Attack Type</small><strong id="detail-attack-type">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Status</small><strong id="detail-status">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">IP Address</small><strong id="detail-ip">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Timestamp</small><strong id="detail-time">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">User</small><strong id="detail-user">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Method / Endpoint</small><strong id="detail-endpoint">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Request Source</small><strong id="detail-source">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Request Count</small><strong id="detail-count">-</strong></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Payload Summary</small><pre id="detail-payload">-</pre></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">User Agent</small><pre id="detail-ua">-</pre></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Reason</small><pre id="detail-reason">-</pre></div>
+						<div class="detail-box"><small class="text-muted d-block mb-1">Threshold Info</small><pre id="detail-threshold">-</pre></div>
+					</div>
+				</div>
+				<div id="event-detail-error" class="d-none text-center py-5 text-danger">
+					<i class="bi bi-exclamation-circle fs-2 d-block mb-2"></i>
+					Failed to load event detail.
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
 <script>
-// Chart dimuat setelah konten utama tampil agar statistik dan tabel log
-// di atas fold tidak ikut tertahan oleh asset visual non-kritis.
-let attackChart, typeChart;
+let attackChart;
+let typeChart;
+let attackerChart;
+let hourlyChart;
+let eventDetailModal;
+let securityLogTable;
+
+function escapeHtml(value) {
+	return $('<div>').text(value || '').html();
+}
+
+function buildChartUrl() {
+	const params = new URLSearchParams(window.location.search);
+	params.delete('page');
+	const query = params.toString();
+	return '<?= base_url('securitymonitor/chartData') ?>' + (query ? ('?' + query) : '');
+}
+
+function buildLogTableUrl() {
+	const params = new URLSearchParams(window.location.search);
+	const query = params.toString();
+	return '<?= base_url('securitymonitor/logsData') ?>' + (query ? ('?' + query) : '');
+}
 
 function loadSecurityChartJs() {
 	return new Promise(function(resolve, reject) {
@@ -657,99 +791,325 @@ function loadSecurityChartJs() {
 }
 
 async function loadChartData() {
-	try {
-		const response = await fetch('<?= base_url('securitymonitor/chartData') ?>');
-		const data = await response.json();
-		
-		// Attack Timeline Chart
-		const ctx1 = document.getElementById('attackChart').getContext('2d');
-		attackChart = new Chart(ctx1, {
-			type: 'line',
-			data: {
-				labels: data.timeline.labels,
-				datasets: [{
-					label: 'Number of Attacks',
-					data: data.timeline.data,
-					borderColor: 'rgb(239, 68, 68)',
-					backgroundColor: 'rgba(239, 68, 68, 0.1)',
-					tension: 0.4,
-					fill: true,
-					borderWidth: 2
-				}]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false
-					}
-				},
-				scales: {
-					y: {
-						beginAtZero: true,
-						ticks: {
-							precision: 0
-						}
-					}
-				}
-			}
-		});
+	const response = await fetch(buildChartUrl(), {
+		headers: {
+			'X-Requested-With': 'XMLHttpRequest'
+		}
+	});
+	return response.json();
+}
 
-		// Attack Types Chart
-		const ctx2 = document.getElementById('typeChart').getContext('2d');
-		typeChart = new Chart(ctx2, {
-			type: 'doughnut',
-			data: {
-				labels: data.types.labels,
-				datasets: [{
-					data: data.types.data,
-					backgroundColor: [
-						'rgb(239, 68, 68)',
-						'rgb(234, 179, 8)',
-						'rgb(59, 130, 246)',
-						'rgb(124, 45, 18)',
-						'rgb(22, 163, 74)'
-					],
-					borderWidth: 0
-				}]
+function renderCharts(data) {
+	const commonGrid = {
+		color: 'rgba(148, 163, 184, 0.18)'
+	};
+
+	attackChart = new Chart(document.getElementById('attackChart').getContext('2d'), {
+		type: 'line',
+		data: {
+			labels: data.timeline.labels,
+			datasets: [{
+				label: 'Attack Events',
+				data: data.timeline.data,
+				borderColor: 'rgb(239, 68, 68)',
+				backgroundColor: 'rgba(239, 68, 68, 0.12)',
+				fill: true,
+				tension: 0.35,
+				borderWidth: 2
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: { display: false }
 			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: true,
-				plugins: {
-					legend: {
-						position: 'bottom',
-						labels: {
-							padding: 15,
-							font: {
-								size: 11
-							}
-						}
+			scales: {
+				y: {
+					beginAtZero: true,
+					grid: commonGrid,
+					ticks: { precision: 0 }
+				},
+				x: {
+					grid: { display: false }
+				}
+			}
+		}
+	});
+
+	typeChart = new Chart(document.getElementById('typeChart').getContext('2d'), {
+		type: 'doughnut',
+		data: {
+			labels: data.types.labels,
+			datasets: [{
+				data: data.types.data,
+				backgroundColor: [
+					'rgb(239, 68, 68)',
+					'rgb(234, 179, 8)',
+					'rgb(59, 130, 246)',
+					'rgb(251, 146, 60)',
+					'rgb(16, 185, 129)',
+					'rgb(107, 114, 128)'
+				],
+				borderWidth: 0
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					position: 'bottom',
+					labels: {
+						padding: 14,
+						font: { size: 11 }
 					}
 				}
 			}
+		}
+	});
+
+	attackerChart = new Chart(document.getElementById('attackerChart').getContext('2d'), {
+		type: 'bar',
+		data: {
+			labels: data.attackers.labels,
+			datasets: [{
+				label: 'Events',
+				data: data.attackers.data,
+				backgroundColor: 'rgba(37, 99, 235, 0.75)',
+				borderRadius: 8,
+				maxBarThickness: 38
+			}]
+		},
+		options: {
+			indexAxis: 'y',
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: { display: false }
+			},
+			scales: {
+				x: {
+					beginAtZero: true,
+					grid: commonGrid,
+					ticks: { precision: 0 }
+				},
+				y: {
+					grid: { display: false }
+				}
+			}
+		}
+	});
+
+	hourlyChart = new Chart(document.getElementById('hourlyChart').getContext('2d'), {
+		type: 'bar',
+		data: {
+			labels: data.hourly.labels,
+			datasets: [{
+				label: 'Events / hour',
+				data: data.hourly.data,
+				backgroundColor: 'rgba(14, 165, 233, 0.72)',
+				borderRadius: 6,
+				maxBarThickness: 18
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: { display: false }
+			},
+			scales: {
+				y: {
+					beginAtZero: true,
+					grid: commonGrid,
+					ticks: { precision: 0 }
+				},
+				x: {
+					grid: { display: false }
+				}
+			}
+		}
+	});
+}
+
+function setDetailLoadingState(state) {
+	document.getElementById('event-detail-loading').classList.toggle('d-none', state !== 'loading');
+	document.getElementById('event-detail-content').classList.toggle('d-none', state !== 'content');
+	document.getElementById('event-detail-error').classList.toggle('d-none', state !== 'error');
+}
+
+function setText(id, value) {
+	document.getElementById(id).textContent = value && value !== '' ? value : '-';
+}
+
+async function openEventDetail(id) {
+	setDetailLoadingState('loading');
+	eventDetailModal.show();
+
+	try {
+		const response = await fetch('<?= base_url('securitymonitor/eventDetail') ?>/' + id, {
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			}
 		});
+		const result = await response.json();
+		if (!result.success) {
+			throw new Error(result.message || 'Failed');
+		}
+
+		const data = result.data;
+		setText('detail-attack-type', data.attack_type);
+		setText('detail-status', data.event_status.toUpperCase());
+		setText('detail-ip', data.ip_address);
+		setText('detail-time', data.created_at);
+		setText('detail-user', data.user_label);
+		setText('detail-endpoint', data.request_method + ' ' + data.endpoint);
+		setText('detail-source', data.request_source || 'web_request');
+		setText('detail-count', String(data.count_in_window || 1));
+		setText('detail-payload', data.payload_summary || '-');
+		setText('detail-ua', data.user_agent_label || '-');
+		setText('detail-reason', data.request_reason || '-');
+		setText('detail-threshold', (data.threshold_limit ? ('Threshold: ' + data.threshold_limit) : 'Threshold: -') + ' | Count window: ' + (data.count_in_window || 1));
+		setDetailLoadingState('content');
 	} catch (error) {
-		console.error('Error loading chart data:', error);
+		setDetailLoadingState('error');
 	}
+}
+
+function bindEventDetailButtons() {
+	$('#security-log-table').on('click', '.event-detail-btn', function() {
+		openEventDetail($(this).data('id'));
+	});
+}
+
+function buildSeverityBadge(type, severity) {
+	const severityMap = {
+		critical: { badge: 'bg-danger', icon: 'bi-exclamation-octagon-fill' },
+		high: { badge: 'bg-warning text-dark', icon: 'bi-exclamation-triangle-fill' },
+		medium: { badge: 'bg-orange text-dark', icon: 'bi-shield-fill-exclamation' },
+		low: { badge: 'bg-info text-dark', icon: 'bi-info-circle-fill' }
+	};
+	const meta = severityMap[severity] || severityMap.low;
+	return '<span class="badge ' + meta.badge + '"><i class="bi ' + meta.icon + ' me-1"></i>' + escapeHtml(type) + '</span>';
+}
+
+function initSecurityLogTable() {
+	const $table = $('#security-log-table');
+	if (!$table.length || !$.fn.DataTable) {
+		return;
+	}
+
+	securityLogTable = $table.DataTable({
+		processing: true,
+		serverSide: true,
+		searching: false,
+		lengthChange: false,
+		pageLength: 15,
+		deferRender: true,
+		scrollX: true,
+		order: [[0, 'desc']],
+		ajax: {
+			url: buildLogTableUrl(),
+			type: 'POST',
+			dataSrc: function(json) {
+				$('#security-loaded-count').text(json.loaded_count || 0);
+				return json.data || [];
+			}
+		},
+		columns: [
+			{ data: 'created_at' },
+			{
+				data: 'ip_address',
+				render: function(data) {
+					return '<span class="event-ip"><i class="bi bi-router"></i>' + escapeHtml(data) + '</span>';
+				}
+			},
+			{
+				data: null,
+				orderable: false,
+				render: function(data, type, row) {
+					return buildSeverityBadge(row.attack_type, row.severity);
+				}
+			},
+			{
+				data: 'event_status',
+				render: function(data) {
+					const badgeClass = data === 'blocked' ? 'bg-danger' : 'bg-success';
+					return '<span class="badge ' + badgeClass + '">' + escapeHtml(String(data).toUpperCase()) + '</span>';
+				}
+			},
+			{
+				data: null,
+				orderable: false,
+				render: function(data, type, row) {
+					return '<div class="small fw-semibold">' + escapeHtml(row.request_method) + '</div><small class="event-uri text-break">' + escapeHtml(row.endpoint) + '</small>';
+				}
+			},
+			{
+				data: 'payload_summary',
+				orderable: false,
+				render: function(data) {
+					return '<small class="event-uri text-break">' + escapeHtml(data || '-') + '</small>';
+				}
+			},
+			{
+				data: null,
+				orderable: false,
+				render: function(data, type, row) {
+					return '<div class="small fw-semibold">' + escapeHtml(row.user_label) + '</div><small class="text-muted">' + escapeHtml(row.request_source) + '</small>';
+				}
+			},
+			{
+				data: 'id',
+				orderable: false,
+				searchable: false,
+				className: 'text-center',
+				render: function(data) {
+					return '<button type="button" class="btn btn-sm btn-outline-primary event-detail-btn" data-id="' + data + '"><i class="bi bi-eye"></i></button>';
+				}
+			}
+		],
+		language: {
+			emptyTable: 'No security event found for current filter.',
+			zeroRecords: 'No security event found for current filter.'
+		}
+	});
 }
 
 function bootSecurityCharts() {
 	loadSecurityChartJs()
-		.then(function() {
-			loadChartData();
-		})
-		.catch(function() {
-			console.error('Error loading chart library');
+		.then(loadChartData)
+		.then(renderCharts)
+		.catch(function(error) {
+			console.error('Error loading security charts:', error);
 		});
 }
 
-if ('requestIdleCallback' in window) {
-	requestIdleCallback(bootSecurityCharts, { timeout: 1200 });
-} else if (window.NSModulePerformance) {
-	window.NSModulePerformance.defer(bootSecurityCharts);
-} else {
-	setTimeout(bootSecurityCharts, 200);
+function bootSecurityLogTable() {
+	if ('requestIdleCallback' in window) {
+		requestIdleCallback(initSecurityLogTable, { timeout: 800 });
+	} else {
+		setTimeout(initSecurityLogTable, 120);
+	}
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	const modalElement = document.getElementById('eventDetailModal');
+	if (modalElement && modalElement.parentElement !== document.body) {
+		document.body.appendChild(modalElement);
+	}
+
+	eventDetailModal = new bootstrap.Modal(modalElement, {
+		backdrop: false
+	});
+	bindEventDetailButtons();
+	bootSecurityLogTable();
+
+	if ('requestIdleCallback' in window) {
+		requestIdleCallback(bootSecurityCharts, { timeout: 1200 });
+	} else {
+		setTimeout(bootSecurityCharts, 200);
+	}
+});
 </script>
