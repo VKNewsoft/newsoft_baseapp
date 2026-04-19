@@ -1,4 +1,13 @@
 <div class="page-shell">
+	<?php
+	/**
+	 * Nilai filter awal dipakai ulang oleh web dan mobile supaya perubahan
+	 * state filter tetap konsisten walau mekanisme render keduanya berbeda.
+	 */
+	$filters = $email_expiration_filters ?? [];
+	$renewStatus = $filters['renew_status'] ?? 'all';
+	$sortExpiration = $filters['sort_expiration'] ?? 'nearest';
+	?>
 	<div class="page-hero">
 		<div>
 			<div class="page-kicker">Subscription</div>
@@ -16,6 +25,23 @@
 				<div>
 					<h5 class="mb-1">Daftar Akun Email</h5>
 					<p class="mb-0 text-muted">Status aktif, mendekati expired, dan expired ditampilkan langsung agar aksi renew lebih cepat dan akurat.</p>
+				</div>
+				<div class="email-expiration-filter-bar">
+					<div class="email-expiration-filter-item">
+						<label for="filter-renew-status" class="form-label mb-1">Status</label>
+						<select id="filter-renew-status" class="form-select form-select-sm">
+							<option value="all" <?=$renewStatus === 'all' ? 'selected' : ''?>>Semua</option>
+							<option value="ready" <?=$renewStatus === 'ready' ? 'selected' : ''?>>Perlu renew</option>
+							<option value="not_ready" <?=$renewStatus === 'not_ready' ? 'selected' : ''?>>Belum perlu</option>
+						</select>
+					</div>
+					<div class="email-expiration-filter-item">
+						<label for="filter-sort-expiration" class="form-label mb-1">Urutan</label>
+						<select id="filter-sort-expiration" class="form-select form-select-sm">
+							<option value="nearest" <?=$sortExpiration === 'nearest' ? 'selected' : ''?>>Terdekat expired</option>
+							<option value="longest" <?=$sortExpiration === 'longest' ? 'selected' : ''?>>Terlama expired</option>
+						</select>
+					</div>
 				</div>
 			</div>
 
@@ -35,7 +61,7 @@
 					'ignore_search_action' => 'Action'
 				];
 
-				$settings['order'] = [4, 'asc'];
+				$settings['order'] = [0, 'asc'];
 				$index = 0;
 				$th = '';
 				foreach ($column as $key => $val) {
@@ -71,7 +97,54 @@
 				<span id="dataTables-column" style="display:none"><?=json_encode($columnDt)?></span>
 				<span id="dataTables-setting" style="display:none"><?=json_encode($settings)?></span>
 				<span id="dataTables-url" style="display:none"><?=current_url() . '/getDataDT'?></span>
+				<span id="mobile-list-url" style="display:none"><?=current_url() . '/getMobileList'?></span>
 				<span id="dataTables-scrolls" style="display:none">350</span>
+			</div>
+
+			<div class="email-expiration-mobile" id="email-expiration-mobile">
+				<div class="email-expiration-mobile__header">
+					<div>
+						<h5 class="mb-1">Daftar Mobile</h5>
+						<p class="mb-0 text-muted">Tampilan ringkas untuk cek status email dan renew langsung dari layar mobile.</p>
+					</div>
+					<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#mobile-filter-sheet" aria-controls="mobile-filter-sheet">
+						<i class="fas fa-sliders-h me-1"></i>Filter
+					</button>
+				</div>
+				<div class="email-expiration-mobile__list" id="email-expiration-mobile-list"></div>
+				<div class="email-expiration-mobile__empty d-none" id="email-expiration-mobile-empty">
+					Data email tidak ditemukan untuk filter saat ini.
+				</div>
+				<div class="email-expiration-mobile__footer">
+					<button type="button" class="btn btn-outline-primary w-100" id="email-expiration-load-more">Load More</button>
+				</div>
+			</div>
+
+			<div class="offcanvas offcanvas-bottom email-expiration-filter-sheet" tabindex="-1" id="mobile-filter-sheet" aria-labelledby="mobile-filter-sheet-label">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title" id="mobile-filter-sheet-label">Filter Email Expiration</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body">
+					<div class="email-expiration-mobile__filters">
+						<div class="email-expiration-filter-item">
+							<label for="mobile-filter-renew-status" class="form-label mb-1">Status</label>
+							<select id="mobile-filter-renew-status" class="form-select">
+								<option value="all" <?=$renewStatus === 'all' ? 'selected' : ''?>>Semua</option>
+								<option value="ready" <?=$renewStatus === 'ready' ? 'selected' : ''?>>Perlu renew</option>
+								<option value="not_ready" <?=$renewStatus === 'not_ready' ? 'selected' : ''?>>Belum perlu</option>
+							</select>
+						</div>
+						<div class="email-expiration-filter-item">
+							<label for="mobile-filter-sort-expiration" class="form-label mb-1">Urutan</label>
+							<select id="mobile-filter-sort-expiration" class="form-select">
+								<option value="nearest" <?=$sortExpiration === 'nearest' ? 'selected' : ''?>>Terdekat</option>
+								<option value="longest" <?=$sortExpiration === 'longest' ? 'selected' : ''?>>Terlama</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-primary w-100" id="mobile-apply-filter" data-bs-dismiss="offcanvas">Terapkan Filter</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

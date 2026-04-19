@@ -1,0 +1,163 @@
+.email-expiration-filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: end;
+	justify-content: flex-end;
+}
+
+.email-expiration-filter-item {
+	min-width: 190px;
+}
+
+.email-expiration-mobile {
+	display: none;
+	padding: 18px;
+	padding-bottom: 110px;
+	border-top: 1px solid #e9edf5;
+	background: #f8fafc;
+}
+
+.email-expiration-mobile__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.email-expiration-mobile__filters {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.email-expiration-mobile__list {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+}
+
+.email-expiration-mobile__card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 14px;
+	box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.email-expiration-mobile__top {
+	display: flex;
+	align-items: start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.email-expiration-mobile__subscription {
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #64748b;
+}
+
+.email-expiration-mobile__email {
+	font-size: 15px;
+	font-weight: 700;
+	color: #0f172a;
+	word-break: break-word;
+}
+
+.email-expiration-mobile__meta {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.email-expiration-mobile__meta-label {
+	display: block;
+	font-size: 11px;
+	color: #64748b;
+	margin-bottom: 2px;
+}
+
+.email-expiration-mobile__meta-value {
+	font-size: 13px;
+	font-weight: 600;
+	color: #1e293b;
+}
+
+.email-expiration-mobile__remaining.is-expired {
+	color: #b91c1c;
+}
+
+.email-expiration-mobile__remaining.is-active {
+	color: #b45309;
+}
+
+.email-expiration-mobile__footer {
+	margin-top: 16px;
+	margin-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.email-expiration-mobile__empty {
+	padding: 16px;
+	text-align: center;
+	color: #64748b;
+	background: #ffffff;
+	border: 1px dashed #cbd5e1;
+	border-radius: 14px;
+}
+
+.email-expiration-filter-sheet {
+	height: auto !important;
+	max-height: 62vh;
+	border-top-left-radius: 18px;
+	border-top-right-radius: 18px;
+	z-index: 1080 !important;
+	margin-bottom: 86px;
+}
+
+.email-expiration-filter-sheet .offcanvas-body {
+	padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+.email-expiration-filter-sheet + .offcanvas-backdrop,
+.offcanvas-backdrop.show {
+	z-index: 1075;
+}
+
+@media screen and (max-width: 960px) {
+	/**
+	 * Tampilan mobile dipisah dari DataTable desktop agar UX layar kecil lebih
+	 * fokus ke card ringkas dan tidak memaksa render tabel lebar.
+	 */
+	.result-table-region {
+		display: none;
+	}
+
+	.email-expiration-mobile {
+		display: block;
+	}
+
+	.email-expiration-mobile__header {
+		position: sticky;
+		top: 0;
+		z-index: 3;
+		padding: 10px 0 12px;
+		background: #f8fafc;
+	}
+
+	.email-expiration-filter-bar {
+		display: none;
+	}
+}
+
+@media screen and (min-width: 961px) {
+	.email-expiration-mobile {
+		display: none !important;
+	}
+}
