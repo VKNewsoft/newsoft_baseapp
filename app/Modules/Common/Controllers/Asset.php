@@ -61,9 +61,23 @@ class Asset extends Controller
 		$assetVersion = service('request')->getGet('v') ?: service('request')->getGet('r');
 		$cacheControl = $assetVersion ? 'public, max-age=31536000, immutable' : 'public, max-age=86400';
 
-		return service('response')
+		// Header bawaan PHP/Apache yang bersifat no-cache dibersihkan lebih dulu
+		// agar asset versioned benar-benar dapat memakai cache browser publik.
+		header_remove('Cache-Control');
+		header_remove('Pragma');
+		header_remove('Expires');
+
+		$response = service('response');
+		$response->removeHeader('Cache-Control')
+			->removeHeader('Pragma')
+			->removeHeader('Expires');
+
+		// Native header replace dipakai sebagai lapisan akhir agar value cache
+		// tidak tergabung lagi dengan header no-cache bawaan environment.
+		header('Cache-Control: ' . $cacheControl, true);
+
+		return $response
 			->setHeader('Content-Type', $mimeType)
-			->setHeader('Cache-Control', $cacheControl)
 			->setBody(file_get_contents($filePath));
 	}
 }

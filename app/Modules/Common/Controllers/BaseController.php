@@ -137,8 +137,8 @@ class BaseController extends Controller
 			$this->user = $this->session->get('user');
 			$this->data['user'] = $this->user;	
 
-			// List action assigned to role
-			$this->data['action_user'] = $this->userPermission;
+			// Menu dibaca dari cache model agar bootstrap halaman admin
+			// tidak membangun tree navigasi penuh pada setiap request.
 			$this->data['menu'] = $this->model->getMenu($this->currentModule['nama_module']);
 			
 			$this->data['breadcrumb'] = ['Home' => $this->config->baseURL, $this->currentModule['judul_module'] => $this->moduleURL];
@@ -149,17 +149,18 @@ class BaseController extends Controller
 			
 			$this->getModulePermission();
 			$this->getListPermission();
-			
-			$result = $this->model->getAllModulePermission((int) ($this->session->get('user')['id_user'] ?? 0));
-			$all_module_permission = [];
-			if ($result) {
-				foreach ($result as $val) {
-					$all_module_permission[$val['id_module']][$val['nama_permission']] = $val;
-				}
-			}
+
+			// Session permission map diperbarui periodik saja agar akurat tetapi
+			// tidak menambah write session dan loop array besar di setiap request.
 			$sessionUser = $this->session->get('user') ?: [];
-			$sessionUser['all_permission'] = $all_module_permission;
-			$this->session->set('user', $sessionUser);
+			$permissionCacheExpiresAt = (int) ($sessionUser['all_permission_expires_at'] ?? 0);
+			if ($permissionCacheExpiresAt < time() || empty($sessionUser['all_permission'])) {
+				$sessionUser['all_permission'] = $this->model->getAllModulePermissionMap((int) ($sessionUser['id_user'] ?? 0));
+				$sessionUser['all_permission_expires_at'] = time() + 180;
+				$this->session->set('user', $sessionUser);
+			}
+
+			$this->data['action_user'] = $this->userPermission;
 			
 			// Check Global Role Action
 			$this->checkRoleAction();
@@ -200,13 +201,9 @@ class BaseController extends Controller
 			return;
 		}
 
-		$query = $this->model->getModulePermission($this->currentModule['id_module']);
-		
-		$this->modulePermission = [];
-		foreach ($query as $val) {
-			$nama_permission = $val['nama_permission'] ?: 'null';
-			$this->modulePermission[$val['id_role']][$nama_permission] = $nama_permission;
-		}
+		// Permission module dibentuk langsung dari cache map agar BaseController
+		// tidak mengulang transformasi array yang sama pada setiap request.
+		$this->modulePermission = $this->model->getModulePermissionMap((int) $this->currentModule['id_module']);
 	}
 	
 	public function getIdentitas() {

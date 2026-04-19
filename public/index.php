@@ -32,8 +32,15 @@ chdir(__DIR__);
 require $pathsPath;
 $paths = new Config\Paths();
 
-// Location of the framework bootstrap file.
-$app = require rtrim($paths->systemDirectory, '/ ') . '/bootstrap.php';
+// Bootstrap framework terbaru hanya menyiapkan environment dan autoloader.
+// Inisialisasi instance aplikasi dilakukan eksplisit agar front controller
+// tetap kompatibel dengan struktur system CodeIgniter yang dipakai project.
+require rtrim($paths->systemDirectory, '/ ') . '/bootstrap.php';
+require_once SYSTEMPATH . 'CodeIgniter.php';
+
+$app = Config\Services::codeigniter();
+$app->initialize();
+$app->setContext(is_cli() ? 'php-cli' : 'web');
 
 /*
  *---------------------------------------------------------------
