@@ -49,7 +49,10 @@ class DbSynchronisation extends \App\Modules\Common\Controllers\BaseController
 			return redirect()->to($this->moduleURL);
 		}
 
-		$result = $this->model->applySafeSync();
+		// Mode sinkronisasi dipilih dari tombol submit agar flow lama tetap aman,
+		// sekaligus membuka opsi full sync untuk seluruh diff yang punya SQL.
+		$syncMode = $this->request->getPost('sync_mode') === 'full' ? 'full' : 'safe';
+		$result = $syncMode === 'full' ? $this->model->applyFullSync() : $this->model->applySafeSync();
 		$message = $result['message'];
 		if (!empty($result['errors'])) {
 			$message .= '<br>' . implode('<br>', $result['errors']);
