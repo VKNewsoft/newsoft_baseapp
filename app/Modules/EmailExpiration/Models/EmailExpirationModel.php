@@ -146,7 +146,7 @@ class EmailExpirationModel extends \App\Modules\Common\Models\BaseModel
 			if ($this->db->transStatus()) {
 				return [
 					'status' => 'ok',
-					'message' => 'Data email expiration berhasil disimpan'
+					'message' => 'Data subscription manager berhasil disimpan'
 				];
 			}
 		} catch (\Throwable $e) {
@@ -158,7 +158,7 @@ class EmailExpirationModel extends \App\Modules\Common\Models\BaseModel
 
 		return [
 			'status' => 'error',
-			'message' => 'Data email expiration gagal disimpan'
+			'message' => 'Data subscription manager gagal disimpan'
 		];
 	}
 

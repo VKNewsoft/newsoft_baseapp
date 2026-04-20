@@ -1,6 +1,6 @@
 <?php
 /**
- * Controller Email Expiration.
+ * Controller Subscription Manager.
  *
  * Controller ini mengikuti pola CRUD popup/DataTable existing agar
  * pengalaman pakai dan maintenance tetap konsisten antar module.
@@ -24,7 +24,7 @@ class EmailExpiration extends \App\Modules\Common\Controllers\BaseController
 		$emailExpirationCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/EmailExpiration/Assets/css/email-expiration.css');
 
 		$this->model = new EmailExpirationModel();
-		$this->data['site_title'] = 'Email Expiration';
+		$this->data['site_title'] = 'Subscription Manager';
 
 		// Asset result page dipakai ulang dari Common, sedangkan interaksi CRUD
 		// spesifik module tetap diload dari asset lokal module ini.
