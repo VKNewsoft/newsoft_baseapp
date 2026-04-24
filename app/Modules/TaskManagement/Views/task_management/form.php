@@ -121,8 +121,8 @@ $tokenUsageEditData = $token_usage_edit ?? [];
 				</div>
 			</form>
 
-			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-hover align-middle mb-0">
+			<div class="table-responsive project-suite-table">
+				<table class="table table-striped table-bordered table-hover align-middle mb-0" data-project-datatable="1" data-page-length="10" data-order='[[0,"desc"]]'>
 					<thead>
 						<tr>
 							<th>Waktu</th>
@@ -157,6 +157,44 @@ $tokenUsageEditData = $token_usage_edit ?? [];
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+			</div>
+
+			<?php
+			/**
+			 * Riwayat token usage pada mobile dibuat menjadi card agar proses audit
+			 * log task tetap nyaman dibaca tanpa perlu scroll tabel ke samping.
+			 */
+			?>
+			<div class="project-suite-card-list mt-3">
+				<?php if (empty($token_usage_history)): ?>
+					<div class="project-suite-empty">Belum ada log token usage untuk task ini</div>
+				<?php endif; ?>
+
+				<?php foreach ($token_usage_history as $tokenUsage): ?>
+					<div class="project-suite-card">
+						<div class="project-suite-card__header">
+							<div>
+								<div class="project-suite-card__title"><?=date('d M Y H:i', strtotime($tokenUsage['created_at']))?></div>
+								<div class="project-suite-card__subtitle"><?=esc(ucfirst($tokenUsage['usage_type']))?></div>
+							</div>
+							<span class="project-suite-card__badge project-suite-card__badge--neutral"><?=number_format((float) $tokenUsage['token_used'], 0, ',', '.')?></span>
+						</div>
+						<div class="project-suite-card__meta">
+							<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+								<div class="project-suite-card__meta-label">Catatan</div>
+								<div class="project-suite-card__meta-value"><?=esc($tokenUsage['notes'] ?: '-')?></div>
+							</div>
+						</div>
+						<div class="project-suite-card__actions">
+							<a href="<?=$module_url . '/edit?id=' . $taskData['id_project_task'] . '&token_usage_id=' . $tokenUsage['id_task_token_usage']?>" class="btn btn-success btn-sm">Edit</a>
+							<form method="post" action="" onsubmit="return confirm('Hapus log token usage ini?')">
+								<?=csrf_field()?>
+								<input type="hidden" name="usage_id" value="<?=esc($tokenUsage['id_task_token_usage'])?>">
+								<button type="submit" name="delete_token_usage" value="delete_token_usage" class="btn btn-outline-danger btn-sm">Hapus</button>
+							</form>
+						</div>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
 	</div>

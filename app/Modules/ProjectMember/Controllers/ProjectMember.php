@@ -14,8 +14,16 @@ class ProjectMember extends \App\Modules\Common\Controllers\BaseController
 	public function __construct()
 	{
 		parent::__construct();
+		$projectSuiteCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/project-suite.css');
+		$projectSuiteJsVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/project-suite.js');
 		$this->model = new ProjectMemberModel();
 		$this->data['site_title'] = 'Project Member';
+		/**
+		 * Asset shared dipasang agar list member bisa memakai DataTable desktop
+		 * dan card mobile dengan perilaku yang konsisten.
+		 */
+		$this->addStyle($this->commonAsset('css/project-suite.css') . $projectSuiteCssVersion);
+		$this->addJs($this->commonAsset('js/project-suite.js') . $projectSuiteJsVersion);
 		helper(['html', 'form']);
 	}
 

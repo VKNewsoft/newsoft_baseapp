@@ -47,6 +47,24 @@ class TaskManagementModel extends ProjectReferenceModel
 			$builder->where('pt.status', $filters['status']);
 		}
 
+		/**
+		 * Rentang tanggal memakai logika overlap agar task yang masih berjalan
+		 * di dalam periode filter tetap ikut tampil pada daftar.
+		 */
+		if (!empty($filters['date_from'])) {
+			$builder->groupStart()
+				->where('pt.end_date IS NULL', null, false)
+				->orWhere('DATE(pt.end_date) >=', $filters['date_from'])
+				->groupEnd();
+		}
+
+		if (!empty($filters['date_to'])) {
+			$builder->groupStart()
+				->where('pt.start_date IS NULL', null, false)
+				->orWhere('DATE(pt.start_date) <=', $filters['date_to'])
+				->groupEnd();
+		}
+
 		$rows = $builder->get()->getResultArray();
 		$grouped = [];
 		foreach ($rows as $row) {

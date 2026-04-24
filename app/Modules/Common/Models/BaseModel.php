@@ -399,6 +399,46 @@ class BaseModel extends \CodeIgniter\Model
 				'login' => 'Y',
 				'deskripsi' => 'Module untuk memantau subscription masa aktif akun email dan proses renew periodenya',
 				'is_fallback_module' => true
+			],
+			'project' => [
+				'id_module' => 126,
+				'nama_module' => 'project',
+				'judul_module' => 'Project List',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk mengelola master project dan reporting token usage per project',
+				'is_fallback_module' => true
+			],
+			'project-category' => [
+				'id_module' => 127,
+				'nama_module' => 'project-category',
+				'judul_module' => 'Category List',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk mengelola kategori project',
+				'is_fallback_module' => true
+			],
+			'project-member' => [
+				'id_module' => 128,
+				'nama_module' => 'project-member',
+				'judul_module' => 'Project Member',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk mengelola anggota project',
+				'is_fallback_module' => true
+			],
+			'task-management' => [
+				'id_module' => 129,
+				'nama_module' => 'task-management',
+				'judul_module' => 'Task List',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk mengelola task project dan log AI token usage',
+				'is_fallback_module' => true
 			]
 		];
 	}
@@ -519,6 +559,141 @@ class BaseModel extends \CodeIgniter\Model
 					'aktif' => 1,
 					'new' => 0,
 					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'project' => [
+				'menu' => [
+					'id_menu' => 175,
+					'nama_menu' => 'Project List',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'project',
+					'id_module' => 126,
+					'nama_module' => 'project',
+					'judul_module' => 'Project List',
+					'id_parent' => 174,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 1,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 174,
+					'nama_menu' => 'Project',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-diagram-project',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'project-category' => [
+				'menu' => [
+					'id_menu' => 176,
+					'nama_menu' => 'Category List',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'project-category',
+					'id_module' => 127,
+					'nama_module' => 'project-category',
+					'judul_module' => 'Category List',
+					'id_parent' => 174,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 174,
+					'nama_menu' => 'Project',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-diagram-project',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'task-management' => [
+				'menu' => [
+					'id_menu' => 177,
+					'nama_menu' => 'Task List',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'task-management',
+					'id_module' => 129,
+					'nama_module' => 'task-management',
+					'judul_module' => 'Task List',
+					'id_parent' => 174,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 174,
+					'nama_menu' => 'Project',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-diagram-project',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 3,
 					'highlight' => 0,
 					'depth' => 0,
 					'is_fallback_menu' => true

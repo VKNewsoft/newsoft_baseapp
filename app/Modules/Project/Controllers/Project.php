@@ -14,8 +14,16 @@ class Project extends \App\Modules\Common\Controllers\BaseController
 	public function __construct()
 	{
 		parent::__construct();
+		$projectSuiteCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/project-suite.css');
+		$projectSuiteJsVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/project-suite.js');
 		$this->model = new ProjectModel();
 		$this->data['site_title'] = 'Project';
+		/**
+		 * Asset suite project dipakai bersama agar tampilan desktop DataTable
+		 * dan card mobile konsisten di seluruh modul project.
+		 */
+		$this->addStyle($this->commonAsset('css/project-suite.css') . $projectSuiteCssVersion);
+		$this->addJs($this->commonAsset('js/project-suite.js') . $projectSuiteJsVersion);
 		helper(['html', 'form']);
 	}
 

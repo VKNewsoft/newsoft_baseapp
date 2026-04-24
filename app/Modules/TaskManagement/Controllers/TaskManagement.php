@@ -14,10 +14,14 @@ class TaskManagement extends \App\Modules\Common\Controllers\BaseController
 	public function __construct()
 	{
 		parent::__construct();
+		$projectSuiteCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/project-suite.css');
+		$projectSuiteJsVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/project-suite.js');
 		$this->model = new TaskManagementModel();
 		$this->data['site_title'] = 'Task Management';
 
 		// Script form dipisahkan agar dropdown anggota project dapat berubah dinamis saat project diganti.
+		$this->addStyle($this->commonAsset('css/project-suite.css') . $projectSuiteCssVersion);
+		$this->addJs($this->commonAsset('js/project-suite.js') . $projectSuiteJsVersion);
 		$this->addJs($this->moduleAsset('js/task-form.js') . '?v=' . @filemtime(APPPATH . 'Modules/TaskManagement/Assets/js/task-form.js'));
 		helper(['html', 'form']);
 	}
@@ -30,6 +34,12 @@ class TaskManagement extends \App\Modules\Common\Controllers\BaseController
 			'project_id' => (int) $this->request->getGet('project_id'),
 			'member_id' => (int) $this->request->getGet('member_id'),
 			'status' => trim((string) $this->request->getGet('status')),
+			/**
+			 * Filter tanggal dipakai untuk mempersempit task berdasarkan rentang
+			 * timeline tanpa mengubah struktur list dan grouping yang sudah ada.
+			 */
+			'date_from' => $this->model->normalizeDate($this->request->getGet('date_from')),
+			'date_to' => $this->model->normalizeDate($this->request->getGet('date_to')),
 		];
 
 		$data = $this->data;
@@ -64,6 +74,8 @@ class TaskManagement extends \App\Modules\Common\Controllers\BaseController
 			'project_id' => (int) $this->request->getPost('project_id_filter'),
 			'member_id' => (int) $this->request->getPost('member_id_filter'),
 			'status' => trim((string) $this->request->getPost('status_filter')),
+			'date_from' => trim((string) $this->request->getPost('date_from_filter')),
+			'date_to' => trim((string) $this->request->getPost('date_to_filter')),
 		], static fn ($value) => $value !== '' && $value !== 0));
 
 		return redirect()->to($this->moduleURL . ($query ? '?' . $query : ''));

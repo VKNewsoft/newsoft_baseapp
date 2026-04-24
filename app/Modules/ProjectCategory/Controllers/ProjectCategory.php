@@ -14,8 +14,16 @@ class ProjectCategory extends \App\Modules\Common\Controllers\BaseController
 	public function __construct()
 	{
 		parent::__construct();
+		$projectSuiteCssVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/css/project-suite.css');
+		$projectSuiteJsVersion = '?v=' . @filemtime(APPPATH . 'Modules/Common/Assets/js/project-suite.js');
 		$this->model = new ProjectCategoryModel();
 		$this->data['site_title'] = 'Project Category';
+		/**
+		 * Asset responsif dipakai ulang agar kategori project mengikuti pola UI
+		 * suite project tanpa menambah logika baru di controller.
+		 */
+		$this->addStyle($this->commonAsset('css/project-suite.css') . $projectSuiteCssVersion);
+		$this->addJs($this->commonAsset('js/project-suite.js') . $projectSuiteJsVersion);
 		helper(['html', 'form']);
 	}
 

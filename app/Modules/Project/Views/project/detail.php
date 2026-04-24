@@ -55,24 +55,27 @@ $timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['
 		</div>
 	</div>
 
-	<div class="card page-card mb-4">
+	<div class="card page-card project-suite-filter-card mb-4">
 		<div class="card-body">
 			<form method="get" class="row g-3">
 				<input type="hidden" name="id" value="<?=$project['id_project']?>">
-				<div class="col-md-4">
+				<div class="col-lg-4 col-md-6">
 					<label class="form-label">Member</label>
 					<?=options(['name' => 'user_id', 'class' => 'form-select'], $project_user_options, $token_filters['user_id'])?>
 				</div>
-				<div class="col-md-3">
+				<div class="col-lg-3 col-md-6">
 					<label class="form-label">Tanggal Dari</label>
 					<input type="date" name="date_from" class="form-control" value="<?=esc($token_filters['date_from'] ?? '')?>">
 				</div>
-				<div class="col-md-3">
+				<div class="col-lg-3 col-md-6">
 					<label class="form-label">Tanggal Sampai</label>
 					<input type="date" name="date_to" class="form-control" value="<?=esc($token_filters['date_to'] ?? '')?>">
 				</div>
-				<div class="col-md-2 d-flex align-items-end gap-2">
-					<button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-1"></i> Filter</button>
+				<div class="col-lg-2 col-md-6">
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i> Filter</button>
+						<a href="<?=$module_url?>/detail?id=<?=$project['id_project']?>" class="btn btn-outline-secondary">Reset</a>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -85,7 +88,7 @@ $timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['
 				<p class="mb-0 text-muted">Summary ini mengikuti filter member dan rentang tanggal yang sedang aktif.</p>
 			</div>
 		</div>
-		<div class="table-responsive card-table-wrap">
+		<div class="table-responsive card-table-wrap project-suite-table">
 			<table class="table table-striped table-bordered table-hover align-middle mb-0">
 				<thead>
 					<tr>
@@ -118,6 +121,45 @@ $timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['
 				</tfoot>
 			</table>
 		</div>
+
+		<?php
+		/**
+		 * Ringkasan per member ditampilkan ulang dalam bentuk card agar total
+		 * token tetap terbaca jelas pada mobile tanpa scroll horizontal.
+		 */
+		?>
+		<div class="project-suite-card-list p-3">
+			<?php if (!$token_summary_members): ?>
+				<div class="project-suite-empty">Belum ada summary token usage</div>
+			<?php endif; ?>
+
+			<?php foreach ($token_summary_members as $summary): ?>
+				<div class="project-suite-card">
+					<div class="project-suite-card__header">
+						<div>
+							<div class="project-suite-card__title"><?=esc($summary['nama'])?></div>
+							<div class="project-suite-card__subtitle"><?=esc($summary['username'])?></div>
+						</div>
+						<span class="project-suite-card__badge project-suite-card__badge--neutral"><?=number_format((float) $summary['total_token_used'], 0, ',', '.')?></span>
+					</div>
+					<div class="project-suite-card__meta">
+						<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+							<div class="project-suite-card__meta-label">Total Token</div>
+							<div class="project-suite-card__meta-value"><?=number_format((float) $summary['total_token_used'], 0, ',', '.')?></div>
+						</div>
+					</div>
+				</div>
+			<?php endforeach; ?>
+
+			<div class="project-suite-card">
+				<div class="project-suite-card__meta">
+					<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+						<div class="project-suite-card__meta-label">Total Project Token Usage</div>
+						<div class="project-suite-card__meta-value"><?=number_format((float) $token_total, 0, ',', '.')?></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="card page-card">
@@ -127,8 +169,8 @@ $timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['
 				<p class="mb-0 text-muted">Riwayat ini memperlihatkan hubungan log token dengan task dan member project.</p>
 			</div>
 		</div>
-		<div class="table-responsive card-table-wrap">
-			<table class="table table-striped table-bordered table-hover align-middle mb-0">
+		<div class="table-responsive card-table-wrap project-suite-table">
+			<table class="table table-striped table-bordered table-hover align-middle mb-0" data-project-datatable="1" data-page-length="10" data-order='[[0,"desc"]]'>
 				<thead>
 					<tr>
 						<th>Waktu</th>
@@ -164,6 +206,52 @@ $timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+		</div>
+
+		<?php
+		/**
+		 * Riwayat usage dibuat versi card mobile agar task, member, dan token
+		 * tetap informatif saat halaman dibuka dari layar kecil.
+		 */
+		?>
+		<div class="project-suite-card-list p-3">
+			<?php if (!$token_logs): ?>
+				<div class="project-suite-empty">Belum ada riwayat token usage</div>
+			<?php endif; ?>
+
+			<?php foreach ($token_logs as $log): ?>
+				<div class="project-suite-card">
+					<div class="project-suite-card__header">
+						<div>
+							<div class="project-suite-card__title"><?=esc($log['task_title'])?></div>
+							<div class="project-suite-card__subtitle"><?=date('d M Y H:i', strtotime($log['created_at']))?></div>
+						</div>
+						<span class="project-suite-card__badge project-suite-card__badge--neutral"><?=number_format((float) $log['token_used'], 0, ',', '.')?></span>
+					</div>
+					<div class="project-suite-card__meta">
+						<div class="project-suite-card__meta-item">
+							<div class="project-suite-card__meta-label">Member</div>
+							<div class="project-suite-card__meta-value"><?=esc($log['user_name'])?></div>
+						</div>
+						<div class="project-suite-card__meta-item">
+							<div class="project-suite-card__meta-label">Username</div>
+							<div class="project-suite-card__meta-value"><?=esc($log['username'])?></div>
+						</div>
+						<div class="project-suite-card__meta-item">
+							<div class="project-suite-card__meta-label">Jenis</div>
+							<div class="project-suite-card__meta-value"><?=esc(ucfirst($log['usage_type']))?></div>
+						</div>
+						<div class="project-suite-card__meta-item">
+							<div class="project-suite-card__meta-label">Task ID</div>
+							<div class="project-suite-card__meta-value"><?=number_format((int) $log['task_id'], 0, ',', '.')?></div>
+						</div>
+						<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+							<div class="project-suite-card__meta-label">Catatan</div>
+							<div class="project-suite-card__meta-value"><?=esc($log['notes'] ?: '-')?></div>
+						</div>
+					</div>
+				</div>
+			<?php endforeach; ?>
 		</div>
 	</div>
 </div>

@@ -59,8 +59,8 @@ $flashMessage = session()->getFlashdata('message');
 
 	<div class="card page-card project-category-page-card">
 		<div class="card-body p-0">
-			<div class="table-responsive card-table-wrap">
-				<table class="table table-striped table-bordered table-hover align-middle mb-0">
+			<div class="table-responsive card-table-wrap project-suite-table">
+				<table class="table table-striped table-bordered table-hover align-middle mb-0" data-project-datatable="1" data-page-length="10" data-order='[[1,"asc"]]'>
 					<thead>
 						<tr>
 							<th style="width: 60px;">No</th>
@@ -93,6 +93,44 @@ $flashMessage = session()->getFlashdata('message');
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+			</div>
+
+			<?php
+			/**
+			 * Card list mobile dipisahkan dari tabel desktop agar kategori tetap
+			 * mudah dibaca pada layar kecil tanpa mengubah struktur data backend.
+			 */
+			?>
+			<div class="project-suite-card-list p-3">
+				<?php if (!$categories): ?>
+					<div class="project-suite-empty">Belum ada data kategori</div>
+				<?php endif; ?>
+
+				<?php foreach ($categories as $category): ?>
+					<div class="project-suite-card">
+						<div class="project-suite-card__header">
+							<div>
+								<div class="project-suite-card__title"><?=esc($category['name'])?></div>
+								<div class="project-suite-card__subtitle">Master kategori untuk pengelompokan project.</div>
+							</div>
+							<span class="project-suite-card__badge project-suite-card__badge--neutral"><?=number_format((int) $category['total_project'], 0, ',', '.')?></span>
+						</div>
+						<div class="project-suite-card__meta">
+							<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+								<div class="project-suite-card__meta-label">Total Project</div>
+								<div class="project-suite-card__meta-value"><?=number_format((int) $category['total_project'], 0, ',', '.')?></div>
+							</div>
+						</div>
+						<div class="project-suite-card__actions">
+							<a href="<?=$module_url?>/edit?id=<?=$category['id_project_category']?>" class="btn btn-success btn-sm">Edit</a>
+							<form method="post" action="<?=$module_url?>/delete" onsubmit="return confirm('Hapus kategori ini?')">
+								<?=csrf_field()?>
+								<input type="hidden" name="id" value="<?=$category['id_project_category']?>">
+								<button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+							</form>
+						</div>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>

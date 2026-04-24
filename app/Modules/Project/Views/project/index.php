@@ -67,8 +67,8 @@ $flashMessage = session()->getFlashdata('message');
 				</div>
 			</div>
 
-			<div class="table-responsive card-table-wrap">
-				<table class="table table-striped table-bordered table-hover align-middle mb-0">
+			<div class="table-responsive card-table-wrap project-suite-table">
+				<table class="table table-striped table-bordered table-hover align-middle mb-0" data-project-datatable="1" data-page-length="10" data-order='[[1,"asc"]]'>
 					<thead>
 						<tr>
 							<th style="width: 60px;">No</th>
@@ -118,6 +118,63 @@ $flashMessage = session()->getFlashdata('message');
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+			</div>
+
+			<?php
+			/**
+			 * Card mobile memakai data project yang sama agar tampilan responsif
+			 * tidak mengubah query, routing, maupun alur action yang sudah ada.
+			 */
+			?>
+			<div class="project-suite-card-list p-3">
+				<?php if (!$projects): ?>
+					<div class="project-suite-empty">Belum ada data project</div>
+				<?php endif; ?>
+
+				<?php foreach ($projects as $project): ?>
+					<?php
+					$timelineStart = !empty($project['start_date']) ? date('d M Y', strtotime($project['start_date'])) : '-';
+					$timelineEnd = !empty($project['end_date']) ? date('d M Y', strtotime($project['end_date'])) : '-';
+					?>
+					<div class="project-suite-card">
+						<div class="project-suite-card__header">
+							<div>
+								<div class="project-suite-card__title"><?=esc($project['name'])?></div>
+								<div class="project-suite-card__subtitle"><?=esc($project['description'] ?: 'Tanpa deskripsi project')?></div>
+							</div>
+							<span class="project-suite-card__badge project-suite-card__badge--neutral"><?=esc($project['category_name'] ?: '-')?></span>
+						</div>
+						<div class="project-suite-card__meta">
+							<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+								<div class="project-suite-card__meta-label">Timeline</div>
+								<div class="project-suite-card__meta-value"><?=$timelineStart?> - <?=$timelineEnd?></div>
+							</div>
+							<div class="project-suite-card__meta-item">
+								<div class="project-suite-card__meta-label">Member</div>
+								<div class="project-suite-card__meta-value"><?=number_format((int) $project['total_member'], 0, ',', '.')?></div>
+							</div>
+							<div class="project-suite-card__meta-item">
+								<div class="project-suite-card__meta-label">Task</div>
+								<div class="project-suite-card__meta-value"><?=number_format((int) $project['total_task'], 0, ',', '.')?></div>
+							</div>
+							<div class="project-suite-card__meta-item project-suite-card__meta-item--full">
+								<div class="project-suite-card__meta-label">Total Token</div>
+								<div class="project-suite-card__meta-value"><?=number_format((float) $project['total_token_used'], 0, ',', '.')?></div>
+							</div>
+						</div>
+						<div class="project-suite-card__actions">
+							<a href="<?=$module_url?>/detail?id=<?=$project['id_project']?>" class="btn btn-warning btn-sm">Detail</a>
+							<a href="<?=$module_url?>/edit?id=<?=$project['id_project']?>" class="btn btn-success btn-sm">Edit</a>
+							<a href="<?=$config->baseURL?>project-member?project_id=<?=$project['id_project']?>" class="btn btn-outline-primary btn-sm">Member</a>
+							<a href="<?=$config->baseURL?>task-management?project_id=<?=$project['id_project']?>" class="btn btn-outline-info btn-sm">Task</a>
+							<form method="post" action="<?=$module_url?>/delete" onsubmit="return confirm('Hapus project ini?')">
+								<?=csrf_field()?>
+								<input type="hidden" name="id" value="<?=$project['id_project']?>">
+								<button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+							</form>
+						</div>
+					</div>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>
