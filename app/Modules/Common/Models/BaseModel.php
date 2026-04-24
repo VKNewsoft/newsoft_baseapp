@@ -393,7 +393,7 @@ class BaseModel extends \CodeIgniter\Model
 			'email-expiration' => [
 				'id_module' => 125,
 				'nama_module' => 'email-expiration',
-				'judul_module' => 'Email Expiration',
+				'judul_module' => 'Subscription Manager',
 				'id_module_status' => 1,
 				'nama_status' => 'Aktif',
 				'login' => 'Y',
@@ -491,13 +491,13 @@ class BaseModel extends \CodeIgniter\Model
 			'email-expiration' => [
 				'menu' => [
 					'id_menu' => 173,
-					'nama_menu' => 'Email Expiration',
+					'nama_menu' => 'Subscription Manager',
 					'id_menu_kategori' => 1,
 					'class' => '',
 					'url' => 'email-expiration',
 					'id_module' => 125,
 					'nama_module' => 'email-expiration',
-					'judul_module' => 'Email Expiration',
+					'judul_module' => 'Subscription Manager',
 					'id_parent' => null,
 					'aktif' => 1,
 					'new' => 0,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Route module Email Expiration.
+ * Route module Subscription Manager
  *
  * Route dipisah per module agar struktur HMVC tetap self-contained
  * dan URL dash-case tetap mengarah ke controller module yang benar.

@@ -290,7 +290,7 @@ CREATE TABLE `core_menu` (
 
 LOCK TABLES `core_menu` WRITE;
 /*!40000 ALTER TABLE `core_menu` DISABLE KEYS */;
-INSERT INTO `core_menu` VALUES (1,'Assign Role',1,'fas fa-link','#',NULL,13,1,0,2),(2,'User Role',1,NULL,'builtin/user-role',7,1,1,0,3),(3,'Module',1,NULL,'builtin/module',2,17,1,0,3),(4,'Menu',1,NULL,'builtin/menu',1,17,1,0,2),(5,'Menu Role',1,NULL,'builtin/menu-role',8,1,1,0,1),(6,'Setting',1,'fas fa-cogs','#',NULL,13,1,0,3),(7,'Role',1,NULL,'builtin/role',4,17,1,0,1),(8,'Setting Applikasi',1,NULL,'builtin/setting-app',16,6,1,0,1),(9,'Setting Layout',1,NULL,'builtin/setting-layout',15,6,1,0,2),(10,'Setting Registrasi',1,NULL,'builtin/setting-registrasi',NULL,6,0,0,3),(11,'Module Permission',1,NULL,'builtin/permission',51,17,1,0,4),(12,'Role Permission',1,NULL,'builtin/role-permission',52,1,1,0,2),(13,'Administrator',1,'far fa-sun','#',NULL,NULL,1,0,4),(14,'Register Company',1,NULL,'company',78,17,1,0,5),(16,'Semua User',1,NULL,'builtin/user',5,17,1,0,6),(17,'Manajemen Aplikasi',1,'fas fa-mobile-screen-button','#',NULL,13,1,0,1),(18,'Security Monitor',1,'fas fa-shield-halved','securitymonitor',121,NULL,1,0,2),(171,'Home Dashboard',1,'fas fa-chart-line','dashboard',123,NULL,1,0,1),(172,'DB Synchronisation',1,'fas fa-group-arrows-rotate','db-synchronisation',124,NULL,1,0,4),(173,'Email Expiration',1,'fas fa-envelope-open-text','email-expiration',125,NULL,1,0,3);
+INSERT INTO `core_menu` VALUES (1,'Assign Role',1,'fas fa-link','#',NULL,13,1,0,2),(2,'User Role',1,NULL,'builtin/user-role',7,1,1,0,3),(3,'Module',1,NULL,'builtin/module',2,17,1,0,3),(4,'Menu',1,NULL,'builtin/menu',1,17,1,0,2),(5,'Menu Role',1,NULL,'builtin/menu-role',8,1,1,0,1),(6,'Setting',1,'fas fa-cogs','#',NULL,13,1,0,3),(7,'Role',1,NULL,'builtin/role',4,17,1,0,1),(8,'Setting Applikasi',1,NULL,'builtin/setting-app',16,6,1,0,1),(9,'Setting Layout',1,NULL,'builtin/setting-layout',15,6,1,0,2),(10,'Setting Registrasi',1,NULL,'builtin/setting-registrasi',NULL,6,0,0,3),(11,'Module Permission',1,NULL,'builtin/permission',51,17,1,0,4),(12,'Role Permission',1,NULL,'builtin/role-permission',52,1,1,0,2),(13,'Administrator',1,'far fa-sun','#',NULL,NULL,1,0,4),(14,'Register Company',1,NULL,'company',78,17,1,0,5),(16,'Semua User',1,NULL,'builtin/user',5,17,1,0,6),(17,'Manajemen Aplikasi',1,'fas fa-mobile-screen-button','#',NULL,13,1,0,1),(18,'Security Monitor',1,'fas fa-shield-halved','securitymonitor',121,NULL,1,0,2),(171,'Home Dashboard',1,'fas fa-chart-line','dashboard',123,NULL,1,0,1),(172,'DB Synchronisation',1,'fas fa-group-arrows-rotate','db-synchronisation',124,NULL,1,0,4),(173,'Subscription Manager',1,'fas fa-envelope-open-text','email-expiration',125,NULL,1,0,3);
 /*!40000 ALTER TABLE `core_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -376,7 +376,7 @@ CREATE TABLE `core_module` (
 
 LOCK TABLES `core_module` WRITE;
 /*!40000 ALTER TABLE `core_module` DISABLE KEYS */;
-INSERT INTO `core_module` VALUES (1,'builtin/menu','CORE - Menu Manager',1,'Y','Module Untuk Administrasi Menu'),(2,'builtin/module','CORE - Module Manager',1,'Y','Module Untuk Pengaturan Penambahan Module Baru'),(4,'builtin/role','CORE - Role Manager',1,'Y','Module Untuk Pengaturan Role'),(5,'builtin/user','CORE - User Manager',1,'Y','Module Untuk Pengaturan User Sistem'),(6,'login','CORE - Login',1,'R','Module Untuk Melakukan Login Kedalam Sistem ERP'),(7,'builtin/user-role','CORE - Assign Role ke User',1,'Y','Module Untuk Melakukan Assign Role Ke User'),(8,'builtin/menu-role','CORE - Menu Role',1,'Y','Module Untuk Assign Role Ke Menu'),(15,'builtin/setting-layout','CORE - Setting Layout',1,'Y','Module Untuk Setting Layout Aplikasi'),(16,'builtin/setting-app','CORE - Setting App',1,'Y','Module Pengaturan Aplikasi Seperti Nama Aplikasi, '),(33,'register','CORE - Register Akun',1,'R','Module Untuk Melakukan Register Akun'),(35,'recovery','CORE - Reset Password',1,'R','Feature Untuk Melakukan Reset Password '),(39,'filepicker','CORE - File Picker',1,'Y','Module Untuk Mendukung Aktivitas File Picker Manag'),(44,'wilayah','CORE - Wilayah',1,'Y','Module Untuk Menambahkan Data Wilayah'),(51,'builtin/permission','CORE - Permission',1,'Y','Module Untuk Manajemen Permission'),(52,'builtin/role-permission','CORE - Role Permission',1,'Y','Module Untuk Mengatur Role Permission'),(65,'identitas','CORE - Identitas',1,'Y','Module Untuk Membuat Identitas Company'),(78,'company','CORE - Company',1,'Y','Module Penambahan Data Company'),(80,'midtrans','CORE - Sample Uji Coba Midtrans',1,'Y','Module Sample Uji Coba Midtrans'),(94,'builtin/qrscan','CORE - QRSCAN Sample',1,'N','Module untuk scan QR'),(121,'securitymonitor','Security Monitor',1,'Y','-'),(123,'dashboard','Simple Dashboard',1,'Y','Module untuk menampilkan dashboard'),(124,'db-synchronisation','CORE - DB Synchronisation',1,'Y','Module untuk membandingkan schema database aktif d'),(125,'email-expiration','Security Monitor - Email Expiration',1,'Y','Module untuk memantau masa aktif akun email dan aksi renew periodenya');
+INSERT INTO `core_module` VALUES (1,'builtin/menu','CORE - Menu Manager',1,'Y','Module Untuk Administrasi Menu'),(2,'builtin/module','CORE - Module Manager',1,'Y','Module Untuk Pengaturan Penambahan Module Baru'),(4,'builtin/role','CORE - Role Manager',1,'Y','Module Untuk Pengaturan Role'),(5,'builtin/user','CORE - User Manager',1,'Y','Module Untuk Pengaturan User Sistem'),(6,'login','CORE - Login',1,'R','Module Untuk Melakukan Login Kedalam Sistem ERP'),(7,'builtin/user-role','CORE - Assign Role ke User',1,'Y','Module Untuk Melakukan Assign Role Ke User'),(8,'builtin/menu-role','CORE - Menu Role',1,'Y','Module Untuk Assign Role Ke Menu'),(15,'builtin/setting-layout','CORE - Setting Layout',1,'Y','Module Untuk Setting Layout Aplikasi'),(16,'builtin/setting-app','CORE - Setting App',1,'Y','Module Pengaturan Aplikasi Seperti Nama Aplikasi, '),(33,'register','CORE - Register Akun',1,'R','Module Untuk Melakukan Register Akun'),(35,'recovery','CORE - Reset Password',1,'R','Feature Untuk Melakukan Reset Password '),(39,'filepicker','CORE - File Picker',1,'Y','Module Untuk Mendukung Aktivitas File Picker Manag'),(44,'wilayah','CORE - Wilayah',1,'Y','Module Untuk Menambahkan Data Wilayah'),(51,'builtin/permission','CORE - Permission',1,'Y','Module Untuk Manajemen Permission'),(52,'builtin/role-permission','CORE - Role Permission',1,'Y','Module Untuk Mengatur Role Permission'),(65,'identitas','CORE - Identitas',1,'Y','Module Untuk Membuat Identitas Company'),(78,'company','CORE - Company',1,'Y','Module Penambahan Data Company'),(80,'midtrans','CORE - Sample Uji Coba Midtrans',1,'Y','Module Sample Uji Coba Midtrans'),(94,'builtin/qrscan','CORE - QRSCAN Sample',1,'N','Module untuk scan QR'),(121,'securitymonitor','Security Monitor',1,'Y','-'),(123,'dashboard','Simple Dashboard',1,'Y','Module untuk menampilkan dashboard'),(124,'db-synchronisation','CORE - DB Synchronisation',1,'Y','Module untuk membandingkan schema database aktif d'),(125,'email-expiration','Subscribtion Manager',1,'Y','Module untuk memantau masa aktif akun email dan aksi renew periodenya');
 /*!40000 ALTER TABLE `core_module` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,7 +405,7 @@ CREATE TABLE `core_module_permission` (
 
 LOCK TABLES `core_module_permission` WRITE;
 /*!40000 ALTER TABLE `core_module_permission` DISABLE KEYS */;
-INSERT INTO `core_module_permission` VALUES (1,1,'create','Create Data','Hak akses untuk menambah data'),(2,2,'create','Create Data','Hak akses untuk menambah data'),(4,4,'create','Create Data','Hak akses untuk menambah data'),(5,5,'create','Create Data','Hak akses untuk menambah data'),(6,6,'create','Create Data','Hak akses untuk menambah data'),(7,7,'create','Create Data','Hak akses untuk menambah data'),(8,8,'create','Create Data','Hak akses untuk menambah data'),(10,15,'create','Create Data','Hak akses untuk menambah data'),(11,16,'create','Create Data','Hak akses untuk menambah data'),(22,33,'create','Create Data','Hak akses untuk menambah data'),(24,35,'create','Create Data','Hak akses untuk menambah data'),(28,39,'create','Create Data','Hak akses untuk menambah data'),(33,44,'create','Create Data','Hak akses untuk menambah data'),(37,51,'create','Create Data','Hak akses untuk menambah data'),(38,1,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(39,2,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(41,4,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(42,5,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(43,6,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(44,7,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(45,8,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(47,15,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(48,16,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(59,33,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(61,35,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(65,39,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(70,44,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(74,51,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(75,1,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(76,2,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(78,4,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(79,5,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(80,6,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(81,7,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(82,8,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(84,15,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(85,16,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(96,33,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(98,35,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(102,39,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(107,44,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(111,51,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(112,1,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(113,2,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(115,4,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(116,5,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(117,6,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(118,7,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(119,8,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(121,15,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(122,16,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(133,33,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(135,35,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(139,39,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(144,44,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(148,51,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(149,52,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(150,52,'create','Create Data','Hak akses untuk menambah data'),(152,52,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(153,52,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(206,65,'create','Create Data','Hak akses untuk membuat data'),(207,65,'read_all','Read All Data','Hak akses untuk membaca semua data'),(208,65,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(209,65,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(238,5,'read_own','Read Own Data','Hak akses untuk membaca data miliknya sendiri'),(239,5,'update_own','Update Own Data','Hak akses untuk mengupdate data miliknya sendiri'),(240,5,'delete_own','Delete Own Data','Hak akses untuk menghapus data miliknya sendiri'),(253,15,'read_own','Read Own Data','Hak akses untuk membaca data miliknya sendiri'),(254,15,'update_own','Update Own Data','Hak akses untuk mengupdate data miliknya sendiri'),(255,15,'delete_own','Delete Own Data','Hak akses untuk menghapus data miliknya sendiri'),(264,78,'create','Create Data','Hak akses untuk membuat data'),(265,78,'read_all','Read All Data','Hak akses untuk membaca semua data'),(266,78,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(267,78,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(272,80,'create','Create Data','Hak akses untuk membuat data'),(273,80,'read_all','Read All Data','Hak akses untuk membaca semua data'),(274,80,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(275,80,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(334,94,'create','Create Data','Hak akses untuk membuat data'),(335,94,'read_all','Read All Data','Hak akses untuk membaca semua data'),(336,94,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(337,94,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(438,121,'create','Create Data','Hak akses untuk membuat data'),(439,121,'read_all','Read All Data','Hak akses untuk membaca semua data'),(440,121,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(441,121,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(446,123,'create','Create Data','Hak akses untuk membuat data'),(447,123,'read_all','Read All Data','Hak akses untuk membaca semua data'),(448,123,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(449,123,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(450,124,'create','Create Data','Hak akses untuk menambah data sinkronisasi schema'),(451,124,'read_all','Read All Data','Hak akses untuk melihat diff sinkronisasi schema'),(452,124,'update_all','Update All Data','Hak akses untuk mengeksekusi sinkronisasi schema aman'),(453,124,'delete_all','Delete All Data','Hak akses placeholder agar pattern permission module tetap konsisten'),(454,125,'create','Create Data','Hak akses untuk menambah data email expiration'),(455,125,'read_all','Read All Data','Hak akses untuk melihat data email expiration'),(456,125,'update_all','Update All Data','Hak akses untuk mengubah data email expiration dan menjalankan renew'),(457,125,'delete_all','Delete All Data','Hak akses untuk menghapus data email expiration');
+INSERT INTO `core_module_permission` VALUES (1,1,'create','Create Data','Hak akses untuk menambah data'),(2,2,'create','Create Data','Hak akses untuk menambah data'),(4,4,'create','Create Data','Hak akses untuk menambah data'),(5,5,'create','Create Data','Hak akses untuk menambah data'),(6,6,'create','Create Data','Hak akses untuk menambah data'),(7,7,'create','Create Data','Hak akses untuk menambah data'),(8,8,'create','Create Data','Hak akses untuk menambah data'),(10,15,'create','Create Data','Hak akses untuk menambah data'),(11,16,'create','Create Data','Hak akses untuk menambah data'),(22,33,'create','Create Data','Hak akses untuk menambah data'),(24,35,'create','Create Data','Hak akses untuk menambah data'),(28,39,'create','Create Data','Hak akses untuk menambah data'),(33,44,'create','Create Data','Hak akses untuk menambah data'),(37,51,'create','Create Data','Hak akses untuk menambah data'),(38,1,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(39,2,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(41,4,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(42,5,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(43,6,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(44,7,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(45,8,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(47,15,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(48,16,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(59,33,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(61,35,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(65,39,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(70,44,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(74,51,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(75,1,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(76,2,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(78,4,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(79,5,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(80,6,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(81,7,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(82,8,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(84,15,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(85,16,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(96,33,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(98,35,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(102,39,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(107,44,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(111,51,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(112,1,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(113,2,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(115,4,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(116,5,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(117,6,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(118,7,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(119,8,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(121,15,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(122,16,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(133,33,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(135,35,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(139,39,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(144,44,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(148,51,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(149,52,'read_all','Read All Data','Hak akses untuk membaca data chartjs'),(150,52,'create','Create Data','Hak akses untuk menambah data'),(152,52,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(153,52,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(206,65,'create','Create Data','Hak akses untuk membuat data'),(207,65,'read_all','Read All Data','Hak akses untuk membaca semua data'),(208,65,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(209,65,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(238,5,'read_own','Read Own Data','Hak akses untuk membaca data miliknya sendiri'),(239,5,'update_own','Update Own Data','Hak akses untuk mengupdate data miliknya sendiri'),(240,5,'delete_own','Delete Own Data','Hak akses untuk menghapus data miliknya sendiri'),(253,15,'read_own','Read Own Data','Hak akses untuk membaca data miliknya sendiri'),(254,15,'update_own','Update Own Data','Hak akses untuk mengupdate data miliknya sendiri'),(255,15,'delete_own','Delete Own Data','Hak akses untuk menghapus data miliknya sendiri'),(264,78,'create','Create Data','Hak akses untuk membuat data'),(265,78,'read_all','Read All Data','Hak akses untuk membaca semua data'),(266,78,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(267,78,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(272,80,'create','Create Data','Hak akses untuk membuat data'),(273,80,'read_all','Read All Data','Hak akses untuk membaca semua data'),(274,80,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(275,80,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(334,94,'create','Create Data','Hak akses untuk membuat data'),(335,94,'read_all','Read All Data','Hak akses untuk membaca semua data'),(336,94,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(337,94,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(438,121,'create','Create Data','Hak akses untuk membuat data'),(439,121,'read_all','Read All Data','Hak akses untuk membaca semua data'),(440,121,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(441,121,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(446,123,'create','Create Data','Hak akses untuk membuat data'),(447,123,'read_all','Read All Data','Hak akses untuk membaca semua data'),(448,123,'update_all','Update All Data','Hak akses untuk mengupdate semua data'),(449,123,'delete_all','Delete All Data','Hak akses untuk menghapus semua data'),(450,124,'create','Create Data','Hak akses untuk menambah data sinkronisasi schema'),(451,124,'read_all','Read All Data','Hak akses untuk melihat diff sinkronisasi schema'),(452,124,'update_all','Update All Data','Hak akses untuk mengeksekusi sinkronisasi schema aman'),(453,124,'delete_all','Delete All Data','Hak akses placeholder agar pattern permission module tetap konsisten'),(454,125,'create','Create Data','Hak akses untuk menambah data email subscription'),(455,125,'read_all','Read All Data','Hak akses untuk melihat data email subscription'),(456,125,'update_all','Update All Data','Hak akses untuk mengubah data email subscription dan menjalankan renew'),(457,125,'delete_all','Delete All Data','Hak akses untuk menghapus data email subscription');
 /*!40000 ALTER TABLE `core_module_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1024,6 +1024,163 @@ LOCK TABLES `whitelist_ips` WRITE;
 /*!40000 ALTER TABLE `whitelist_ips` DISABLE KEYS */;
 /*!40000 ALTER TABLE `whitelist_ips` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Struktur tabel untuk modul project management
+-- Bagian ini menjaga installer ikut membawa tabel relasi project, member, dan task.
+--
+
+DROP TABLE IF EXISTS `project_task_token_usage`;
+DROP TABLE IF EXISTS `project_task`;
+DROP TABLE IF EXISTS `project_member`;
+DROP TABLE IF EXISTS `project`;
+DROP TABLE IF EXISTS `project_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_category` (
+  `id_project_category` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_project_category`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `project` (
+  `id_project` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `category_id` int(10) unsigned NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_project`),
+  KEY `category_id` (`category_id`),
+  KEY `start_date` (`start_date`),
+  KEY `end_date` (`end_date`),
+  CONSTRAINT `project_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `project_category` (`id_project_category`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `project_member` (
+  `id_project_member` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_project_member`),
+  UNIQUE KEY `project_member_project_user_unique` (`project_id`,`user_id`),
+  KEY `project_member_project_id_idx` (`project_id`),
+  KEY `project_member_user_id_idx` (`user_id`),
+  CONSTRAINT `project_member_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `project` (`id_project`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `project_member_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `project_task` (
+  `id_project_task` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` int(10) unsigned NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `assigned_to` int(10) unsigned NOT NULL,
+  `status` varchar(30) NOT NULL DEFAULT 'todo',
+  `priority` varchar(30) NOT NULL DEFAULT 'medium',
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_project_task`),
+  KEY `project_task_project_id_idx` (`project_id`),
+  KEY `project_task_assigned_to_idx` (`assigned_to`),
+  KEY `project_task_status_idx` (`status`),
+  KEY `project_task_priority_idx` (`priority`),
+  CONSTRAINT `project_task_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `project` (`id_project`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `project_task_assigned_to_foreign` FOREIGN KEY (`assigned_to`) REFERENCES `project_member` (`id_project_member`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `project_task_token_usage` (
+  `id_task_token_usage` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `task_id` int(10) unsigned NOT NULL,
+  `project_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `token_used` decimal(18,2) NOT NULL DEFAULT 0.00,
+  `usage_type` varchar(30) NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_task_token_usage`),
+  KEY `project_task_token_usage_task_idx` (`task_id`),
+  KEY `project_task_token_usage_project_idx` (`project_id`),
+  KEY `project_task_token_usage_user_idx` (`user_id`),
+  KEY `project_task_token_usage_created_idx` (`created_at`),
+  KEY `project_task_token_usage_project_user_date_idx` (`project_id`,`user_id`,`created_at`),
+  CONSTRAINT `project_task_token_usage_task_foreign` FOREIGN KEY (`task_id`) REFERENCES `project_task` (`id_project_task`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `project_task_token_usage_project_foreign` FOREIGN KEY (`project_id`) REFERENCES `project` (`id_project`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `project_task_token_usage_user_foreign` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Data awal kategori project supaya form langsung siap dipakai setelah import
+--
+
+LOCK TABLES `project_category` WRITE;
+/*!40000 ALTER TABLE `project_category` DISABLE KEYS */;
+INSERT INTO `project_category` VALUES
+(1,'Software Development',0,NULL,NULL),
+(2,'Recruitment',0,NULL,NULL),
+(3,'Accounting',0,NULL,NULL),
+(4,'Financial',0,NULL,NULL);
+/*!40000 ALTER TABLE `project_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Integrasi modul, permission, dan menu project ke dump installer
+-- Update urutan menu dilakukan di dump agar parent Project muncul tepat di bawah Security Monitor.
+--
+
+INSERT INTO `core_module` VALUES
+(126,'project','Project',1,'Y','Module Project untuk manajemen data project'),
+(127,'project-category','Project Category',1,'Y','Module kategori project untuk dropdown master'),
+(128,'project-member','Project Member',1,'Y','Module anggota project untuk assignment task'),
+(129,'task-management','Task Management',1,'Y','Module task management untuk project');
+
+INSERT INTO `core_module_permission` VALUES
+(458,126,'create','Create Data','Hak akses untuk menambah data project'),
+(459,126,'read_all','Read All Data','Hak akses untuk membaca seluruh data project'),
+(460,126,'update_all','Update All Data','Hak akses untuk mengubah seluruh data project'),
+(461,126,'delete_all','Delete All Data','Hak akses untuk menghapus seluruh data project'),
+(462,127,'create','Create Data','Hak akses untuk menambah data kategori project'),
+(463,127,'read_all','Read All Data','Hak akses untuk membaca seluruh data kategori project'),
+(464,127,'update_all','Update All Data','Hak akses untuk mengubah seluruh data kategori project'),
+(465,127,'delete_all','Delete All Data','Hak akses untuk menghapus seluruh data kategori project'),
+(466,128,'create','Create Data','Hak akses untuk menambah data anggota project'),
+(467,128,'read_all','Read All Data','Hak akses untuk membaca seluruh data anggota project'),
+(468,128,'update_all','Update All Data','Hak akses untuk mengubah seluruh data anggota project'),
+(469,128,'delete_all','Delete All Data','Hak akses untuk menghapus seluruh data anggota project'),
+(470,129,'create','Create Data','Hak akses untuk menambah data task'),
+(471,129,'read_all','Read All Data','Hak akses untuk membaca seluruh data task'),
+(472,129,'update_all','Update All Data','Hak akses untuk mengubah seluruh data task'),
+(473,129,'delete_all','Delete All Data','Hak akses untuk menghapus seluruh data task');
+
+INSERT INTO `core_role_module_permission` VALUES
+(1,458),(1,459),(1,460),(1,461),
+(1,462),(1,463),(1,464),(1,465),
+(1,466),(1,467),(1,468),(1,469),
+(1,470),(1,471),(1,472),(1,473);
+
+UPDATE `core_menu` SET `urut` = 4 WHERE `id_menu` = 173;
+UPDATE `core_menu` SET `urut` = 5 WHERE `id_menu` IN (13,172);
+
+INSERT INTO `core_menu` VALUES
+(174,'Project',1,'fas fa-diagram-project','#',NULL,NULL,1,0,5),
+(175,'Project List',1,NULL,'project',126,174,1,0,1),
+(176,'Category List',1,NULL,'project-category',127,174,1,0,2),
+(177,'Task List',1,NULL,'task-management',129,174,1,0,3);
+
+INSERT INTO `core_menu_role` VALUES
+(174,1),(175,1),(176,1),(177,1);
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

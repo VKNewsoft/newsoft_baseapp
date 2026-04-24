@@ -262,4 +262,26 @@ class Login extends \App\Modules\Common\Controllers\BaseController
 		header('Location: ' . $this->config->baseURL . 'login');
 		exit;
 	}
+
+	/**
+	 * Flush cache disediakan manual dari header agar user bisa menarik ulang
+	 * perubahan database saat dibutuhkan tanpa mematikan cache performa.
+	 */
+	public function flushCache()
+	{
+		$this->loginRequired();
+
+		$cache = \Config\Services::cache();
+		$status = $cache->clean();
+		$message = $status
+			? ['status' => 'ok', 'message' => 'Cache berhasil dibersihkan']
+			: ['status' => 'error', 'message' => 'Cache gagal dibersihkan'];
+
+		if ($this->request->isAJAX()) {
+			return $this->response->setJSON($message);
+		}
+
+		$this->session->setFlashdata('msg', $message);
+		return redirect()->back();
+	}
 }

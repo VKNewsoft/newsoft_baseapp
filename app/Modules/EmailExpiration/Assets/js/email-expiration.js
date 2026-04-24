@@ -1,5 +1,5 @@
 /**
-* Email Expiration Module Script
+* Subscription Manager Module Script
 *
 * Interaksi CRUD popup dan aksi renew dibuat mengikuti pattern module lain
 * agar behaviour DataTable, modal, dan toast tetap konsisten di seluruh app.
