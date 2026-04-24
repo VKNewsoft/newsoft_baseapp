@@ -1328,9 +1328,15 @@ body.theme-ready footer {
 		align-items: center;
 		justify-content: center;
 		gap: 4px;
+		/**
+		 * Item menu dijaga tidak shrink agar lebarnya mengikuti panjang title
+		 * masing-masing, namun tetap punya lebar minimum yang nyaman disentuh.
+		 */
+		flex: 0 0 auto;
+		width: max-content;
 		min-width: 72px;
 		min-height: 62px;
-		padding: 8px 10px;
+		padding: 8px 14px;
 		border-radius: 16px;
 		font-size: 11px;
 		line-height: 1.2;
@@ -1344,9 +1350,13 @@ body.theme-ready footer {
 	}
 
 	.mobile-bottom-nav-item span {
-		max-width: 84px;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		/**
+		 * Title menu dibiarkan memakai lebar natural supaya teks tidak lagi
+		 * terpotong dan ukuran card mengikuti isi menu secara otomatis.
+		 */
+		max-width: none;
+		overflow: visible;
+		text-overflow: clip;
 		white-space: nowrap;
 	}
 
