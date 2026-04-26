@@ -26,25 +26,38 @@ class App extends BaseConfig
         $this->set_base_url();
     }
 
-    public $baseURL = '';
-    public $imagesURL = '';
+	public $baseURL = '';
+	public $imagesURL = '';
 
 	private function set_base_url() {
-        if (!$this->baseURL) {
+		if ($this->baseURL) {
+			return;
+		}
 
-            $domain = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+		// Jalur CLI seperti `php spark` tidak memiliki HTTP_HOST, sehingga
+		// baseURL perlu diberi fallback aman agar command cron tetap berjalan.
+		if (is_cli()) {
+			$scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/'));
+			$basePath = preg_replace('#/(index\.php|spark).*$#i', '/', $scriptName);
+			$basePath = '/' . trim((string) $basePath, '/') . '/';
+			$basePath = preg_replace('#/+#', '/', $basePath);
+			$this->baseURL = 'http://localhost' . ($basePath === '//' ? '/' : $basePath);
+			$this->imagesURL = rtrim($this->baseURL, '/') . '/public/images/';
+			return;
+		}
 
-            $domain = preg_replace('/index.php.*/', '', $domain);
-            $domain = strtolower($domain);
-            if (!empty($_SERVER['HTTPS'])) {
-                $this->baseURL = 'https://' . $domain;
-                $this->imagesURL = 'https://' . $domain.'/public/images/';
-            } else {
-                $this->baseURL = 'http://' . $domain;
-                $this->imagesURL = 'http://' . $domain.'/public/images/';
-            }
-        }
-    }
+		$domain = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+		$scriptName = (string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php');
+		$domain = strtolower($domain . $scriptName);
+		$domain = preg_replace('/index.php.*/', '', $domain);
+		if (!empty($_SERVER['HTTPS'])) {
+			$this->baseURL = 'https://' . $domain;
+			$this->imagesURL = 'https://' . $domain.'/public/images/';
+		} else {
+			$this->baseURL = 'http://' . $domain;
+			$this->imagesURL = 'http://' . $domain.'/public/images/';
+		}
+	}
 	
 	public $imagesPath = ROOTPATH . 'public/images/';
 	

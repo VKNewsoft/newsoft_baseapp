@@ -1,0 +1,268 @@
+/**
+ * Suite forex merapikan kartu ringkasan, badge trend, dan kolom narasi
+ * agar halaman monitor serta report tetap nyaman di desktop dan mobile.
+ */
+
+.forex-page-shell {
+	min-height: calc(100vh - 140px);
+	display: flex;
+	flex-direction: column;
+}
+
+.forex-page-card {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.forex-page-card > .card-body {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.forex-page-card .card-table-wrap,
+.forex-page-card .table-responsive {
+	flex: 1 1 auto;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.forex-page-card table {
+	width: 100%;
+	min-width: 1120px;
+}
+
+.forex-summary-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.forex-summary-card {
+	background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(243,246,255,0.96));
+	border: 1px solid rgba(148, 163, 184, 0.18);
+	border-radius: 18px;
+	padding: 1rem 1.1rem;
+	box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.forex-summary-card__label {
+	font-size: 0.76rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted, #64748b);
+}
+
+.forex-summary-card__value {
+	margin-top: 0.5rem;
+	font-size: 1.1rem;
+	font-weight: 700;
+	line-height: 1.4;
+	color: var(--text-main, #0f172a);
+	word-break: break-word;
+}
+
+.forex-summary-card__meta {
+	margin-top: 0.45rem;
+	font-size: 0.83rem;
+	color: var(--text-muted, #64748b);
+}
+
+.forex-inline-check {
+	padding-top: 0.1rem;
+}
+
+.forex-helper-copy {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.55rem;
+}
+
+.forex-trend-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.4rem 0.8rem;
+	border-radius: 999px;
+	font-size: 0.76rem;
+	font-weight: 700;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.forex-trend-badge--bullish {
+	background: rgba(22, 163, 74, 0.15);
+	color: #166534;
+}
+
+.forex-trend-badge--bearish {
+	background: rgba(220, 38, 38, 0.15);
+	color: #991b1b;
+}
+
+.forex-trend-badge--sideways {
+	background: rgba(71, 85, 105, 0.15);
+	color: #334155;
+}
+
+.forex-summary-column {
+	min-width: 360px;
+	white-space: normal;
+	line-height: 1.55;
+}
+
+.forex-narrative-card {
+	padding: 0.2rem 0.1rem;
+}
+
+.forex-narrative-card__label {
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted, #64748b);
+}
+
+.forex-narrative-card__text {
+	margin-top: 0.7rem;
+	font-size: 0.96rem;
+	line-height: 1.7;
+	color: var(--text-main, #0f172a);
+}
+
+.forex-prediction-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.forex-method-card {
+	background: linear-gradient(160deg, rgba(255,255,255,0.98), rgba(248,250,252,0.98));
+	border: 1px solid rgba(148, 163, 184, 0.18);
+	border-radius: 18px;
+	padding: 1rem 1.1rem;
+	box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Card summary gabungan dibuat lebih tegas agar hasil mayoritas langsung terlihat. */
+.forex-method-card--accent {
+	background: linear-gradient(160deg, rgba(232, 244, 255, 0.98), rgba(255,255,255,0.98));
+}
+
+.forex-method-card__label {
+	font-size: 0.76rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted, #64748b);
+}
+
+.forex-method-card__value {
+	margin-top: 0.5rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.45;
+	color: var(--text-main, #0f172a);
+	word-break: break-word;
+}
+
+.forex-method-card__meta {
+	margin-top: 0.45rem;
+	font-size: 0.84rem;
+	line-height: 1.55;
+	color: var(--text-muted, #64748b);
+}
+
+.forex-level-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.forex-level-box {
+	background: #ffffff;
+	border: 1px solid rgba(148, 163, 184, 0.2);
+	border-radius: 16px;
+	padding: 0.95rem 1rem;
+}
+
+.forex-level-box__title {
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted, #64748b);
+	margin-bottom: 0.75rem;
+}
+
+.forex-level-box__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.4rem 0;
+	border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+	font-size: 0.92rem;
+	color: var(--text-main, #0f172a);
+}
+
+.forex-level-box__row:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+.forex-level-box__row:first-child {
+	padding-top: 0;
+}
+
+.forex-method-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.55rem;
+}
+
+@media (max-width: 1199.98px) {
+	/**
+	 * Grid ringkasan dibuat dua kolom pada layar medium agar nilai penting
+	 * tetap terlihat utuh tanpa memaksa kartu menjadi terlalu sempit.
+	 */
+	.forex-summary-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.forex-prediction-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 991.98px) {
+	.forex-page-card table {
+		min-width: 980px;
+	}
+
+	.forex-helper-copy {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.forex-level-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 767.98px) {
+	/**
+	 * Pada layar kecil, ringkasan dibuat satu kolom agar susunan angka, badge,
+	 * dan narasi tetap mudah dipindai dengan gestur scroll vertikal biasa.
+	 */
+	.forex-summary-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.forex-prediction-grid {
+		grid-template-columns: 1fr;
+	}
+}

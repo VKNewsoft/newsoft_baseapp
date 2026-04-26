@@ -1181,6 +1181,151 @@ INSERT INTO `core_menu` VALUES
 
 INSERT INTO `core_menu_role` VALUES
 (174,1),(175,1),(176,1),(177,1);
+
+--
+-- Struktur tabel forex disimpan di dump installer agar histori harga dan
+-- analisis harian GBP/JPY langsung siap dipakai setelah import database.
+--
+
+DROP TABLE IF EXISTS `forex_analysis`;
+DROP TABLE IF EXISTS `forex_price`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forex_price` (
+  `id_forex_price` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pair` varchar(20) NOT NULL,
+  `date` date NOT NULL,
+  `open_price` decimal(18,6) NOT NULL,
+  `high_price` decimal(18,6) NOT NULL,
+  `low_price` decimal(18,6) NOT NULL,
+  `close_price` decimal(18,6) NOT NULL,
+  `source_api` varchar(100) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_forex_price`),
+  UNIQUE KEY `forex_price_pair_date_unique` (`pair`,`date`),
+  KEY `forex_price_pair_idx` (`pair`),
+  KEY `forex_price_date_idx` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `forex_analysis` (
+  `id_forex_analysis` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `pair` varchar(20) NOT NULL,
+  `high_low_range` decimal(18,6) NOT NULL,
+  `trend` varchar(20) NOT NULL,
+  `summary` text DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_forex_analysis`),
+  UNIQUE KEY `forex_analysis_pair_date_unique` (`pair`,`date`),
+  KEY `forex_analysis_pair_idx` (`pair`),
+  KEY `forex_analysis_date_idx` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Integrasi modul, permission, dan menu forex ke dump installer
+-- agar halaman monitor/prediction langsung tampil untuk Administrator.
+--
+
+INSERT INTO `core_module` VALUES
+(130,'forex-monitor','Forex Monitor',1,'Y','Module untuk monitoring harian OHLC GBP/JPY dari API gratis'),
+(131,'forex-prediction','Forex Prediction',1,'Y','Module untuk signal, market context, dan prediksi multi-metode GBP/JPY');
+
+INSERT INTO `core_module_permission` VALUES
+(474,130,'create','Create Data','Hak akses untuk menjalankan fetch manual Forex Monitor'),
+(475,130,'read_all','Read All Data','Hak akses untuk melihat data Forex Monitor'),
+(476,130,'update_all','Update All Data','Hak akses placeholder untuk memperbarui data Forex Monitor'),
+(477,130,'delete_all','Delete All Data','Hak akses placeholder agar pattern permission Forex Monitor tetap konsisten'),
+(478,131,'create','Create Data','Hak akses placeholder untuk Forex Prediction'),
+(479,131,'read_all','Read All Data','Hak akses untuk melihat data Forex Prediction'),
+(480,131,'update_all','Update All Data','Hak akses untuk memperbarui setting signal Forex Prediction'),
+(481,131,'delete_all','Delete All Data','Hak akses placeholder agar pattern permission Forex Prediction tetap konsisten');
+
+INSERT INTO `core_role_module_permission` VALUES
+(1,474),(1,475),(1,476),(1,477),
+(1,478),(1,479),(1,480),(1,481);
+
+INSERT INTO `core_menu` VALUES
+(178,'Forex',1,'fas fa-chart-line','#',NULL,NULL,1,0,6),
+(179,'Forex Monitor',1,NULL,'forex-monitor',130,178,1,0,1),
+(180,'Forex Prediction',1,NULL,'forex-prediction',131,178,1,0,2);
+
+INSERT INTO `core_menu_role` VALUES
+(178,1),(179,1),(180,1);
+
+--
+-- Struktur tabel dashboard realtime dan histori alert forex dipisahkan
+-- agar polling live price dan trigger threshold tetap hemat query.
+--
+
+DROP TABLE IF EXISTS `forex_alert_history`;
+DROP TABLE IF EXISTS `forex_alert`;
+DROP TABLE IF EXISTS `forex_live_price`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forex_live_price` (
+  `id_forex_live_price` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pair` varchar(20) NOT NULL,
+  `current_price` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `previous_price` decimal(18,6) DEFAULT NULL,
+  `change_amount` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `change_percent` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `day_open` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `day_high` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `day_low` decimal(18,6) NOT NULL DEFAULT 0.000000,
+  `provider` varchar(100) NOT NULL,
+  `source_type` varchar(40) NOT NULL,
+  `quote_time` datetime NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_forex_live_price`),
+  UNIQUE KEY `forex_live_price_pair_unique` (`pair`),
+  KEY `forex_live_price_quote_time_idx` (`quote_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `forex_alert` (
+  `id_forex_alert` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pair` varchar(20) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `condition_type` varchar(20) NOT NULL,
+  `target_price` decimal(18,6) NOT NULL,
+  `with_sound` tinyint(1) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `last_checked_price` decimal(18,6) DEFAULT NULL,
+  `triggered_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_forex_alert`),
+  KEY `forex_alert_pair_user_idx` (`pair`,`user_id`),
+  KEY `forex_alert_is_active_idx` (`is_active`),
+  KEY `forex_alert_user_id_idx` (`user_id`),
+  CONSTRAINT `forex_alert_user_foreign` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `forex_alert_history` (
+  `id_forex_alert_history` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `alert_id` int(10) unsigned DEFAULT NULL,
+  `pair` varchar(20) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `condition_type` varchar(20) NOT NULL,
+  `target_price` decimal(18,6) NOT NULL,
+  `triggered_price` decimal(18,6) NOT NULL,
+  `with_sound` tinyint(1) NOT NULL DEFAULT 0,
+  `message` text DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_forex_alert_history`),
+  KEY `forex_alert_history_pair_user_idx` (`pair`,`user_id`),
+  KEY `forex_alert_history_created_at_idx` (`created_at`),
+  KEY `forex_alert_history_alert_id_idx` (`alert_id`),
+  KEY `forex_alert_history_user_id_idx` (`user_id`),
+  CONSTRAINT `forex_alert_history_alert_foreign` FOREIGN KEY (`alert_id`) REFERENCES `forex_alert` (`id_forex_alert`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `forex_alert_history_user_foreign` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Tabel live price dan alert tetap dipertahankan karena sekarang menjadi
+-- bagian internal dari modul Forex Monitor tanpa menu tambahan terpisah.
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -1,0 +1,20 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+$root = dirname(__DIR__);
+define('FCPATH', $root . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
+chdir(FCPATH);
+require $root . DIRECTORY_SEPARATOR . 'app/Config/Paths.php';
+$paths = new Config\Paths();
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
+require_once SYSTEMPATH . 'CodeIgniter.php';
+$app = Config\Services::codeigniter();
+$app->initialize();
+$app->setContext('php-cli');
+$service = new App\Modules\ForexDashboard\Libraries\ForexSignalService();
+$model = new App\Modules\ForexDashboard\Models\ForexDashboardModel();
+$service->saveAutoMonitorSetting(1, true);
+$enabled = $model->getSignalSetting(1);
+$service->saveAutoMonitorSetting(1, false);
+$disabled = $model->getSignalSetting(1);
+echo json_encode(['after_enable' => $enabled, 'after_restore' => $disabled], JSON_UNESCAPED_SLASHES);

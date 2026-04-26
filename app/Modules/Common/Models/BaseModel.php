@@ -439,6 +439,26 @@ class BaseModel extends \CodeIgniter\Model
 				'login' => 'Y',
 				'deskripsi' => 'Module untuk mengelola task project dan log AI token usage',
 				'is_fallback_module' => true
+			],
+			'forex-monitor' => [
+				'id_module' => 130,
+				'nama_module' => 'forex-monitor',
+				'judul_module' => 'Forex Monitor',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk monitoring realtime, histori OHLC, chart, dan alert GBP/JPY',
+				'is_fallback_module' => true
+			],
+			'forex-prediction' => [
+				'id_module' => 131,
+				'nama_module' => 'forex-prediction',
+				'judul_module' => 'Forex Prediction',
+				'id_module_status' => 1,
+				'nama_status' => 'Aktif',
+				'login' => 'Y',
+				'deskripsi' => 'Module untuk signal, market context, dan prediksi multi-metode GBP/JPY',
+				'is_fallback_module' => true
 			]
 		];
 	}
@@ -694,6 +714,96 @@ class BaseModel extends \CodeIgniter\Model
 					'aktif' => 1,
 					'new' => 0,
 					'urut' => 3,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'forex-monitor' => [
+				'menu' => [
+					'id_menu' => 179,
+					'nama_menu' => 'Forex Monitor',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'forex-monitor',
+					'id_module' => 130,
+					'nama_module' => 'forex-monitor',
+					'judul_module' => 'Forex Monitor',
+					'id_parent' => 178,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 1,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 178,
+					'nama_menu' => 'Forex',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-chart-line',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 6,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'category' => [
+					'id_menu_kategori' => 1,
+					'nama_kategori' => 'CORE - SYSTEM CONFIG',
+					'deskripsi' => '',
+					'aktif' => 'Y',
+					'tampil' => 'Y',
+					'urut' => 1,
+					'icon' => 'far fa-sun'
+				]
+			],
+			'forex-prediction' => [
+				'menu' => [
+					'id_menu' => 180,
+					'nama_menu' => 'Forex Prediction',
+					'id_menu_kategori' => 1,
+					'class' => '',
+					'url' => 'forex-prediction',
+					'id_module' => 131,
+					'nama_module' => 'forex-prediction',
+					'judul_module' => 'Forex Prediction',
+					'id_parent' => 178,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 2,
+					'highlight' => 0,
+					'depth' => 0,
+					'is_fallback_menu' => true
+				],
+				'parent' => [
+					'id_menu' => 178,
+					'nama_menu' => 'Forex',
+					'id_menu_kategori' => 1,
+					'class' => 'fas fa-chart-line',
+					'url' => '#',
+					'id_module' => null,
+					'nama_module' => null,
+					'judul_module' => null,
+					'id_parent' => null,
+					'aktif' => 1,
+					'new' => 0,
+					'urut' => 6,
 					'highlight' => 0,
 					'depth' => 0,
 					'is_fallback_menu' => true
